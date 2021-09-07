@@ -320,7 +320,7 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 5;
+int changeover_step = 2;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
@@ -1610,7 +1610,7 @@ if(input >= 47 && armed){
 	 			 maskPhaseInterrupts();
 	 			 allpwm();
 	 		 advanceincrement();
-             step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 1000/motor_poles);
+             step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 700/motor_poles);
 	 		 delayMicros(step_delay);
 
 	 		  }else{
@@ -1628,7 +1628,7 @@ if(input >= 47 && armed){
 		 		  INTERVAL_TIMER->CNT = 9000;
 				  zero_crosses = 0;
 				  prop_brake_active = 0;
-	 			  step = 1;                    // rising bemf on a same as position 0.
+	 			  step = changeover_step;                    // rising bemf on a same as position 0.
 		 		  comStep(step);// rising bemf on a same as position 0.
 	 			  LL_TIM_GenerateEvent_UPDATE(TIM1);
 	 			  zcfoundroutine();
