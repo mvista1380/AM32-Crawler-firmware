@@ -1617,7 +1617,7 @@ if(input >= 47 && armed){
 	 			 advanceincrement();
 
 	 			 delayMicros(step_delay);
-	 			  if (phase_A_position == 0){
+	 			  if (step == 0){
 	 			  stepper_sine = 0;
 	 			  running = 1;
 				  old_routine = 1;
@@ -1628,7 +1628,7 @@ if(input >= 47 && armed){
 		 		  INTERVAL_TIMER->CNT = 9000;
 				  zero_crosses = 0;
 				  prop_brake_active = 0;
-	 			  step = changeover_step;                    // rising bemf on a same as position 0.
+	 			  //step = changeover_step;                    // rising bemf on a same as position 0.
 		 		  comStep(step);// rising bemf on a same as position 0.
 	 			  LL_TIM_GenerateEvent_UPDATE(TIM1);
 	 			  zcfoundroutine();
