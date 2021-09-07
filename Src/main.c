@@ -845,7 +845,7 @@ if(!armed){
 
 		  }
 	  if(use_sin_start){
-		duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
+		duty_cycle = map(input, sine_mode_changeover, 2047, 100, TIMER1_MAX_ARR);
   	  }else{
 	 	 duty_cycle = map(input, 47, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
 	  }
@@ -1489,7 +1489,6 @@ if(newinput > 2000){
  	 	 		bemf_timeout = 10;
  	 	 	 }
  	 	 }
-		 bemf_timout_happened = 0;
 	  if(bemf_timout_happened > bemf_timeout * ( 1 + (crawler_mode*100))&& stuck_rotor_protection){
 	 		 allOff();
 	 		 maskPhaseInterrupts();
