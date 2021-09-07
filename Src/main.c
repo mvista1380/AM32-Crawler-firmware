@@ -152,6 +152,8 @@ char motor_poles = 14;
 //Add Beep Volume
 char drag_brake_strength = 10;		// Drag Brake Power
 char sine_mode_changeover_thottle_level = 5;	// Sine Startup Range
+char sine_mode_changeover_mutliplier = 15;
+int sine_mode_changeover = 5 * 15;
 
 char USE_HALL_SENSOR = 0;
 
@@ -319,7 +321,7 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 3;
+int changeover_step = 5;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
@@ -498,10 +500,10 @@ void loadEEpromSettings(){
 	   if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		   min_startup_duty = eepromBuffer[25]/ 2 + 10 + startup_boost;
 		   minimum_duty_cycle = eepromBuffer[25]/ 2 + DEAD_TIME/3;
-//		   if (use_sin_start){
-//			   min_startup_duty = eepromBuffer[25];
-//			   minimum_duty_cycle = eepromBuffer[25]/ 4;
-//		   }
+		   if (use_sin_start){
+			   min_startup_duty = eepromBuffer[25];
+			   minimum_duty_cycle = eepromBuffer[25]/ 2;
+		   }
 	    }else{
 	    	min_startup_duty = 150;
 	    	minimum_duty_cycle = (min_startup_duty / 2) + 10;
@@ -561,6 +563,7 @@ void loadEEpromSettings(){
 		   }
 	   if(eepromBuffer[40] > 4 && eepromBuffer[40] < 26){            // sine mode changeover 5-25 percent throttle
        sine_mode_changeover_thottle_level = eepromBuffer[40];
+	   sine_mode_changeover = sine_mode_changeover_thottle_level * sine_mode_changeover_mutliplier;
 	   }
 	   if(eepromBuffer[41] > 0 && eepromBuffer[41] < 11){        // drag brake 0-10
        drag_brake_strength = eepromBuffer[41];
@@ -851,7 +854,7 @@ if(!armed){
 		  prop_brake_active = 0;
 	  }
 	  }
-	  if (input < 47 + (((sine_mode_changeover_thottle_level * 15) * 0.75) * use_sin_start)){
+	  if (input < 47 + ((floor(sine_mode_changeover * 0.75) * use_sin_start)){
 		if(play_tone_flag != 0){
 			if(play_tone_flag == 1){
 				playDefaultTone();
@@ -1640,7 +1643,7 @@ if (old_routine && running){
 
 if(input > 48 && armed){
 
-	 		  if (input > 48 && input < (sine_mode_changeover_thottle_level * 15)){// sine wave stepper
+	 		  if (input > 48 && input < sine_mode_changeover){// sine wave stepper
 
 	 			 maskPhaseInterrupts();
 	 			 allpwm();
