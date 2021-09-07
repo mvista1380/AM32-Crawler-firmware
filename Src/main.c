@@ -1538,14 +1538,10 @@ if(newinput > 2000){
 	  	  	if(use_sin_start){
   				if(adjusted_input < 30){           // dead band ?
   					input= 0;
-  					}
-
-  					if(adjusted_input > 30 && adjusted_input < (sine_mode_changeover_thottle_level * 20)){
-  					input= map(adjusted_input, 30 , (sine_mode_changeover_thottle_level * 20) , 47 ,160);
-  					}
-  					if(adjusted_input >= (sine_mode_changeover_thottle_level * 20)){
-  					input = map(adjusted_input , (sine_mode_changeover_thottle_level * 20) ,2000 , 160, 2000);
-  					}
+  				}
+				else {
+					input = map(adjusted_input, 30, 2000, 47, 2000);
+				}
   				}else{
   		   			input = adjusted_input;
   				}
@@ -1644,7 +1640,7 @@ if (old_routine && running){
 
 if(input > 48 && armed){
 
-	 		  if (input > 48 && input < 137){// sine wave stepper
+	 		  if (input > 48 && input < (sine_mode_changeover_thottle_level * 15)){// sine wave stepper
 
 	 			 maskPhaseInterrupts();
 	 			 allpwm();
@@ -1654,7 +1650,7 @@ if(input > 48 && armed){
 
 	 		  }else{
 	 			 advanceincrement();
-	 			  if(input > 200){
+	 			  if(input > ((sine_mode_changeover_thottle_level * 15) + 63)){
 	 				 phase_A_position = 0;
 	 				 step_delay = 80;
 	 			  }
