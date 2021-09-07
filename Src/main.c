@@ -230,7 +230,7 @@ char lowkv = 0;
 
 int min_startup_duty = 120;
 int sin_mode_min_s_d = 120;
-char bemf_timeout = 100;
+char bemf_timeout = 10;
 
 char startup_boost = 35;
 char reversing_dead_band = 1;
@@ -1008,7 +1008,7 @@ if(desync_check && zero_crosses > 10){
 		desync_happened ++;
 //running = 0;
 //old_routine = 1;
-		last_duty_cycle = min_startup_duty/2;
+		//last_duty_cycle = min_startup_duty/2;
 		}
 
 		desync_check = 0;
@@ -1485,7 +1485,7 @@ if(newinput > 2000){
  	 		bemf_timeout = 10;
  		}
 
-	  if(bemf_timout_happened > bemf_timeout * 1 && stuck_rotor_protection){
+	  if(bemf_timout_happened > bemf_timeout && stuck_rotor_protection){
 	 		 allOff();
 	 		 maskPhaseInterrupts();
 	 		 input = 0;
