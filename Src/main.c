@@ -202,7 +202,6 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
   
-char crawler_mode = 0;  // no longer used //
 uint16_t velocity_count = 0;
 uint16_t velocity_count_threshold = 100;
 
@@ -1478,18 +1477,15 @@ if(newinput > 2000){
 	 		bemf_timout_happened = 0;
 	 	 }
 
- 	 	 if(crawler_mode){
- 	 		if (adjusted_input < 400){
- 	 			bemf_timout_happened = 0;
- 	 		}
- 	 	 }else{
- 	 		if (adjusted_input < 150){              // startup duty cycle should be low enough to not burn motor
- 	 			bemf_timeout = 100;
- 	 	 	 }else{
- 	 	 		bemf_timeout = 10;
- 	 	 	 }
- 	 	 }
-	  if(bemf_timout_happened > bemf_timeout * ( 1 + (crawler_mode*100))&& stuck_rotor_protection){
+ 	 	 
+ 		if (adjusted_input < 150){              // startup duty cycle should be low enough to not burn motor
+ 	 		bemf_timeout = 100;
+ 		}
+		else{
+ 	 		bemf_timeout = 10;
+ 		}
+
+	  if(bemf_timout_happened > bemf_timeout * 1 && stuck_rotor_protection){
 	 		 allOff();
 	 		 maskPhaseInterrupts();
 	 		 input = 0;
@@ -1523,7 +1519,7 @@ if(newinput > 2000){
 
 if (zero_crosses < 100 || commutation_interval > 500) {
 
-		filter_level = 5;
+		filter_level = 12;
 
 	} else {
 
@@ -1565,16 +1561,9 @@ if (old_routine && running){
               bemf_timout_happened ++;
 	 		  zcfoundroutine();
 	 		  maskPhaseInterrupts();
-	 		  old_routine = 1;
+	 		  old_routine = 0;
 	 		   running = 0;
 	 		   zero_crosses = 0;
-	 		   if(crawler_mode&&stall_protection){
-	 			   min_startup_duty = 110;
-	 				 minimum_duty_cycle = minimum_duty_cycle + 10;
-	 				 if(minimum_duty_cycle > 80){
-	 					 minimum_duty_cycle = 80;
-	 				 }
-	 		   }
 	 	  }
 	 	  }else{            // stepper sine
 
@@ -1613,13 +1602,13 @@ if(input >= 47 && armed){
 		if (input >= sine_mode_changeover && phase_A_position == 0){
 			stepper_sine = 0;
 			running = 1;
-			old_routine = 1;
+			old_routine = 0;
 			commutation_interval = 9000;
 			average_interval = 9000;
 			last_average_interval = average_interval;
 		//  minimum_duty_cycle = ;
 			INTERVAL_TIMER->CNT = 9000;
-			//zero_crosses = 0;
+			zero_crosses = 0;
 			prop_brake_active = 0;
 			step = changeover_step;                    // rising bemf on a same as position 0.
 			comStep(step);// rising bemf on a same as position 0.
