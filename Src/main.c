@@ -498,7 +498,7 @@ void loadEEpromSettings(){
 
 	   if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		   min_startup_duty = eepromBuffer[25]/ 2 + 10 + startup_boost;
-		   minimum_duty_cycle = eepromBuffer[25]/ 2 + DEAD_TIME/3;
+		   minimum_duty_cycle = (eepromBuffer[25]/ 2) + (DEAD_TIME/3) + (eepromBuffer[26] / 50);
 //		   if (use_sin_start){
 //			   min_startup_duty = eepromBuffer[25];
 //			   minimum_duty_cycle = eepromBuffer[25]/ 2;
@@ -845,7 +845,7 @@ if(!armed){
 
 		  }
 	  if(use_sin_start){
-		duty_cycle = map(input, sine_mode_changeover, 2047, 100, TIMER1_MAX_ARR);
+		duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
   	  }else{
 	 	 duty_cycle = map(input, 47, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
 	  }
