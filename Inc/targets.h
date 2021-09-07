@@ -141,6 +141,14 @@
 #define PA6_VOLTAGE
 #endif
 
+#ifdef TMOTORF45A
+#define FIRMWARE_NAME           "T-Motor F45A"
+#define DEAD_TIME               45
+#define HARDWARE_GROUP_F0_A
+#define PA6_VOLTAGE
+#define TARGET_VOLTAGE_DIVIDER  75
+#endif
+
 
 /*******************************   G071 Targets *********************************/
 

@@ -17,7 +17,7 @@ SRC_DIRS_COMMON := $(MAIN_SRC_DIR)
 
 # Include processor specific makefiles
 include f051makefile.mk
-include g071makefile.mk
+#include g071makefile.mk
 
 # Default MCU type to F051
 MCU_TYPE ?= F051
