@@ -1523,7 +1523,7 @@ if(newinput > 2000){
 
 if (zero_crosses < 100 || commutation_interval > 500) {
 
-		filter_level = 12;
+		filter_level = 5;
 
 	} else {
 
@@ -1619,7 +1619,7 @@ if(input >= 47 && armed){
 			last_average_interval = average_interval;
 		//  minimum_duty_cycle = ;
 			INTERVAL_TIMER->CNT = 9000;
-			zero_crosses = 0;
+			//zero_crosses = 0;
 			prop_brake_active = 0;
 			step = changeover_step;                    // rising bemf on a same as position 0.
 			comStep(step);// rising bemf on a same as position 0.
