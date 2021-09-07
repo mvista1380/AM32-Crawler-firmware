@@ -922,9 +922,9 @@ if(!prop_brake_active){
 	   duty_cycle = min_startup_duty;
 
 	   }
-	   if (duty_cycle > 200<<stall_protection){
-		   duty_cycle = 200<<stall_protection;
-	   }
+//	   if (duty_cycle > 200<<stall_protection){
+//		   duty_cycle = 200<<stall_protection;
+//	   }
  }
 if (running){
 	 if(stall_protection){  // this boosts throttle as the rpm gets lower, for crawlers and rc cars only, do not use for multirotors.
