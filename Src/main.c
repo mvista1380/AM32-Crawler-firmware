@@ -497,7 +497,7 @@ void loadEEpromSettings(){
 	    }
 
 	   if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
-		   minimum_duty_cycle = (eepromBuffer[25]/ 2) + (DEAD_TIME/3) + (eepromBuffer[26] / 20);
+		   minimum_duty_cycle = (eepromBuffer[25]/ 2) + (DEAD_TIME/3) + (eepromBuffer[26] / 15);
 		   min_startup_duty = minimum_duty_cycle;
 //		   if (use_sin_start){
 //			   min_startup_duty = eepromBuffer[25];
@@ -1608,7 +1608,7 @@ if(input >= 47 && armed){
 		maskPhaseInterrupts();
 		allpwm();
 		advanceincrement();
-		step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 700/motor_poles);
+		step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 1200/motor_poles);
 
 		if (input >= sine_mode_changeover && phase_A_position == 0){
 			stepper_sine = 0;
