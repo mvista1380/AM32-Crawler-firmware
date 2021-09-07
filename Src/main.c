@@ -206,7 +206,7 @@ char crawler_mode = 0;  // no longer used //
 uint16_t velocity_count = 0;
 uint16_t velocity_count_threshold = 100;
 
-char low_rpm_throttle_limit = 0;
+char low_rpm_throttle_limit = 1;
 
 uint16_t low_voltage_count = 0;
 
