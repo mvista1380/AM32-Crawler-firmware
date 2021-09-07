@@ -853,7 +853,7 @@ if(!armed){
 		  prop_brake_active = 0;
 	  }
 	  }
-	  if (input < 47 + (((sine_mode_changeover / 4) * 3) * use_sin_start)){
+	  if (input < 47){
 		if(play_tone_flag != 0){
 			if(play_tone_flag == 1){
 				playDefaultTone();
@@ -913,6 +913,9 @@ if(!armed){
 
 		  }
 		  }
+	  else if (use_sin_start && input < ((sine_mode_changeover / 4) * 3)) {
+		  stepper_sine = 1;
+	  }
 if(!prop_brake_active){
  if (zero_crosses < (20 >> stall_protection)){
 	   if (duty_cycle < min_startup_duty){
