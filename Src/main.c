@@ -937,12 +937,12 @@ if (running){
 						     }else{
 						    	 minimum_duty_cycle--;
 						     }
-					 if(minimum_duty_cycle > 200){
-						 minimum_duty_cycle = 200;
-					 }
-					 if(minimum_duty_cycle < (DEAD_TIME/2) + (eepromBuffer[25]/2)){        // boost minimum duty cycle by a small amount permanently too
-						 minimum_duty_cycle= (DEAD_TIME/2) + (eepromBuffer[25]/2);
-					 }
+					 //if(minimum_duty_cycle > 200){
+					//	 minimum_duty_cycle = 200;
+					 //}
+					 //if(minimum_duty_cycle < (DEAD_TIME/2) + (eepromBuffer[25]/2)){        // boost minimum duty cycle by a small amount permanently too
+					//	 minimum_duty_cycle= (DEAD_TIME/2) + (eepromBuffer[25]/2);
+					 //}
 
 				velocity_count = 0;
 
@@ -1009,7 +1009,7 @@ if(desync_check && zero_crosses > 10){
 		desync_happened ++;
 //running = 0;
 //old_routine = 1;
-		last_duty_cycle = min_startup_duty/2;
+		last_duty_cycle = min_startup_duty;
 		}
 
 		desync_check = 0;
