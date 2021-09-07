@@ -152,8 +152,8 @@ char motor_poles = 14;
 //Add Beep Volume
 char drag_brake_strength = 10;		// Drag Brake Power
 char sine_mode_changeover_thottle_level = 5;	// Sine Startup Range
-char sine_mode_changeover_mutliplier = 15;
-short sine_mode_changeover = 5 * 15;
+char sine_mode_changeover_mutliplier = 20;
+short sine_mode_changeover = 5 * 20;
 
 char USE_HALL_SENSOR = 0;
 
