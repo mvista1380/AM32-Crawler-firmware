@@ -497,8 +497,8 @@ void loadEEpromSettings(){
 	    }
 
 	   if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
-		   min_startup_duty = eepromBuffer[25]/ 2 + 10 + startup_boost;
-		   minimum_duty_cycle = (eepromBuffer[25]/ 2) + (DEAD_TIME/3) + (eepromBuffer[26] / 50);
+		   minimum_duty_cycle = (eepromBuffer[25]/ 2) + (DEAD_TIME/3) + (eepromBuffer[26] / 40);
+		   min_startup_duty = minimum_duty_cycle + startup_boost;
 //		   if (use_sin_start){
 //			   min_startup_duty = eepromBuffer[25];
 //			   minimum_duty_cycle = eepromBuffer[25]/ 2;
@@ -836,7 +836,7 @@ if(!armed){
 			 startMotor();
 			  }
 			  running = 1;
-			  last_duty_cycle = minimum_duty_cycle;
+			  last_duty_cycle = min_startup_duty;
 #ifdef tmotor55
 			  GPIOB->BRR = LL_GPIO_PIN_3;  // off red
 			  GPIOA->BRR = LL_GPIO_PIN_15; // off green
