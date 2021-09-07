@@ -230,7 +230,7 @@ char lowkv = 0;
 
 int min_startup_duty = 120;
 int sin_mode_min_s_d = 120;
-char bemf_timeout = 10;
+char bemf_timeout = 100;
 
 char startup_boost = 35;
 char reversing_dead_band = 1;
@@ -1561,7 +1561,7 @@ if (old_routine && running){
               bemf_timout_happened ++;
 	 		  zcfoundroutine();
 	 		  maskPhaseInterrupts();
-	 		  old_routine = 0;
+	 		  old_routine = 1;
 	 		   running = 0;
 	 		   zero_crosses = 0;
 	 	  }
@@ -1602,7 +1602,7 @@ if(input >= 47 && armed){
 		if (input >= sine_mode_changeover && phase_A_position == 0){
 			stepper_sine = 0;
 			running = 1;
-			old_routine = 0;
+			old_routine = 1;
 			commutation_interval = 9000;
 			average_interval = 9000;
 			last_average_interval = average_interval;
