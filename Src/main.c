@@ -499,10 +499,10 @@ void loadEEpromSettings(){
 	   if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		   min_startup_duty = eepromBuffer[25]/ 2 + 10 + startup_boost;
 		   minimum_duty_cycle = eepromBuffer[25]/ 2 + DEAD_TIME/3;
-		   if (use_sin_start){
-			   min_startup_duty = eepromBuffer[25];
-			   minimum_duty_cycle = eepromBuffer[25]/ 2;
-		   }
+//		   if (use_sin_start){
+//			   min_startup_duty = eepromBuffer[25];
+//			   minimum_duty_cycle = eepromBuffer[25]/ 2;
+//		   }
 	    }else{
 	    	min_startup_duty = 150;
 	    	minimum_duty_cycle = (min_startup_duty / 2) + 10;
