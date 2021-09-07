@@ -1603,14 +1603,14 @@ if (old_routine && running){
 
 
 
-if(input > 48 && armed){
+if(input >= 47 && armed){
 
-	 		  if (input > 48 && input < sine_mode_changeover){// sine wave stepper
+	 		  if (input >= 47 && input < sine_mode_changeover){// sine wave stepper
 
 	 			 maskPhaseInterrupts();
 	 			 allpwm();
 	 		 advanceincrement();
-             step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 810/motor_poles);
+             step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 1000/motor_poles);
 	 		 delayMicros(step_delay);
 
 	 		  }else{
@@ -1621,15 +1621,15 @@ if(input > 48 && armed){
 	 			  stepper_sine = 0;
 	 			  running = 1;
 				  old_routine = 1;
-		 		  //commutation_interval = 9000;
-		 		  //average_interval = 9000;
-				  //last_average_interval = average_interval;
-		 		  //minimum_duty_cycle = ;
-		 		  //INTERVAL_TIMER->CNT = 9000;
+		 		  commutation_interval = 9000;
+		 		  average_interval = 9000;
+				  last_average_interval = average_interval;
+		 		//  minimum_duty_cycle = ;
+		 		  INTERVAL_TIMER->CNT = 9000;
 				  zero_crosses = 0;
 				  prop_brake_active = 0;
-	 			  //step = changeover_step;                    // rising bemf on a same as position 0.
-		 		  //comStep(step);// rising bemf on a same as position 0.
+	 			  step = 1;                    // rising bemf on a same as position 0.
+		 		  comStep(step);// rising bemf on a same as position 0.
 	 			  LL_TIM_GenerateEvent_UPDATE(TIM1);
 	 			  zcfoundroutine();
 	 			  }
