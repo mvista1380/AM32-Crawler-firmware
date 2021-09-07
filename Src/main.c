@@ -185,8 +185,7 @@ firmware_info_s __attribute__ ((section(".firmware_info"))) firmware_info = {
 
 uint8_t EEPROM_VERSION;
 
-//firmware build options
-char BRUSHED_MODE = 0;         // overrides everything else
+
 char RC_CAR_REVERSE = 0;         // have to set bidirectional, comp_pwm off and stall protection off, no sinusoidal startup
 char GIMBAL_MODE = 0;     // also sinusoidal_startup needs to be on.
 //move these to targets folder or peripherals for each mcu
@@ -829,7 +828,7 @@ if(!armed){
 		}
 	}
 
-	if(!stepper_sine && !BRUSHED_MODE){
+	if(!stepper_sine){
 	  if (input >= 47 +(80*use_sin_start) && armed){
 		  if (running == 0){
 			  allOff();
@@ -1257,14 +1256,8 @@ int main(void)
 
 	}
 
-	if(BRUSHED_MODE){bi_direction = 1;
-	 	 	 	 	  commutation_interval = 5000;}
-
-	   if(BRUSHED_MODE){
-		   playBrushedStartupTune();
-	   }else{
-		   playStartupTune();
-	   }
+	
+	   playStartupTune();
 	   zero_input_count = 0;
 	   MX_IWDG_Init();
 	   LL_IWDG_ReloadCounter(IWDG);
@@ -1463,40 +1456,6 @@ if(newinput > 2000){
   		  }else{
   			  adjusted_input = newinput;
   		  }
-  		if(BRUSHED_MODE){
-  			if(brushed_direction_set == 0 && adjusted_input > 48){
-  				if(forward){
-  					allOff();
-  					delayMicros(10);
-  					comStep(6);
-  				}else{
-  					allOff();
-  					delayMicros(10);
-  					comStep(3);
-  				}
-  				brushed_direction_set = 1;
-  			}
-  			if(adjusted_input > 1900){
-  				adjusted_input = 1900;
-  			}
-  			input = map(adjusted_input, 48, 2047, 0, TIMER1_MAX_ARR);
-
-  			if(input > 0 && armed){
-  				TIM1->CCR1 = input;												// set duty cycle to 50 out of 768 to start.
-  				TIM1->CCR2 = input;
-  				TIM1->CCR3 = input;
-  			}else{
-  				TIM1->CCR1 = 0;												// set duty cycle to 50 out of 768 to start.
-  				TIM1->CCR2 = 0;
-  				TIM1->CCR3 = 0;
-  			//	fullBrake();
-  			}
-
-
-
-  		}else{
-
-
 
 
 	 	 if ((zero_crosses > 1000) || (adjusted_input == 0)){
@@ -1698,7 +1657,6 @@ if(input > 48 && armed){
 
 	 			}
 	 	  }
-  }// end of brushed mode override
   }
 }
 
