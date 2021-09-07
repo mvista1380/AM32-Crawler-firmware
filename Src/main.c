@@ -853,7 +853,7 @@ if(!armed){
 		  prop_brake_active = 0;
 	  }
 	  }
-	  if (input < 47 + ((sine_mode_changeover * 0.75) * use_sin_start)){
+	  if (input < 47 + (((sine_mode_changeover / 4) * 3) * use_sin_start)){
 		if(play_tone_flag != 0){
 			if(play_tone_flag == 1){
 				playDefaultTone();
