@@ -937,8 +937,8 @@ if (running){
 						     }else{
 						    	 minimum_duty_cycle--;
 						     }
-					 if(minimum_duty_cycle > 200){
-						 minimum_duty_cycle = 200;
+					 if(minimum_duty_cycle > 250){
+						 minimum_duty_cycle = 250;
 					 }
 					 if(minimum_duty_cycle < (DEAD_TIME/2) + (eepromBuffer[25]/2)){        // boost minimum duty cycle by a small amount permanently too
 						 minimum_duty_cycle= (DEAD_TIME/2) + (eepromBuffer[25]/2);
