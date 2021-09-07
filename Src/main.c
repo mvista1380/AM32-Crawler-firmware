@@ -927,7 +927,7 @@ if(!prop_brake_active){
  }
 if (running){
 	 if(stall_protection){  // this boosts throttle as the rpm gets lower, for crawlers and rc cars only, do not use for multirotors.
-		 min_startup_duty = eepromBuffer[25];
+		 //min_startup_duty = eepromBuffer[25];
 		 velocity_count++;
 				 if (velocity_count > velocity_count_threshold){
 					 if(commutation_interval > 9000){
@@ -1597,7 +1597,7 @@ if(input >= 47 && armed){
 		maskPhaseInterrupts();
 		allpwm();
 		advanceincrement();
-		step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 1200/motor_poles);
+		step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 700/motor_poles);
 
 		if (input >= sine_mode_changeover && phase_A_position == 0){
 			stepper_sine = 0;
