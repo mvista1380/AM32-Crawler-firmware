@@ -836,7 +836,7 @@ if(!armed){
 			 startMotor();
 			  }
 			  running = 1;
-			  last_duty_cycle = min_startup_duty;
+			  last_duty_cycle = minimum_duty_cycle;
 #ifdef tmotor55
 			  GPIOB->BRR = LL_GPIO_PIN_3;  // off red
 			  GPIOA->BRR = LL_GPIO_PIN_15; // off green
