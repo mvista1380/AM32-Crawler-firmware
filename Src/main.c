@@ -1489,6 +1489,7 @@ if(newinput > 2000){
  	 	 		bemf_timeout = 10;
  	 	 	 }
  	 	 }
+		 bemf_timout_happened = 0;
 	  if(bemf_timout_happened > bemf_timeout * ( 1 + (crawler_mode*100))&& stuck_rotor_protection){
 	 		 allOff();
 	 		 maskPhaseInterrupts();
