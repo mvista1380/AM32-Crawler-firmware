@@ -319,7 +319,7 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 5;
+int changeover_step = 3;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
@@ -851,7 +851,7 @@ if(!armed){
 		  prop_brake_active = 0;
 	  }
 	  }
-	  if (input < 47 + (((sine_mode_changeover_thottle_level * 15) / 2) *use_sin_start)){
+	  if (input < 47 + (((sine_mode_changeover_thottle_level * 15) * 0.75) * use_sin_start)){
 		if(play_tone_flag != 0){
 			if(play_tone_flag == 1){
 				playDefaultTone();
@@ -1634,71 +1634,68 @@ if (old_routine && running){
 	 					delayMicros(step_delay);
 	 					current_angle++;
 	 				}
-	 			}else{
-
-
-
-if(input > 48 && armed){
-
-	 		  if (input > 48 && input < (sine_mode_changeover_thottle_level * 15)){// sine wave stepper
-
-	 			 maskPhaseInterrupts();
-	 			 allpwm();
-	 		 advanceincrement();
-             step_delay = map (input, 48, 137, 7000/motor_poles, 810/motor_poles);
-	 		 delayMicros(step_delay);
-
-	 		  }else{
-	 			 advanceincrement();
-	 			  if(input > ((sine_mode_changeover_thottle_level * 15) + 63)){
-	 				 phase_A_position = 0;
-	 				 step_delay = 80;
-	 			  }
-
-	 			 delayMicros(step_delay);
-	 			  if (phase_A_position == 0){
-	 			  stepper_sine = 0;
-	 			  running = 1;
-				  old_routine = 1;
-		 		  commutation_interval = 9000;
-		 		  average_interval = 9000;
-				  last_average_interval = average_interval;
-		 		//  minimum_duty_cycle = ;
-		 		  INTERVAL_TIMER->CNT = 9000;
-				  zero_crosses = 0;
-				  prop_brake_active = 0;
-	 			  step = changeover_step;                    // rising bemf on a same as position 0.
-		 		 comStep(step);// rising bemf on a same as position 0.
-	 			LL_TIM_GenerateEvent_UPDATE(TIM1);
-	 			  zcfoundroutine();
-	 			  }
-	 		  }
-
-}else{
-	if(brake_on_stop){
-	#ifndef PWM_ENABLE_BRIDGE
-	duty_cycle = (TIMER1_MAX_ARR-19) + drag_brake_strength*2;
-	adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr)/TIMER1_MAX_ARR)+1;
-	TIM1->CCR1 = adjusted_duty_cycle;
-	TIM1->CCR2 = adjusted_duty_cycle;
-	TIM1->CCR3 = adjusted_duty_cycle;
-	proportionalBrake();
-	prop_brake_active = 1;
-	#else
-		// todo add braking for PWM /enable style bridges.
-	#endif 
-	}else{
-	TIM1->CCR1 = 0;
-	TIM1->CCR2 = 0;
-	TIM1->CCR3 = 0;
-	allOff();
-	}
-
-
-}
-
 	 			}
-	 	  }
+				else{
+
+					if(input > 48 && armed){
+
+						if (input > 48 && input < (sine_mode_changeover_thottle_level * 15)){// sine wave stepper
+
+	 						maskPhaseInterrupts();
+	 						allpwm();
+	 						advanceincrement();
+							step_delay = map (input, 48, 137, 7000/motor_poles, 810/motor_poles);
+	 						delayMicros(step_delay);
+
+						}else{
+	 						advanceincrement();
+
+	 						delayMicros(step_delay);
+	 						if (phase_A_position == 0){
+	 							stepper_sine = 0;
+	 							running = 1;
+								old_routine = 1;
+		 						commutation_interval = 9000;
+		 						average_interval = 9000;
+								last_average_interval = average_interval;
+							//  minimum_duty_cycle = ;
+		 						INTERVAL_TIMER->CNT = 9000;
+								zero_crosses = 0;
+								prop_brake_active = 0;
+	 							//step = changeover_step;                    // rising bemf on a same as position 0.
+		 						comStep(step);// rising bemf on a same as position 0.
+	 							LL_TIM_GenerateEvent_UPDATE(TIM1);
+	 							zcfoundroutine();
+	 						}
+						}
+
+					}
+					else{
+						if(brake_on_stop){
+							#ifndef PWM_ENABLE_BRIDGE
+							duty_cycle = (TIMER1_MAX_ARR-19) + drag_brake_strength*2;
+							adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr)/TIMER1_MAX_ARR)+1;
+							TIM1->CCR1 = adjusted_duty_cycle;
+							TIM1->CCR2 = adjusted_duty_cycle;
+							TIM1->CCR3 = adjusted_duty_cycle;
+							proportionalBrake();
+							prop_brake_active = 1;
+							#else
+								// todo add braking for PWM /enable style bridges.
+							#endif 
+						}
+						else{
+							TIM1->CCR1 = 0;
+							TIM1->CCR2 = 0;
+							TIM1->CCR3 = 0;
+							allOff();
+						}
+
+
+					}
+
+				}
+}
   }// end of brushed mode override
   }
 }
