@@ -368,7 +368,7 @@ int phase_B_position = 119;
 int phase_C_position = 239;
 int step_delay  = 100;
 char stepper_sine = 0;
-char max_sin_inc = 1;
+long max_sin_inc = 1;
 int forward = 1;
 int gate_drive_offset = 60;
 
@@ -469,7 +469,7 @@ void loadEEpromSettings(){
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		minimum_duty_cycle = (eepromBuffer[25]/ 2) + (DEAD_TIME/3) + (eepromBuffer[26] / 2);
-		max_sin_inc = ((minimum_duty_cycle / (TIM1_AUTORELOAD + 1)) * 100) + 2; //half the percentage of minimum duty cycle seems to be a good transition
+		max_sin_inc = ((minimum_duty_cycle / (TIM1_AUTORELOAD + 1)) * 100) * 2; //half the percentage of minimum duty cycle seems to be a good transition
 	}
 	else{
 		minimum_duty_cycle = 150;
