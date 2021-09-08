@@ -151,6 +151,7 @@ char drag_brake_strength = 10;		// Drag Brake Power
 char sine_mode_changeover_thottle_level = 5;	// Sine Startup Range
 char sine_mode_changeover_mutliplier = 20;
 short sine_mode_changeover = 5 * 20;
+short sine_mode_changeover_min_freq = TIM1_AUTORELOAD / 100 * 25;
 
 char USE_HALL_SENSOR = 0;
 
@@ -562,6 +563,7 @@ void loadEEpromSettings(){
 		if(eepromBuffer[40] > 4 && eepromBuffer[40] < 26){            // sine mode changeover 5-25 percent throttle
 			sine_mode_changeover_thottle_level = eepromBuffer[40];
 			sine_mode_changeover = sine_mode_changeover_thottle_level * sine_mode_changeover_mutliplier;
+			sine_mode_changeover_min_freq = TIM1_AUTORELOAD / 100 * sine_mode_changeover_thottle_level;
 		}
 
 		if(eepromBuffer[41] > 0 && eepromBuffer[41] < 11){        // drag brake 0-10
@@ -1429,7 +1431,7 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement();
-				step_delay = map (input, 48, sine_mode_changeover, TIM1_AUTORELOAD, TIM1_AUTORELOAD * (sine_mode_changeover_thottle_level / 100));
+				step_delay = map (input, 48, sine_mode_changeover, TIM1_AUTORELOAD, sine_mode_changeover_min_freq);
 				delayMicros(step_delay); //pwm dead time with buffer, vary sine duty instead for speed
 
 				if (input >= sine_mode_changeover && phase_A_position == 0){
