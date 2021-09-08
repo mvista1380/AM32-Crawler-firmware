@@ -1599,7 +1599,7 @@ if(input >= 47 && armed){
 		maskPhaseInterrupts();
 		allpwm();
 		advanceincrement();
-		step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 20);
+		step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 5);
 
 		if (input >= sine_mode_changeover && phase_A_position == 0){
 			stepper_sine = 0;
