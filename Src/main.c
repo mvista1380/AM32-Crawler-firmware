@@ -468,8 +468,8 @@ void loadEEpromSettings(){
 	}
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
-		minimum_duty_cycle = (eepromBuffer[25]/ 2) + (DEAD_TIME/3) + eepromBuffer[26] / 2;
-		max_sin_inc = (minimum_duty_cycle / (TIM1_AUTORELOAD + 1)) * 100; //half the percentage of minimum duty cycle seems to be a good transition
+		minimum_duty_cycle = (eepromBuffer[25]/ 2) + (DEAD_TIME/3) + (eepromBuffer[26] / 2);
+		max_sin_inc = ((minimum_duty_cycle / (TIM1_AUTORELOAD + 1)) * 100) + 2; //half the percentage of minimum duty cycle seems to be a good transition
 	}
 	else{
 		minimum_duty_cycle = 150;
