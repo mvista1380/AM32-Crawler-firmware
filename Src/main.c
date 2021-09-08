@@ -827,6 +827,9 @@ void tenKhzRoutine(){
 			stepper_sine = 1;		  
 		}
 		else if (input < ((sine_mode_changeover / 10) * 9)) {
+			phase_A_position = 0;
+			phase_B_position = 119;
+			phase_C_position = 239;
 			stepper_sine = 1;
 		}
 
@@ -997,7 +1000,7 @@ void tenKhzRoutine(){
 	}
 }
 
-void advanceincrement(){
+void advanceincrement(int SineModeInput){
 	if (!forward){
 		phase_A_position ++;
 		if (phase_A_position > 359){
@@ -1031,9 +1034,11 @@ void advanceincrement(){
 		}
 	}
 
-	TIM1->CCR1 = ((2*pwmSin[phase_A_position]/SINE_DIVIDER)+gate_drive_offset)*TIM1_AUTORELOAD/2000;
-	TIM1->CCR2 = ((2*pwmSin[phase_B_position]/SINE_DIVIDER)+gate_drive_offset)*TIM1_AUTORELOAD/2000;
-	TIM1->CCR3 = ((2*pwmSin[phase_C_position]/SINE_DIVIDER)+gate_drive_offset)*TIM1_AUTORELOAD/2000;
+	duty = map(SineModeInput, 47, sine_mode_changeover, 60, 120);
+
+	TIM1->CCR1 = ((2*pwmSin[phase_A_position]/SINE_DIVIDER)+ duty)*TIM1_AUTORELOAD/2000;
+	TIM1->CCR2 = ((2*pwmSin[phase_B_position]/SINE_DIVIDER)+ duty)*TIM1_AUTORELOAD/2000;
+	TIM1->CCR3 = ((2*pwmSin[phase_C_position]/SINE_DIVIDER)+ duty)*TIM1_AUTORELOAD/2000;
     
 }
 
@@ -1396,8 +1401,8 @@ int main(void)
 			if(input >= 47 && armed){
 				maskPhaseInterrupts();
 				allpwm();
-				advanceincrement();
-				step_delay = map (input, 48, sine_mode_changeover, 400, 1);
+				advanceincrement(input);
+				step_delay = map (input, 48, sine_mode_changeover, 400, 20);
 				delayMicros(step_delay);
 
 				if (input >= sine_mode_changeover && phase_A_position == 0){
