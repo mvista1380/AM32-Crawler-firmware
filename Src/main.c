@@ -1005,38 +1005,38 @@ void tenKhzRoutine(){
 
 void advanceincrement(int input){
 
-	//char inc = map(input, 47, sine_mode_changeover, 1, 3);
+	char inc = map(input, 47, sine_mode_changeover, 1, 3);
 
 	if (!forward){
-		phase_A_position += 2;
+		phase_A_position += inc;
 		if (phase_A_position > 359){
-			phase_A_position = 0 ;
+			phase_A_position -= 360;
 		}
 
-		phase_B_position += 2;
+		phase_B_position += inc;
 		if (phase_B_position > 359){
-			phase_B_position = 0 ;
+			phase_B_position -= 360;
 		}
 
-		phase_C_position += 2;
+		phase_C_position += inc;
 		if (phase_C_position > 359){
-			phase_C_position = 0 ;
+			phase_C_position -= 360;
 		}
 	}
 	else{
-		phase_A_position -= 2;
+		phase_A_position -= inc;
 		if (phase_A_position < 0){
-			phase_A_position = 359 ;
+			phase_A_position += 360;
 		}
 
-		phase_B_position -= 2;
+		phase_B_position -= inc;
 		if (phase_B_position < 0){
-			phase_B_position = 359;
+			phase_B_position += 360;
 		}
 
-		phase_C_position -= 2;
+		phase_C_position -= inc;
 		if (phase_C_position < 0){
-			phase_C_position = 359 ;
+			phase_C_position += 360;
 		}
 	}
 
