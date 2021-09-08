@@ -562,7 +562,8 @@ void loadEEpromSettings(){
 		   }
 	   if(eepromBuffer[40] > 4 && eepromBuffer[40] < 26){            // sine mode changeover 5-25 percent throttle
        sine_mode_changeover_thottle_level = eepromBuffer[40];
-	   sine_mode_changeover = sine_mode_changeover_thottle_level * sine_mode_changeover_mutliplier;
+	   //sine_mode_changeover = sine_mode_changeover_thottle_level * sine_mode_changeover_mutliplier;
+	   sine_mode_changeover = 1000;
 	   }
 	   if(eepromBuffer[41] > 0 && eepromBuffer[41] < 11){        // drag brake 0-10
        drag_brake_strength = eepromBuffer[41];
