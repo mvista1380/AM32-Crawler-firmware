@@ -406,9 +406,9 @@ const float pwmSin[] = {
 0.576432531322387,0.577857839881353,0.579281388183614,0.580703171892793,0.582123186677886,0.583541428213277,0.584957892178755,0.586372574259519 };
 
 //int sin_divider = 2;
-int phase_A_position;
-int phase_B_position;
-int phase_C_position;
+int phase_A_position = 0;
+int phase_B_position = 119;
+int phase_C_position = 239;
 int step_delay  = 100;
 char stepper_sine = 0;
 int forward = 1;
