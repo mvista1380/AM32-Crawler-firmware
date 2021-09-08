@@ -205,7 +205,7 @@ char maximum_throttle_change_ramp = 1;
 uint16_t velocity_count = 0;
 uint16_t velocity_count_threshold = 100;
 
-char low_rpm_throttle_limit = 1;
+char low_rpm_throttle_limit = 0;
 
 uint16_t low_voltage_count = 0;
 
