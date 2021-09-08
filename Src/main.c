@@ -1034,7 +1034,7 @@ void advanceincrement(int SineModeInput){
 		}
 	}
 
-	int duty = map(SineModeInput, 47, sine_mode_changeover, 60, 120);
+	int duty = map(SineModeInput, 47, sine_mode_changeover, 20, 200);
 
 	TIM1->CCR1 = ((2*pwmSin[phase_A_position]/SINE_DIVIDER)+ duty)*TIM1_AUTORELOAD/2000;
 	TIM1->CCR2 = ((2*pwmSin[phase_B_position]/SINE_DIVIDER)+ duty)*TIM1_AUTORELOAD/2000;
@@ -1402,8 +1402,8 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 400, 20);
-				delayMicros(step_delay);
+				//step_delay = map (input, 48, sine_mode_changeover, 400, 20);
+				delayMicros(100);
 
 				if (input >= sine_mode_changeover && phase_A_position == 0){
 					stepper_sine = 0;
