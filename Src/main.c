@@ -1397,7 +1397,7 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement();
-				step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 700/motor_poles);
+				step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 20);
 				delayMicros(step_delay);
 
 				if (input >= sine_mode_changeover && phase_A_position == 0){
