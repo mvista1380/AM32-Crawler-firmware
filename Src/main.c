@@ -469,7 +469,7 @@ void loadEEpromSettings(){
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		minimum_duty_cycle = (eepromBuffer[25]/ 2) + (DEAD_TIME/3) + (eepromBuffer[26] / 2);
-		max_sin_inc = ((minimum_duty_cycle / (TIM1_AUTORELOAD + 1)) * 100) * 2; //half the percentage of minimum duty cycle seems to be a good transition
+		max_sin_inc = ((minimum_duty_cycle / (TIM1_AUTORELOAD + 1)) * 100) * 3; 
 	}
 	else{
 		minimum_duty_cycle = 150;
@@ -1405,7 +1405,7 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 350, 10);
+				step_delay = map (input, 48, sine_mode_changeover, 350, 5);
 				delayMicros(step_delay); //pwm dead time with buffer, vary sine duty instead for speed
 
 				if (input > sine_mode_changeover){
