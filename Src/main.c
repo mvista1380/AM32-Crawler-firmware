@@ -1405,7 +1405,7 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 400, 80);
+				step_delay = map (input, 48, sine_mode_changeover, 350, 10);
 				delayMicros(step_delay); //pwm dead time with buffer, vary sine duty instead for speed
 
 				if (input > sine_mode_changeover){
