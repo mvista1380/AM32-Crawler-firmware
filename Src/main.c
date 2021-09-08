@@ -213,8 +213,6 @@ uint16_t smoothed_raw_current = 0;
 uint16_t actual_current = 0;
 
 char lowkv = 0;
-
-int min_startup_duty = 120;
 char bemf_timeout = 10;
 
 char startup_boost = 35;
@@ -370,6 +368,7 @@ int phase_B_position = 119;
 int phase_C_position = 239;
 int step_delay  = 100;
 char stepper_sine = 0;
+char max_sin_inc = 1;
 int forward = 1;
 int gate_drive_offset = 60;
 
@@ -470,11 +469,10 @@ void loadEEpromSettings(){
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		minimum_duty_cycle = (eepromBuffer[25]/ 2) + (DEAD_TIME/3) + (eepromBuffer[26] / 15);
-		min_startup_duty = minimum_duty_cycle;
+		max_sin_inc = ((minimum_duty_cycle / (TIM1_AUTORELOAD + 1)) * 100) / 2; //half the percentage of minimum duty cycle seems to be a good transition
 	}
 	else{
-		min_startup_duty = 150;
-		minimum_duty_cycle = (min_startup_duty / 2) + 10;
+		minimum_duty_cycle = 150;
 	}
 
 	motor_kv = (eepromBuffer[26] * 40) + 20;
@@ -790,7 +788,7 @@ void tenKhzRoutine(){
 					startMotor();
 				}
 				running = 1;
-				last_duty_cycle = min_startup_duty;
+				last_duty_cycle = minimum_duty_cycle;
 				#ifdef tmotor55
 				GPIOB->BRR = LL_GPIO_PIN_3;  // off red
 				GPIOA->BRR = LL_GPIO_PIN_15; // off green
@@ -838,8 +836,8 @@ void tenKhzRoutine(){
 
 		if(!prop_brake_active){
 			if (zero_crosses < (20 >> stall_protection)){
-				if (duty_cycle < min_startup_duty){
-					duty_cycle = min_startup_duty;
+				if (duty_cycle < minimum_duty_cycle){
+					duty_cycle = minimum_duty_cycle;
 				}
 				//	   if (duty_cycle > 200<<stall_protection){
 				//		   duty_cycle = 200<<stall_protection;
@@ -848,7 +846,7 @@ void tenKhzRoutine(){
 
 			if (running){
 				if(stall_protection){  // this boosts throttle as the rpm gets lower, for crawlers and rc cars only, do not use for multirotors.
-					//min_startup_duty = eepromBuffer[25];
+					//minimum_duty_cycle = eepromBuffer[25];
 					velocity_count++;
 					if (velocity_count > velocity_count_threshold){
 						if(commutation_interval > 9000){
@@ -936,7 +934,7 @@ void tenKhzRoutine(){
 			desync_happened ++;
 			//running = 0;
 			//old_routine = 1;
-			//last_duty_cycle = min_startup_duty/2;
+			//last_duty_cycle = minimum_duty_cycle/2;
 		}
 
 		desync_check = 0;
@@ -1005,7 +1003,7 @@ void tenKhzRoutine(){
 
 void advanceincrement(int input){
 
-	char inc = map(input, 47, sine_mode_changeover, 1, 3);
+	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);
 
 	if (!forward){
 		phase_A_position += inc;
