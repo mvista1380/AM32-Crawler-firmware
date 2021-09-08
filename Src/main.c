@@ -205,7 +205,7 @@ char maximum_throttle_change_ramp = 1;
 uint16_t velocity_count = 0;
 uint16_t velocity_count_threshold = 100;
 
-char low_rpm_throttle_limit = 0;
+char low_rpm_throttle_limit = 1;
 
 uint16_t low_voltage_count = 0;
 
@@ -562,8 +562,7 @@ void loadEEpromSettings(){
 		   }
 	   if(eepromBuffer[40] > 4 && eepromBuffer[40] < 26){            // sine mode changeover 5-25 percent throttle
        sine_mode_changeover_thottle_level = eepromBuffer[40];
-	   //sine_mode_changeover = sine_mode_changeover_thottle_level * sine_mode_changeover_mutliplier;
-	   sine_mode_changeover = 1000;
+	   sine_mode_changeover = sine_mode_changeover_thottle_level * sine_mode_changeover_mutliplier;
 	   }
 	   if(eepromBuffer[41] > 0 && eepromBuffer[41] < 11){        // drag brake 0-10
        drag_brake_strength = eepromBuffer[41];
@@ -914,7 +913,7 @@ if(!armed){
 
 		  }
 		  }
-	  else if (use_sin_start && input < ((sine_mode_changeover / 4) * 3)) {
+	  else if (use_sin_start && input < ((sine_mode_changeover / 10) * 9)) {
 		  stepper_sine = 1;
 	  }
 if(!prop_brake_active){
@@ -1599,7 +1598,7 @@ if(input >= 47 && armed){
 		maskPhaseInterrupts();
 		allpwm();
 		advanceincrement();
-		step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 5);
+		step_delay = map (input, 48, sine_mode_changeover, 7000/motor_poles, 700/motor_poles);
 
 		if (input >= sine_mode_changeover && phase_A_position == 0){
 			stepper_sine = 0;
