@@ -35,15 +35,13 @@ void computeServoInput(){
 
 		if(((dma_buffer[1] - dma_buffer[0]) >850 ) && ((dma_buffer[1] - dma_buffer[0]) < 2175)){
 
-			if(bi_direction){
-				if(dma_buffer[1] - dma_buffer[0] <= servo_neutral){
+			
+			if(dma_buffer[1] - dma_buffer[0] <= servo_neutral){
 				servorawinput = map((dma_buffer[1] - dma_buffer[0]), servo_low_threshold, servo_neutral, 0, 1000);
-				}else{
-				servorawinput = map((dma_buffer[1] - dma_buffer[0]), servo_neutral+1, servo_high_threshold, 1001, 2000);
-				}
 			}else{
-			servorawinput = map((dma_buffer[1] - dma_buffer[0]), servo_low_threshold, servo_high_threshold, 0, 2000);
+				servorawinput = map((dma_buffer[1] - dma_buffer[0]), servo_neutral+1, servo_high_threshold, 1001, 2000);
 			}
+
 			signaltimeout = 0;
 
 		}else{

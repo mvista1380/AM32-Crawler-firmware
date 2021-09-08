@@ -33,7 +33,6 @@ extern char armed;
 extern int signaltimeout;
 extern int dshot_goodcounts;
 extern char dir_reversed;
-extern char bi_direction;
 extern int zero_input_count;
 extern int forward;
 extern char buffer_divider;

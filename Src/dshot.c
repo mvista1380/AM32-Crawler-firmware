@@ -146,12 +146,10 @@ dshot_frametime = dma_buffer[31]- dma_buffer[0];
 				    	play_tone_flag = 2;
 				    break;
 					case 9:
-						bi_direction = 0;
    					    armed = 0;
 						zero_input_count = 0;
 				    break;
 					case 10:
-						bi_direction = 1;
 						zero_input_count = 0;
 						armed = 0;
 				    break;

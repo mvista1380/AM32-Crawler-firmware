@@ -20,7 +20,6 @@ void sendDshotDma();
 void detectInput();
 
 
-extern char bi_direction;
 extern int input;
 extern int adjusted_input;
 extern int newinput;
