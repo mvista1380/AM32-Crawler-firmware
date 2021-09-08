@@ -935,7 +935,7 @@ if (running){
 						    	// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
 						    	 minimum_duty_cycle ++;
 						     }else{
-						    	 minimum_duty_cycle--;
+						    	 //minimum_duty_cycle--;
 						     }
 					 if(minimum_duty_cycle > 250){
 						 minimum_duty_cycle = 250;
