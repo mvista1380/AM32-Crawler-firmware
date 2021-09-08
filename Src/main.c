@@ -1078,9 +1078,9 @@ void advanceincrement(){
 		}
 	}
 
-	TIM1->CCR1 = 998 * pwmSin[phase_A_position] + 500; //500 = 3/4 max current
-	TIM1->CCR2 = 998 * pwmSin[phase_B_position] + 500;
-	TIM1->CCR3 = 998 * pwmSin[phase_C_position] + 500;
+	TIM1->CCR1 = 998 * pwmSin[phase_A_position] + 60;
+	TIM1->CCR2 = 998 * pwmSin[phase_B_position] + 60;
+	TIM1->CCR3 = 998 * pwmSin[phase_C_position] + 60;
 
 	//TIM1->CCR1 = ((2*pwmSin[phase_A_position]/SINE_DIVIDER)+ duty)*TIM1_AUTORELOAD/2000;
 	//TIM1->CCR2 = ((2*pwmSin[phase_B_position]/SINE_DIVIDER)+ duty)*TIM1_AUTORELOAD/2000;
@@ -1448,7 +1448,7 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement();
-				step_delay = map (input, 48, sine_mode_changeover, TIM1_AUTORELOAD, sine_mode_changeover_min_freq);
+				step_delay = map (input, 48, sine_mode_changeover, 400, 20);
 				delayMicros(step_delay); //pwm dead time with buffer, vary sine duty instead for speed
 
 				if (input >= sine_mode_changeover && phase_A_position == 0){
