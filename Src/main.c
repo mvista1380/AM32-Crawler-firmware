@@ -127,7 +127,6 @@ Removed gd32 build, until firmware is functional
 #include "comparator.h"
 #include "functions.h"
 #include "peripherals.h"
-#include "arm_math.h"
 
 //===========================================================================
 //============================= EEPROM Defaults =============================
