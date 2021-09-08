@@ -1403,7 +1403,7 @@ int main(void)
 				allpwm();
 				advanceincrement(input);
 				//step_delay = map (input, 48, sine_mode_changeover, 400, 20);
-				delayMicros(100);
+				delayMicros(DEAD_TIME + 1); //pwm dead time with buffer, vary sine duty instead for speed
 
 				if (input >= sine_mode_changeover && phase_A_position == 0){
 					stepper_sine = 0;
