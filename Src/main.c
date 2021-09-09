@@ -469,9 +469,9 @@ void loadEEpromSettings(){
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		minimum_duty_cycle = (eepromBuffer[25] / 2) + (eepromBuffer[26] / 2);
-		max_sin_inc = 8;
-		if (max_sin_inc > 8) {
-			max_sin_inc = 8;
+		max_sin_inc = 6;
+		if (max_sin_inc > 6) {
+			max_sin_inc = 6;
 		}
 
 	}
