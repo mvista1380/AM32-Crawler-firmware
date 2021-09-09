@@ -370,7 +370,7 @@ int step_delay  = 100;
 char stepper_sine = 0;
 long max_sin_inc = 5;
 int forward = 1;
-int gate_drive_offset = 200;
+int gate_drive_offset = 300;
 
 int stuckcounter = 0;
 int k_erpm;
