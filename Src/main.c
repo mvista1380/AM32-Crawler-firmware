@@ -368,9 +368,9 @@ int phase_B_position = 119;
 int phase_C_position = 239;
 int step_delay  = 100;
 char stepper_sine = 0;
-long max_sin_inc = 1;
+long max_sin_inc = 4;
 int forward = 1;
-int gate_drive_offset = 60;
+int gate_drive_offset = 100;
 
 int stuckcounter = 0;
 int k_erpm;
@@ -469,7 +469,6 @@ void loadEEpromSettings(){
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		minimum_duty_cycle = (eepromBuffer[25] / 2) + (eepromBuffer[26] / 2);
-		max_sin_inc = 4;
 	}
 	else{
 		minimum_duty_cycle = 150;
