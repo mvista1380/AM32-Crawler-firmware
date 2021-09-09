@@ -1038,7 +1038,6 @@ void advanceincrement(int input){
 	}
 
 	short current = map(input, 47, sine_mode_changeover, 60, 1200);
-
 	TIM1->CCR1 = ((2*pwmSin[phase_A_position]/SINE_DIVIDER)+ current)*TIM1_AUTORELOAD/2000;
 	TIM1->CCR2 = ((2*pwmSin[phase_B_position]/SINE_DIVIDER)+ current)*TIM1_AUTORELOAD/2000;
 	TIM1->CCR3 = ((2*pwmSin[phase_C_position]/SINE_DIVIDER)+ current)*TIM1_AUTORELOAD/2000;
