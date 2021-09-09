@@ -150,7 +150,7 @@ char drag_brake_strength = 10;		// Drag Brake Power
 char sine_mode_changeover_thottle_level = 5;	// Sine Startup Range
 char sine_mode_changeover_mutliplier = 20;
 short sine_mode_changeover = 5 * 20;
-short sine_mode_changeover_min_freq = TIM1_AUTORELOAD / 100 * (100 - 5);
+int last_zero_crosses = 0;
 
 char USE_HALL_SENSOR = 0;
 
@@ -370,7 +370,7 @@ int step_delay  = 100;
 char stepper_sine = 0;
 long max_sin_inc = 5;
 int forward = 1;
-int gate_drive_offset = 50;
+int gate_drive_offset = 60;
 
 int stuckcounter = 0;
 int k_erpm;
@@ -536,7 +536,6 @@ void loadEEpromSettings(){
 		if(eepromBuffer[40] > 4 && eepromBuffer[40] < 26){            // sine mode changeover 5-25 percent throttle
 			sine_mode_changeover_thottle_level = eepromBuffer[40];
 			sine_mode_changeover = map(sine_mode_changeover_thottle_level, 5, 25, ((TIM1_AUTORELOAD + 1) / 100) * 5, ((TIM1_AUTORELOAD + 1) / 100) * 25);
-			sine_mode_changeover_min_freq = TIM1_AUTORELOAD / 100 * (100 - sine_mode_changeover_thottle_level);
 		}
 
 		if(eepromBuffer[41] > 0 && eepromBuffer[41] < 11){        // drag brake 0-10
@@ -1003,6 +1002,11 @@ void tenKhzRoutine(){
 void advanceincrement(int input){
 
 	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);
+	
+	if (inc > 2 && zero_crosses <= last_zero_crosses)
+		return;
+
+	last_zero_crosses = zero_crosses;
 
 	if (!forward){
 		phase_A_position += inc;
