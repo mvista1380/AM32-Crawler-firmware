@@ -146,7 +146,7 @@
 #define DEAD_TIME               45
 #define HARDWARE_GROUP_F0_A
 #define PA6_VOLTAGE
-#define TARGET_VOLTAGE_DIVIDER  70
+#define TARGET_VOLTAGE_DIVIDER  72
 #endif
 
 

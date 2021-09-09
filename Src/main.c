@@ -468,7 +468,7 @@ void loadEEpromSettings(){
 	}
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
-		minimum_duty_cycle = (eepromBuffer[25] / 2) + (eepromBuffer[26] / 2);
+		minimum_duty_cycle = (eepromBuffer[25] / 2) + (eepromBuffer[26] / 3);
 	}
 	else{
 		minimum_duty_cycle = 150;
@@ -1002,7 +1002,7 @@ void tenKhzRoutine(){
 
 void advanceincrement(int input){
 
-	char inc = map(input, 47, sine_mode_changeover, 1, 2);
+	char inc = 1;
 
 	if (!forward){
 		phase_A_position += inc;
@@ -1404,7 +1404,7 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 350, 40);
+				step_delay = map (input, 48, sine_mode_changeover, 350, 10);
 				
 				if (input > sine_mode_changeover){
 					allOff();
