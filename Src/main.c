@@ -370,7 +370,7 @@ int step_delay  = 100;
 char stepper_sine = 0;
 long max_sin_inc = 4;
 int forward = 1;
-int gate_drive_offset = 100;
+int gate_drive_offset = 200;
 
 int stuckcounter = 0;
 int k_erpm;
@@ -1404,15 +1404,16 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 350, 30);
-				delayMicros(step_delay); //pwm dead time with buffer, vary sine duty instead for speed
+				step_delay = map (input, 48, sine_mode_changeover, 350, 40);
 
 				if (input > sine_mode_changeover){
 					allOff();
 					stepper_sine = 0;
 					running = 1;
 					old_routine = 1;
-					commutation_interval = 9000;
+					zero_crosses = 0;
+					prop_brake_active = 0;
+					/*commutation_interval = 9000;
 					average_interval = 9000;
 					last_average_interval = average_interval;
 					//  minimum_duty_cycle = ;
@@ -1420,9 +1421,9 @@ int main(void)
 					zero_crosses = 0;
 					prop_brake_active = 0;
 					step = 1;                    // rising bemf on a same as position 0.
-					//comStep(step);// rising bemf on a same as position 0.
+					comStep(step);// rising bemf on a same as position 0.
 					LL_TIM_GenerateEvent_UPDATE(TIM1);
-					zcfoundroutine();
+					zcfoundroutine();*/
 				}
 			}
 			else{
