@@ -370,7 +370,7 @@ int step_delay  = 100;
 char stepper_sine = 0;
 long max_sin_inc = 5;
 int forward = 1;
-int gate_drive_offset = 300;
+int gate_drive_offset = 500;
 
 int stuckcounter = 0;
 int k_erpm;
@@ -1411,7 +1411,7 @@ int main(void)
 					stepper_sine = 0;
 					running = 1;
 					old_routine = 1;
-					zero_crosses = 0;
+					//zero_crosses = 0;
 					prop_brake_active = 0;
 					/*commutation_interval = 9000;
 					average_interval = 9000;
