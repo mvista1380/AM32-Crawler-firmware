@@ -370,7 +370,7 @@ int step_delay  = 100;
 char stepper_sine = 0;
 long max_sin_inc = 5;
 int forward = 1;
-int gate_drive_offset = 60;
+int gate_drive_offset = 200;
 
 int stuckcounter = 0;
 int k_erpm;
@@ -1404,8 +1404,8 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 350, 60);
-
+				step_delay = map (input, 48, sine_mode_changeover, 350, 40);
+				delayMicros(step_delay);
 				if (input > sine_mode_changeover){
 					allOff();
 					stepper_sine = 0;
