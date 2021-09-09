@@ -368,9 +368,9 @@ int phase_B_position = 119;
 int phase_C_position = 239;
 int step_delay  = 100;
 char stepper_sine = 0;
-long max_sin_inc = 4;
+long max_sin_inc = 5;
 int forward = 1;
-int gate_drive_offset = 120;
+int gate_drive_offset = 60;
 
 int stuckcounter = 0;
 int k_erpm;
@@ -1404,7 +1404,7 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 350, 40);
+				step_delay = map (input, 48, sine_mode_changeover, 350, 60);
 
 				if (input > sine_mode_changeover){
 					allOff();
