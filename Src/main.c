@@ -1408,10 +1408,11 @@ int main(void)
 				delayMicros(step_delay);
 				if (input > sine_mode_changeover){
 					allOff();
+					step = 1;                    // rising bemf on a same as position 0.
+					comStep(step);
 					stepper_sine = 0;
 					running = 1;
 					old_routine = 1;
-					//zero_crosses = 0;
 					prop_brake_active = 0;
 					/*commutation_interval = 9000;
 					average_interval = 9000;
@@ -1420,8 +1421,7 @@ int main(void)
 					INTERVAL_TIMER->CNT = 9000;
 					zero_crosses = 0;
 					prop_brake_active = 0;
-					step = 1;                    // rising bemf on a same as position 0.
-					comStep(step);// rising bemf on a same as position 0.
+					// rising bemf on a same as position 0.
 					LL_TIM_GenerateEvent_UPDATE(TIM1);
 					zcfoundroutine();*/
 				}
