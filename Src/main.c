@@ -1003,7 +1003,7 @@ void advanceincrement(int input){
 
 	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);
 	
-	if (inc > 2 && zero_crosses <= last_zero_crosses)
+	if (inc > 4 && zero_crosses <= last_zero_crosses)
 		return;
 
 	last_zero_crosses = zero_crosses;
