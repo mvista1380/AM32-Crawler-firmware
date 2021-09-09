@@ -829,6 +829,7 @@ void tenKhzRoutine(){
 			phase_A_position = 0;
 			phase_B_position = 119;
 			phase_C_position = 239;
+			zero_crosses = 0;
 			stepper_sine = 1;
 		}
 
@@ -1000,13 +1001,12 @@ void tenKhzRoutine(){
 }
 
 void advanceincrement(int input){
+	char inc = 1;
 
-	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);
-	
-	if (inc > 4 && zero_crosses <= last_zero_crosses)
-		return;
-
-	last_zero_crosses = zero_crosses;
+	if(zero_crosses > 10)
+		inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);
+	else
+		inc = map(input, 47, sine_mode_changeover, 1, 2);
 
 	if (!forward){
 		phase_A_position += inc;
@@ -1411,23 +1411,22 @@ int main(void)
 				step_delay = map (input, 48, sine_mode_changeover, 350, 40);
 				delayMicros(step_delay);
 				if (input > sine_mode_changeover){
-					allOff();
-					step = 1;                    // rising bemf on a same as position 0.
-					comStep(step);
 					stepper_sine = 0;
 					running = 1;
 					old_routine = 1;
 					prop_brake_active = 0;
-					/*commutation_interval = 9000;
+					commutation_interval = 9000;
 					average_interval = 9000;
 					last_average_interval = average_interval;
 					//  minimum_duty_cycle = ;
 					INTERVAL_TIMER->CNT = 9000;
 					zero_crosses = 0;
 					prop_brake_active = 0;
+					step = 1;                    // rising bemf on a same as position 0.
+					comStep(step);
 					// rising bemf on a same as position 0.
 					LL_TIM_GenerateEvent_UPDATE(TIM1);
-					zcfoundroutine();*/
+					zcfoundroutine();
 				}
 			}
 			else{
