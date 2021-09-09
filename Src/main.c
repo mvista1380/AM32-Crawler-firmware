@@ -1405,8 +1405,9 @@ int main(void)
 				allpwm();
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 350, 40);
-				delayMicros(step_delay);
+				
 				if (input > sine_mode_changeover){
+					allOff();
 					stepper_sine = 0;
 					running = 1;
 					old_routine = 1;
@@ -1423,6 +1424,9 @@ int main(void)
 					// rising bemf on a same as position 0.
 					LL_TIM_GenerateEvent_UPDATE(TIM1);
 					zcfoundroutine();
+				}
+				else {
+					delayMicros(step_delay);
 				}
 			}
 			else{
