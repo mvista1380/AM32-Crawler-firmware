@@ -1063,7 +1063,7 @@ void SwitchOver() {
 	TIM1->CCR2 = adjusted_duty_cycle;
 	TIM1->CCR3 = adjusted_duty_cycle;
 	
-	step = 5;              // rising bemf on a same as position 0.	
+	step = 2;              // rising bemf on a same as position 0.	
 	comStep(step);
 	changeCompInput();
 	enableCompInterrupts();
@@ -1434,7 +1434,7 @@ int main(void)
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 350, 20);
 				
-				if (input > sine_mode_changeover phase_A_position == 0){					
+				if (input > sine_mode_changeover && phase_A_position == 0){					
 					duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
 					SwitchOver();
 				}
