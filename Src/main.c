@@ -1419,7 +1419,7 @@ int main(void)
 					INTERVAL_TIMER->CNT = 9000;
 					zero_crosses = 0;
 					prop_brake_active = 0;
-					step = 6;              // rising bemf on a same as position 0.
+					step = 1;              // rising bemf on a same as position 0.
 					duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
 					comStep(step);
 					changeCompInput();
