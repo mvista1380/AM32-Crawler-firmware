@@ -308,7 +308,7 @@ int running = 0;
 int advance = 0;
 int advancedivisor = 6;
 char rising = 1;
-char amplitude = 150;
+char amplitude = 140;
 char sin_cycle_complete = 0;
 
 ////Space Vector PWM ////////////////
@@ -1147,7 +1147,7 @@ void tenKhzRoutine(){
 
 void advanceincrement(int input){
 
-	char inc = map(input, 47, sine_mode_changeover, 2, 4);
+	char inc = map(input, 47, sine_mode_changeover, 2, 3);
 
 	if (forward){
 		phase_A_position += inc;
@@ -1580,8 +1580,8 @@ int main(void)
 		else{            // stepper sine
 			if(input >= 47 && armed){
 				maskPhaseInterrupts();
-				allpwm();
 				advanceincrement(input);
+				allpwm();
 				step_delay = map (input, 48, sine_mode_changeover, 350, 20);
 				
 				if (input > sine_mode_changeover && sin_cycle_complete == 1){
