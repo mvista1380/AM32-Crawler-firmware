@@ -302,7 +302,7 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 2;
+int changeover_step = 3;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
