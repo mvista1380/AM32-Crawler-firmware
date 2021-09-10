@@ -1044,6 +1044,35 @@ void advanceincrement(int input){
     
 }
 
+void SwitchOver() {
+
+	stepper_sine = 0;
+	running = 1;
+	old_routine = 1;
+	prop_brake_active = 0;
+	commutation_interval = 9000;
+	average_interval = 9000;
+	last_average_interval = average_interval;
+	//  minimum_duty_cycle = ;
+	INTERVAL_TIMER->CNT = 9000;
+	zero_crosses = 0;
+	prop_brake_active = 0;
+	
+	adjusted_duty_cycle = ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
+	TIM1->ARR = tim1_arr;
+	TIM1->CCR1 = adjusted_duty_cycle;
+	TIM1->CCR2 = adjusted_duty_cycle;
+	TIM1->CCR3 = adjusted_duty_cycle;
+	
+	step = 1;              // rising bemf on a same as position 0.	
+	comStep(step);
+	changeCompInput();
+	enableCompInterrupts();
+	// rising bemf on a same as position 0.
+	LL_TIM_GenerateEvent_UPDATE(TIM1);
+	zcfoundroutine();
+}
+
 
 void zcfoundroutine(){   // only used in polling mode, blocking routine.
 	thiszctime = INTERVAL_TIMER->CNT;
@@ -1406,27 +1435,9 @@ int main(void)
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 350, 20);
 				
-				if (input > sine_mode_changeover && phase_A_position > 86 && phase_A_position < 95){
-					//allOff();
-					stepper_sine = 0;
-					running = 1;
-					old_routine = 1;
-					prop_brake_active = 0;
-					commutation_interval = 9000;
-					average_interval = 9000;
-					last_average_interval = average_interval;
-					//  minimum_duty_cycle = ;
-					INTERVAL_TIMER->CNT = 9000;
-					zero_crosses = 0;
-					prop_brake_active = 0;
-					step = 1;              // rising bemf on a same as position 0.
+				if (input > sine_mode_changeover && phase_A_position > 86 && phase_A_position < 95){					
 					duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
-					comStep(step);
-					changeCompInput();
-					enableCompInterrupts();
-					// rising bemf on a same as position 0.
-					LL_TIM_GenerateEvent_UPDATE(TIM1);
-					zcfoundroutine();
+					SwitchOver();
 				}
 				else {
 					delayMicros(step_delay);
