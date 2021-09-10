@@ -308,7 +308,7 @@ int running = 0;
 int advance = 0;
 int advancedivisor = 6;
 char rising = 1;
-char amplitude = 130;
+char amplitude = 135;
 char sin_cycle_complete = 0;
 
 ////Space Vector PWM ////////////////
@@ -614,11 +614,11 @@ void loadEEpromSettings(){
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		//minimum_duty_cycle = eepromBuffer[25] / 2;
-		minimum_duty_cycle = 10;
+		minimum_duty_cycle = 15;
 	}
 	else{
 		//minimum_duty_cycle = 150;
-		minimum_duty_cycle = 10;
+		minimum_duty_cycle = 15;
 	}
 
 	motor_kv = (eepromBuffer[26] * 40) + 20;
@@ -997,7 +997,7 @@ void tenKhzRoutine(){
 					if (velocity_count > velocity_count_threshold){
 						if(commutation_interval > 9000){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
-							minimum_duty_cycle ++;
+							//minimum_duty_cycle ++;
 						}
 						else{
 						//minimum_duty_cycle--;
