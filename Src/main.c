@@ -614,11 +614,11 @@ void loadEEpromSettings(){
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		//minimum_duty_cycle = eepromBuffer[25] / 2;
-		minimum_duty_cycle = 15;
+		minimum_duty_cycle = 20;
 	}
 	else{
 		//minimum_duty_cycle = 150;
-		minimum_duty_cycle = 15;
+		minimum_duty_cycle = 20;
 	}
 
 	motor_kv = (eepromBuffer[26] * 40) + 20;
