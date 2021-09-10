@@ -613,7 +613,7 @@ void loadEEpromSettings(){
 	}
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
-		minimum_duty_cycle = (eepromBuffer[25] / 2) + (eepromBuffer[26] / 3);
+		minimum_duty_cycle = eepromBuffer[25] / 2;
 	}
 	else{
 		minimum_duty_cycle = 150;
@@ -1580,8 +1580,8 @@ int main(void)
 		else{            // stepper sine
 			if(input >= 47 && armed){
 				maskPhaseInterrupts();
-				advanceincrement(input);
 				allpwm();
+				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 350, 20);
 				
 				if (input > sine_mode_changeover && sin_cycle_complete == 1){
