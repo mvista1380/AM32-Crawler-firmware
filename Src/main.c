@@ -1181,8 +1181,8 @@ void advanceincrement(int input){
 	}
 
 	TIM1->CCR1 = (400 * pwmSin[0][phase_A_position]) + 405;
-	TIM1->CCR2 = (400 * pwmSin[1][phase_B_position]) + 405;;
-	TIM1->CCR3 = (400 * pwmSin[2][phase_B_position]) + 405;;
+	TIM1->CCR2 = (400 * pwmSin[1][phase_B_position]) + 405;
+	TIM1->CCR3 = (400 * pwmSin[2][phase_B_position]) + 405;
 
 	//TIM1->CCR1 = ((2*pwmSin[phase_A_position]/SINE_DIVIDER)+ gate_drive_offset)*TIM1_AUTORELOAD/2000;
 	//TIM1->CCR2 = ((2*pwmSin[phase_B_position]/SINE_DIVIDER)+ gate_drive_offset)*TIM1_AUTORELOAD/2000;
