@@ -1420,7 +1420,10 @@ int main(void)
 					zero_crosses = 99;
 					prop_brake_active = 0;
 					step = 6;              // rising bemf on a same as position 0.
+					duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
 					comStep(step);
+					changeCompInput();
+					enableCompInterrupts();
 					// rising bemf on a same as position 0.
 					LL_TIM_GenerateEvent_UPDATE(TIM1);
 					zcfoundroutine();
