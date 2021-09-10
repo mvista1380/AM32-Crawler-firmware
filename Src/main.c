@@ -1145,7 +1145,7 @@ void tenKhzRoutine(){
 
 void advanceincrement(int input){
 
-	char inc = 2;
+	char inc = 5;
 
 	if (!forward){
 		phase_A_position += inc;
