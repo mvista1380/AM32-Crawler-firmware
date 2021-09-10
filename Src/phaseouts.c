@@ -280,7 +280,7 @@ void fullBrake(){                     // full braking shorting all low sides
 
 
 void allpwm(){                        // for stepper_sine
-	phaseCPWM();
-	phaseBPWM();	
 	phaseAPWM();
+	phaseBPWM();
+	phaseCPWM();
 }
