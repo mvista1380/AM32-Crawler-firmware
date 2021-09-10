@@ -1406,7 +1406,7 @@ int main(void)
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 350, 20);
 				
-				if (input > sine_mode_changeover){
+				if (input > sine_mode_changeover && phase_A_position > 86 && phase_A_position < 95){
 					//allOff();
 					stepper_sine = 0;
 					running = 1;
@@ -1419,7 +1419,7 @@ int main(void)
 					INTERVAL_TIMER->CNT = 9000;
 					zero_crosses = 0;
 					prop_brake_active = 0;
-					step = 2;                    // rising bemf on a same as position 0.
+					step = 1;                    // rising bemf on a same as position 0.
 					comStep(step);
 					// rising bemf on a same as position 0.
 					LL_TIM_GenerateEvent_UPDATE(TIM1);
