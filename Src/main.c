@@ -302,7 +302,7 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 1;
+int changeover_step = 2;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
@@ -618,7 +618,7 @@ void loadEEpromSettings(){
 	}
 	else{
 		//minimum_duty_cycle = 150;
-		minimum_duty_cycle = 20;
+		minimum_duty_cycle = 25;
 	}
 
 	motor_kv = (eepromBuffer[26] * 40) + 20;
