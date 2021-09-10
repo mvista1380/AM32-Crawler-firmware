@@ -1063,7 +1063,7 @@ void SwitchOver() {
 	TIM1->CCR2 = adjusted_duty_cycle;
 	TIM1->CCR3 = adjusted_duty_cycle;
 	
-	step = 2;              // rising bemf on a same as position 0.	
+	step = 5;              // rising bemf on a same as position 0.	
 	comStep(step);
 	changeCompInput();
 	enableCompInterrupts();
