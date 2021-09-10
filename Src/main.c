@@ -302,7 +302,7 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 4;
+int changeover_step = 5;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
@@ -613,8 +613,7 @@ void loadEEpromSettings(){
 	}
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
-		//minimum_duty_cycle = eepromBuffer[25] / 2;
-		minimum_duty_cycle = 25;
+		minimum_duty_cycle = eepromBuffer[25] / 2;
 	}
 	else{
 		//minimum_duty_cycle = 150;
