@@ -1037,10 +1037,9 @@ void advanceincrement(int input){
 		}
 	}
 
-	short current = map(input, 47, sine_mode_changeover, 80, 1300);
-	TIM1->CCR1 = ((2*pwmSin[phase_A_position]/SINE_DIVIDER)+ current)*TIM1_AUTORELOAD/2000;
-	TIM1->CCR2 = ((2*pwmSin[phase_B_position]/SINE_DIVIDER)+ current)*TIM1_AUTORELOAD/2000;
-	TIM1->CCR3 = ((2*pwmSin[phase_C_position]/SINE_DIVIDER)+ current)*TIM1_AUTORELOAD/2000;
+	TIM1->CCR1 = ((2*pwmSin[phase_A_position]/SINE_DIVIDER)+ gate_drive_offset)*TIM1_AUTORELOAD/2000;
+	TIM1->CCR2 = ((2*pwmSin[phase_B_position]/SINE_DIVIDER)+ gate_drive_offset)*TIM1_AUTORELOAD/2000;
+	TIM1->CCR3 = ((2*pwmSin[phase_C_position]/SINE_DIVIDER)+ gate_drive_offset)*TIM1_AUTORELOAD/2000;
     
 }
 
@@ -1064,7 +1063,7 @@ void SwitchOver() {
 	TIM1->CCR2 = adjusted_duty_cycle;
 	TIM1->CCR3 = adjusted_duty_cycle;
 	
-	step = 1;              // rising bemf on a same as position 0.	
+	step = 2;              // rising bemf on a same as position 0.	
 	comStep(step);
 	changeCompInput();
 	enableCompInterrupts();
