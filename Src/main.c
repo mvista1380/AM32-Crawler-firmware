@@ -1180,8 +1180,8 @@ void advanceincrement(int input){
 		}
 	}
 
-	TIM1->CCR1 = (150 * pwmSin[1][phase_A_position]) + 152;
-	TIM1->CCR2 = (150 * pwmSin[0][phase_B_position]) + 152;
+	TIM1->CCR1 = (150 * pwmSin[0][phase_A_position]) + 152;
+	TIM1->CCR2 = (150 * pwmSin[1][phase_B_position]) + 152;
 	TIM1->CCR3 = (150 * pwmSin[2][phase_C_position]) + 152;
 
 	//TIM1->CCR1 = ((2*pwmSin[phase_A_position]/SINE_DIVIDER)+ gate_drive_offset)*TIM1_AUTORELOAD/2000;
