@@ -1147,7 +1147,7 @@ void advanceincrement(int input){
 
 	char inc = 2;
 
-	if (!forward){
+	if (forward){
 		phase_A_position += inc;
 		if (phase_A_position > 359){
 			phase_A_position -= 360;
