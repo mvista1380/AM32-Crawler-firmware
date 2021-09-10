@@ -1145,7 +1145,7 @@ void tenKhzRoutine(){
 
 void advanceincrement(int input){
 
-	char inc = 2;
+	char inc = map(input, 47, sine_mode_changeover, 2, 4);
 
 	if (forward){
 		phase_A_position += inc;
@@ -1180,9 +1180,11 @@ void advanceincrement(int input){
 		}
 	}
 
-	TIM1->CCR1 = (150 * pwmSin[0][phase_A_position]) + 152;
-	TIM1->CCR2 = (150 * pwmSin[1][phase_B_position]) + 152;
-	TIM1->CCR3 = (150 * pwmSin[2][phase_C_position]) + 152;
+	char current = map(input, 47, sine_mode_changeover, 80, 150);
+
+	TIM1->CCR1 = (current * pwmSin[0][phase_A_position]) + (current + 2);
+	TIM1->CCR2 = (current * pwmSin[1][phase_B_position]) + (current + 2);
+	TIM1->CCR3 = (current * pwmSin[2][phase_C_position]) + (current + 2);
 
 	//TIM1->CCR1 = ((2*pwmSin[phase_A_position]/SINE_DIVIDER)+ gate_drive_offset)*TIM1_AUTORELOAD/2000;
 	//TIM1->CCR2 = ((2*pwmSin[phase_B_position]/SINE_DIVIDER)+ gate_drive_offset)*TIM1_AUTORELOAD/2000;
