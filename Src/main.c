@@ -302,13 +302,13 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 5;
+int changeover_step = 6;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
 int advancedivisor = 6;
 char rising = 1;
-char amplitude = 140;
+char amplitude = 130;
 char sin_cycle_complete = 0;
 
 ////Space Vector PWM ////////////////
@@ -613,10 +613,12 @@ void loadEEpromSettings(){
 	}
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
-		minimum_duty_cycle = eepromBuffer[25] / 2;
+		//minimum_duty_cycle = eepromBuffer[25] / 2;
+		minimum_duty_cycle = 10;
 	}
 	else{
-		minimum_duty_cycle = 150;
+		//minimum_duty_cycle = 150;
+		minimum_duty_cycle = 10;
 	}
 
 	motor_kv = (eepromBuffer[26] * 40) + 20;
