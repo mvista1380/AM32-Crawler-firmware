@@ -302,7 +302,7 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 6;
+int changeover_step = 5;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
@@ -613,11 +613,10 @@ void loadEEpromSettings(){
 	}
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
-		minimum_duty_cycle = eepromBuffer[25];
+		minimum_duty_cycle = (eepromBuffer[25] / 2) + (eepromBuffer[26] / 3);
 	}
 	else{
-		//minimum_duty_cycle = 150;
-		minimum_duty_cycle = 25;
+		minimum_duty_cycle = 150;
 	}
 
 	motor_kv = (eepromBuffer[26] * 40) + 20;
@@ -996,7 +995,7 @@ void tenKhzRoutine(){
 					if (velocity_count > velocity_count_threshold){
 						if(commutation_interval > 9000){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
-							//minimum_duty_cycle ++;
+							minimum_duty_cycle ++;
 						}
 						else{
 						//minimum_duty_cycle--;
@@ -1148,7 +1147,7 @@ void tenKhzRoutine(){
 
 void advanceincrement(int input){
 
-	char inc = 2;
+	char inc = map(input, 47, sine_mode_changeover, 2, 4);
 
 	if (forward){
 		phase_A_position += inc;
