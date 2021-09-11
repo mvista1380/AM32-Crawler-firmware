@@ -1009,8 +1009,9 @@ void tenKhzRoutine(){
 					}
 				}
 
-				if (input < sine_mode_changeover)
+				if (input < sine_mode_changeover) {
 					duty_cycle = map(input, sine_mode_changeover, (sine_mode_changeover / 10) * 9), minimum_duty_cycle, (minimum_duty_cycle / 10) * 8);
+				}
 
 			}
 
