@@ -816,13 +816,13 @@ void PeriodElapsedCallback(){
 
 void interruptRoutine(){
 	if (average_interval > 125){
-		if ((INTERVAL_TIMER->CNT < 125) && (duty_cycle < 600) && (zero_crosses < 500)){    //should be impossible, desync?exit anyway
+		/*if ((INTERVAL_TIMER->CNT < 125) && (duty_cycle < 600) && (zero_crosses < 500)){    //should be impossible, desync?exit anyway
 			return;
 		}
 
 		if (INTERVAL_TIMER->CNT < (commutation_interval >> 1)){
 			return;
-		}
+		}*/
 
 		stuckcounter++;             // stuck at 100 interrupts before the main loop happens again.
 		if (stuckcounter > 100){
@@ -1250,7 +1250,9 @@ void SwitchOver() {
 	TIM1->CCR3 = adjusted_duty_cycle;
 
 	step = changeover_step;              // rising bemf on a same as position 0.	
-	comStep(step);
+	rising = step % 2;
+	allOff();
+	//comStep(step);
 	changeCompInput();
 	enableCompInterrupts();
 	// rising bemf on a same as position 0.
@@ -1590,7 +1592,7 @@ int main(void)
 				step_delay = map (input, 48, sine_mode_changeover, 350, 20);
 				
 				if (input > sine_mode_changeover && sin_cycle_complete == 1){
-					duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
+					duty_cycle = map(input, sine_mode_changeover, 2047, (minimum_duty_cycle / 10)  * 11, TIMER1_MAX_ARR);
 					SwitchOver();
 				}
 				else {
