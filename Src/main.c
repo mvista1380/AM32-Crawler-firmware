@@ -308,7 +308,7 @@ int running = 0;
 int advance = 0;
 int advancedivisor = 6;
 char rising = 1;
-char amplitude = 138;
+char amplitude = 145;
 char sin_cycle_complete = 0;
 
 ////Space Vector PWM ////////////////
