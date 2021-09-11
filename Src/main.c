@@ -1583,7 +1583,7 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 350, 15);
+				step_delay = map (input, 48, sine_mode_changeover, 350, 25);
 				
 				if (input > sine_mode_changeover && sin_cycle_complete == 1){
 					duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
