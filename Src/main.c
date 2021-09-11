@@ -302,13 +302,13 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 6;
+int changeover_step = 5;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
 int advancedivisor = 6;
 char rising = 1;
-char amplitude = 135;
+char amplitude = 138;
 char sin_cycle_complete = 0;
 
 ////Space Vector PWM ////////////////
@@ -1583,7 +1583,7 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 350, 20);
+				step_delay = map (input, 48, sine_mode_changeover, 350, 15);
 				
 				if (input > sine_mode_changeover && sin_cycle_complete == 1){
 					duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
