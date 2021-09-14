@@ -1233,10 +1233,10 @@ void SwitchOver() {
 	sin_cycle_complete = 0;
 	stepper_sine = 0;
 	running = 1;
-	old_routine = 1;
+	old_routine = 0;
 	prop_brake_active = 0;
-	commutation_interval = 9000;
-	average_interval = 9000;
+	//commutation_interval = 9000;
+	//average_interval = 9000;
 	last_average_interval = average_interval;
 	//  minimum_duty_cycle = ;
 	//INTERVAL_TIMER->CNT = 9000;
@@ -1249,15 +1249,16 @@ void SwitchOver() {
 	TIM1->CCR2 = adjusted_duty_cycle;
 	TIM1->CCR3 = adjusted_duty_cycle;
 
-	step = changeover_step;              // rising bemf on a same as position 0.	
-	rising = step % 2;
+	step = changeover_step;
+	comStep(step);
+	changeCompInput();
+	//commutate();
 	//allOff();
-	//comStep(step);
 	//changeCompInput();
 	//enableCompInterrupts();
 	// rising bemf on a same as position 0.
-	LL_TIM_GenerateEvent_UPDATE(TIM1);
-	zcfoundroutine();
+	//LL_TIM_GenerateEvent_UPDATE(TIM1);
+	//zcfoundroutine();
 	enableCompInterrupts();
 }
 
