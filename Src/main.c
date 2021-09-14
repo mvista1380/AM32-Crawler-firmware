@@ -302,14 +302,14 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 5;
+int changeover_step = 4;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
 int advancedivisor = 6;
 char rising = 1;
-char amplitude = 160;//200 gets very hot
-char MaxAmplitude = 160;
+char amplitude = 155;//200 gets very hot
+char MaxAmplitude = 155;
 char sin_cycle_complete = 0;
 
 ////Space Vector PWM ////////////////
@@ -1193,6 +1193,8 @@ void advanceincrement(int input){
 	if (degrees_celsius >= 80) {
 		amplitude = map(degrees_celsius, 80, 110, MaxAmplitude, (MaxAmplitude / 10) * 8);
 	}
+	else
+		amplitude = MaxAmplitude;
 
 	TIM1->CCR1 = (amplitude * pwmSin[0][phase_A_position]) + (amplitude + 2);
 	TIM1->CCR2 = (amplitude * pwmSin[1][phase_B_position]) + (amplitude + 2);
