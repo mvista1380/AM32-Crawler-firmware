@@ -927,7 +927,7 @@ void tenKhzRoutine(){
 	if(!stepper_sine){
 		if (input >= 127 && armed){
 			if (running == 0){
-				//allOff();
+				allOff();
 				if(!old_routine){
 					startMotor();
 				}
