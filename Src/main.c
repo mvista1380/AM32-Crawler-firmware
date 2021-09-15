@@ -998,14 +998,18 @@ void tenKhzRoutine(){
 					if (velocity_count > velocity_count_threshold){
 						if(commutation_interval > 9000){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
-							//minimum_duty_cycle ++;
+							minimum_duty_cycle ++;
 						}
 						else{
-						//minimum_duty_cycle--;
+							minimum_duty_cycle--;
 						}
 
-						if(minimum_duty_cycle > (minimum_duty_cycle + (minimum_duty_cycle / 3))){
-							minimum_duty_cycle = minimum_duty_cycle + (minimum_duty_cycle / 3);
+						if(minimum_duty_cycle > (minimum_duty_cycle + (minimum_duty_cycle / 4))){
+							minimum_duty_cycle = minimum_duty_cycle + (minimum_duty_cycle / 4);
+						}
+
+						if (minimum_duty_cycle < (minimum_duty_cycle - (minimum_duty_cycle / 4))) {
+							minimum_duty_cycle = minimum_duty_cycle - (minimum_duty_cycle / 4);
 						}
 
 						velocity_count = 0;
