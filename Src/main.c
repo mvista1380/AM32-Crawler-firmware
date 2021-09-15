@@ -1285,7 +1285,7 @@ void SwitchOver() {
 	step = changeover_step;
 	comStep(step);
 	changeCompInput();
-	commutate();
+	//commutate();
 	//allOff();
 	//changeCompInput();
 	//enableCompInterrupts();
