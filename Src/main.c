@@ -191,7 +191,7 @@ uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
   
 uint16_t velocity_count = 0;
-uint16_t velocity_count_threshold = 50;
+uint16_t velocity_count_threshold = 40;
 
 char low_rpm_throttle_limit = 0;
 
@@ -1009,8 +1009,8 @@ void tenKhzRoutine(){
 							minimum_duty_cycle--;
 						}
 
-						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 12){
-							minimum_duty_cycle = (minimum_duty_orig / 10) * 12;
+						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 13){
+							minimum_duty_cycle = (minimum_duty_orig / 10) * 13;
 						}
 
 						if (minimum_duty_cycle < (minimum_duty_orig / 10) * 8) {
