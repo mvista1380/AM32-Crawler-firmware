@@ -234,6 +234,7 @@ typedef enum
 } GPIO_PinState;
 
 uint16_t minimum_duty_cycle = DEAD_TIME;
+uint16_t minimum_duty_orig = DEAD_TIME;
 char desync_check = 0;
 char low_kv_filter_level = 20;
 
@@ -618,9 +619,11 @@ void loadEEpromSettings(){
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		minimum_duty_cycle = eepromBuffer[25];
+		minimum_duty_orig = minimum_duty_cycle;
 	}
 	else{
 		minimum_duty_cycle = 150;
+		minimum_duty_orig = minimum_duty_cycle;
 	}
 
 	motor_kv = (eepromBuffer[26] * 40) + 20;
@@ -1004,12 +1007,12 @@ void tenKhzRoutine(){
 							minimum_duty_cycle--;
 						}
 
-						if(minimum_duty_cycle > (minimum_duty_cycle / 10) * 12){
-							minimum_duty_cycle = (minimum_duty_cycle / 10) * 12;
+						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 12){
+							minimum_duty_cycle = (minimum_duty_orig / 10) * 12;
 						}
 
-						if (minimum_duty_cycle < (minimum_duty_cycle / 10) * 8) {
-							minimum_duty_cycle = (minimum_duty_cycle / 10) * 8;
+						if (minimum_duty_cycle < (minimum_duty_orig / 10) * 8) {
+							minimum_duty_cycle = (minimum_duty_orig / 10) * 8;
 						}
 
 						velocity_count = 0;
