@@ -211,6 +211,7 @@ uint16_t consumption_timer = 0;
 float consumed_current = 0;
 uint16_t smoothed_raw_current = 0;
 uint16_t actual_current = 0;
+uint16_t last_step_current = 0;
 
 char lowkv = 0;
 char bemf_timeout = 10;
@@ -969,14 +970,15 @@ void tenKhzRoutine(){
 			phase_A_position = 0;
 			phase_B_position = 119;
 			phase_C_position = 239;
-			stepper_sine = 1;		  
+			stepper_sine = 1;
+			last_step_current = 0;
 		}
 		else if (input < ((sine_mode_changeover / 10) * 9)) {
 			phase_A_position = 0;
 			phase_B_position = 119;
 			phase_C_position = 239;
-			zero_crosses = 0;
 			stepper_sine = 1;
+			last_step_current = 0;
 		}
 
 		if(!prop_brake_active){
@@ -1153,7 +1155,12 @@ void tenKhzRoutine(){
 
 void advanceincrement(int input){
 
-	char inc = map(input, 47, sine_mode_changeover, 2, 4);
+	char inc = map(input, 47, sine_mode_changeover / 2, 1, 3);
+	
+	if (getAbsDif(actual_current, last_step_current) > 5 && last_step_current > 0)
+		return;
+
+	last_step_current = actual_current;
 
 	if (forward){
 		phase_A_position += inc;
@@ -1259,7 +1266,7 @@ void SwitchOver() {
 	step = changeover_step;
 	comStep(step);
 	changeCompInput();
-	//commutate();
+	commutate();
 	//allOff();
 	//changeCompInput();
 	//enableCompInterrupts();
