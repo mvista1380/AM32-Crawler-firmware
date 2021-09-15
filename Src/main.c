@@ -618,7 +618,7 @@ void loadEEpromSettings(){
 	}
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
-		minimum_duty_cycle = (eepromBuffer[25] / 2) + (eepromBuffer[26] / 3);
+		minimum_duty_cycle = (eepromBuffer[25] / 2) + (eepromBuffer[26] / 2);
 		minimum_duty_cycle_orig = minimum_duty_cycle;
 	}
 	else{
