@@ -980,7 +980,7 @@ void tenKhzRoutine(){
 			last_step_current = 0;
 			minimum_duty_cycle = minimum_duty_cycle_orig;
 		}
-		else if (input < ((sine_mode_changeover / 10) * 9) && step == changeover_step + 1) {
+		else if (input < ((sine_mode_changeover / 10) * 9) && step == changeover_step) {
 			phase_A_position = 0;
 			phase_B_position = 119;
 			phase_C_position = 239;
@@ -1163,10 +1163,10 @@ void tenKhzRoutine(){
 
 void advanceincrement(int input){	
 
-	char inc = map(input, 47, (sine_mode_changeover / 4) * 3, 1, max_sin_inc);
+	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);
 
 	
-	if (getAbsDif(actual_current, last_step_current) > 12 && last_step_current > 0) {//posible stall reset
+	if (getAbsDif(actual_current, last_step_current) > 15 && last_step_current > 0) {//posible stall reset
 		sin_stall_count++;
 		if (sin_stall_count == 10) {
 			sin_stall_count = 0;
