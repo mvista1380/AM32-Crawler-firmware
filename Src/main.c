@@ -191,7 +191,7 @@ uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
   
 uint16_t velocity_count = 0;
-uint16_t velocity_count_threshold = 40;
+uint16_t velocity_count_threshold = 20;
 
 char low_rpm_throttle_limit = 0;
 
@@ -814,9 +814,9 @@ void PeriodElapsedCallback(){
 		enableCompInterrupts();     // enable comp interrupt
 	}
 
-	if(zero_crosses<10000){
+	//if(zero_crosses<10000){
 		zero_crosses++;
-	}
+	//}
 	//	UTILITY_TIMER->CNT = 0;
 }
 
@@ -835,6 +835,7 @@ void interruptRoutine(){
 		if (stuckcounter > 100){
 			maskPhaseInterrupts();
 			zero_crosses = 0;
+			last_zero_crosses = 0;
 			return;
 		}
 	}
@@ -972,6 +973,7 @@ void tenKhzRoutine(){
 				duty_cycle = 0;
 				old_routine = 1;
 				zero_crosses = 0;
+				last_zero_crosses = 0;
 				bad_count = 0;
 				if(!brake_on_stop){		  
 					allOff();
@@ -999,9 +1001,9 @@ void tenKhzRoutine(){
 			if (running){
 				if(stall_protection){  // this boosts throttle as the rpm gets lower, for crawlers and rc cars only, do not use for multirotors.
 					//minimum_duty_cycle = eepromBuffer[25];
-					velocity_count++;
-					if (velocity_count > velocity_count_threshold){
-						if(commutation_interval > 9000){
+					//velocity_count++;
+					//if (velocity_count > velocity_count_threshold){
+						if(getAbsDif(last_zero_crosses, zero_crosses) < 10){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
 							minimum_duty_cycle++;
 						}
@@ -1017,8 +1019,9 @@ void tenKhzRoutine(){
 							minimum_duty_cycle = (minimum_duty_orig / 10) * 8;
 						}
 
-						velocity_count = 0;
-					}
+						//velocity_count = 0;
+					//}
+					last_zero_crosses = zero_crosses;
 				}
 
 			}
@@ -1269,6 +1272,7 @@ void SwitchOver() {
 	//  minimum_duty_cycle = ;
 	//INTERVAL_TIMER->CNT = 9000;
 	zero_crosses = 0;
+	last_zero_crosses = 0;
 	prop_brake_active = 0;
 
 	adjusted_duty_cycle = ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
@@ -1465,6 +1469,7 @@ int main(void)
 					if(commutation_interval > 1500 || stepper_sine){
 						forward = 1 - dir_reversed;
 						zero_crosses = 0;
+						last_zero_crosses = 0;
 						old_routine = 1;
 						maskPhaseInterrupts();
 					}
@@ -1478,6 +1483,7 @@ int main(void)
 				if (forward == (1 - dir_reversed)) {
 					if(commutation_interval > 1500 || stepper_sine){
 						zero_crosses = 0;
+						last_zero_crosses = 0;
 						old_routine = 1;
 						forward = dir_reversed;
 						maskPhaseInterrupts();
@@ -1498,6 +1504,7 @@ int main(void)
 					if(commutation_interval > 1500 || stepper_sine){
 						forward = 1 - dir_reversed;
 						zero_crosses = 0;
+						last_zero_crosses = 0;
 						old_routine = 1;
 						maskPhaseInterrupts();
 					}
@@ -1513,6 +1520,7 @@ int main(void)
 				if (forward == (1 - dir_reversed)) {
 					if(commutation_interval > 1500 || stepper_sine){
 						zero_crosses = 0;
+						last_zero_crosses = 0;
 						old_routine = 1;
 						forward = dir_reversed;
 						maskPhaseInterrupts();
@@ -1609,6 +1617,7 @@ int main(void)
 				old_routine = 1;
 				running = 0;
 				zero_crosses = 0;
+				last_zero_crosses = 0;
 			}
 		}
 		else{            // stepper sine
