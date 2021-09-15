@@ -304,7 +304,7 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 4;
+int changeover_step = 5;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
@@ -1168,7 +1168,7 @@ void advanceincrement(int input){
 	
 	if (getAbsDif(actual_current, last_step_current) > 18 && last_step_current > 0) {//posible stall reset
 		sin_stall_count++;
-		if (sin_stall_count == 10) {
+		if (sin_stall_count == 20) {
 			sin_stall_count = 0;
 			inc = -last_inc;
 			last_step_current = 0;
