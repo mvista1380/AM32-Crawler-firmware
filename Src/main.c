@@ -1157,7 +1157,7 @@ void advanceincrement(int input){
 
 	char inc = map(input, 47, sine_mode_changeover / 2, 1, 3);
 	
-	if (getAbsDif(actual_current, last_step_current) > 5 && last_step_current > 0)
+	if (getAbsDif(actual_current, last_step_current) > 10 && last_step_current > 0)
 		return;
 
 	last_step_current = actual_current;
