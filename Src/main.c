@@ -135,9 +135,9 @@ Removed gd32 build, until firmware is functional
 #define VERSION_MAJOR 1
 #define VERSION_MINOR 75
 char dir_reversed = 0;
-char VARIABLE_PWM = 1;
-char brake_on_stop = 0;
-char stall_protection = 0;
+char VARIABLE_PWM = 0;
+char brake_on_stop = 1;
+char stall_protection = 1;
 char THIRTY_TWO_MS_TLM = 0;
 
 char advance_level = 2;			// 7.5 degree increments 0 , 7.5, 15, 22.5)
@@ -1003,7 +1003,7 @@ void tenKhzRoutine(){
 					//minimum_duty_cycle = eepromBuffer[25];
 					//velocity_count++;
 					//if (velocity_count > velocity_count_threshold){
-						if(getAbsDif(last_zero_crosses, zero_crosses) < 10){
+						if(getAbsDif(last_zero_crosses, zero_crosses) < 20){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
 							minimum_duty_cycle++;
 						}
@@ -1011,8 +1011,8 @@ void tenKhzRoutine(){
 							minimum_duty_cycle--;
 						}
 
-						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 13){
-							minimum_duty_cycle = (minimum_duty_orig / 10) * 13;
+						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 20){
+							minimum_duty_cycle = (minimum_duty_orig / 10) * 20;
 						}
 
 						if (minimum_duty_cycle < (minimum_duty_orig / 10) * 8) {
