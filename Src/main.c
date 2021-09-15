@@ -234,13 +234,11 @@ typedef enum
 } GPIO_PinState;
 
 uint16_t minimum_duty_cycle = DEAD_TIME;
-uint16_t minimum_duty_cycle_orig = DEAD_TIME;
 char desync_check = 0;
 char low_kv_filter_level = 20;
 
 uint16_t tim1_arr = TIM1_AUTORELOAD;         // current auto reset value
 uint16_t TIMER1_MAX_ARR = TIM1_AUTORELOAD;      // maximum auto reset register value
-int duty_cycle_maximum = TIM1_AUTORELOAD;     //restricted by temperature or low rpm throttle protect
 int low_rpm_level  = 20;        // thousand erpm used to set range for throttle resrictions
 int high_rpm_level = 70;      //
 int throttle_max_at_low_rpm  = 400;
@@ -619,11 +617,9 @@ void loadEEpromSettings(){
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		minimum_duty_cycle = ((eepromBuffer[25] / 3) * 2) + (eepromBuffer[26] / 2);
-		minimum_duty_cycle_orig = minimum_duty_cycle;
 	}
 	else{
 		minimum_duty_cycle = 150;
-		minimum_duty_cycle_orig = minimum_duty_cycle;
 	}
 
 	motor_kv = (eepromBuffer[26] * 40) + 20;
@@ -938,7 +934,6 @@ void tenKhzRoutine(){
 					startMotor();
 				}
 				running = 1;
-				minimum_duty_cycle = minimum_duty_cycle_orig;
 				last_duty_cycle = minimum_duty_cycle;
 				#ifdef tmotor55
 				GPIOB->BRR = LL_GPIO_PIN_3;  // off red
@@ -978,7 +973,6 @@ void tenKhzRoutine(){
 			phase_C_position = 239;
 			stepper_sine = 1;
 			last_step_current = 0;
-			minimum_duty_cycle = minimum_duty_cycle_orig;
 		}
 		else if (input < ((sine_mode_changeover / 10) * 8) && step == changeover_step) {
 			phase_A_position = 0;
@@ -986,18 +980,9 @@ void tenKhzRoutine(){
 			phase_C_position = 239;
 			stepper_sine = 1;
 			last_step_current = 0;
-			minimum_duty_cycle = minimum_duty_cycle_orig;
 		}
 
 		if(!prop_brake_active){
-			if (zero_crosses < (20 >> stall_protection)){
-				if (duty_cycle < minimum_duty_cycle){
-					duty_cycle = minimum_duty_cycle;
-				}
-				//	   if (duty_cycle > 200<<stall_protection){
-				//		   duty_cycle = 200<<stall_protection;
-				//	   }
-			}
 
 			if (running){
 				if(stall_protection){  // this boosts throttle as the rpm gets lower, for crawlers and rc cars only, do not use for multirotors.
@@ -1020,14 +1005,6 @@ void tenKhzRoutine(){
 					}
 				}
 
-				if (input < sine_mode_changeover) {
-					duty_cycle = map(input, sine_mode_changeover, (sine_mode_changeover / 10) * 8, minimum_duty_cycle, (minimum_duty_cycle / 10) * 8);
-				}
-
-			}
-
-			if (duty_cycle > duty_cycle_maximum){
-				duty_cycle = duty_cycle_maximum;
 			}
 
 			if(maximum_throttle_change_ramp){
@@ -1571,10 +1548,7 @@ int main(void)
 	 	  
 		if ( stepper_sine == 0){
 			e_rpm = running * (100000/ e_com_time) * 6;
-			k_erpm =  e_rpm / 10; // ecom time is time for one electrical revolution in microseconds
-			if(low_rpm_throttle_limit){     // some hardware doesn't need this, its on by default to keep hardware / motors protected but can slow down the response in the very low end a little.
-				duty_cycle_maximum = map(k_erpm, low_rpm_level, high_rpm_level, throttle_max_at_low_rpm, throttle_max_at_high_rpm);   // for more performance lower the high_rpm_level, set to a consvervative number in source.
-			}
+			k_erpm =  e_rpm / 10;
 
 			if (zero_crosses < 100 || commutation_interval > 500) {
 				filter_level = 12;
