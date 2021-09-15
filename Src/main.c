@@ -1143,7 +1143,7 @@ void advanceincrement(int input){
 	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);
 
 	
-	if (getAbsDif(actual_current, last_step_current) > 18 && last_step_current > 0) {//posible stall reset
+	if (getAbsDif(actual_current, last_step_current) > 25 && last_step_current > 0) {//posible stall reset
 		sin_stall_count++;
 		if (sin_stall_count == 20) {
 			sin_stall_count = 0;
