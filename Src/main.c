@@ -234,6 +234,7 @@ typedef enum
 } GPIO_PinState;
 
 uint16_t minimum_duty_cycle = DEAD_TIME;
+uint16_t minimum_duty_cycle_orig = DEAD_TIME;
 char desync_check = 0;
 char low_kv_filter_level = 20;
 
@@ -617,9 +618,11 @@ void loadEEpromSettings(){
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		minimum_duty_cycle = (eepromBuffer[25] / 2) + (eepromBuffer[26] / 3);
+		minimum_duty_cycle_orig = minimum_duty_cycle;
 	}
 	else{
 		minimum_duty_cycle = 150;
+		minimum_duty_cycle_orig = minimum_duty_cycle;
 	}
 
 	motor_kv = (eepromBuffer[26] * 40) + 20;
@@ -934,6 +937,7 @@ void tenKhzRoutine(){
 					startMotor();
 				}
 				running = 1;
+				minimum_duty_cycle = minimum_duty_cycle_orig;
 				last_duty_cycle = minimum_duty_cycle;
 				#ifdef tmotor55
 				GPIOB->BRR = LL_GPIO_PIN_3;  // off red
@@ -973,13 +977,15 @@ void tenKhzRoutine(){
 			phase_C_position = 239;
 			stepper_sine = 1;
 			last_step_current = 0;
+			minimum_duty_cycle = minimum_duty_cycle_orig;
 		}
-		else if (input < ((sine_mode_changeover / 10) * 9)) {
+		else if (input < ((sine_mode_changeover / 10) * 9) && step == changeover_step + 1) {
 			phase_A_position = 0;
 			phase_B_position = 119;
 			phase_C_position = 239;
 			stepper_sine = 1;
 			last_step_current = 0;
+			minimum_duty_cycle = minimum_duty_cycle_orig;
 		}
 
 		if(!prop_brake_active){
@@ -1158,7 +1164,7 @@ void advanceincrement(int input){
 
 	char inc = map(input, 47, (sine_mode_changeover / 4) * 3, 1, max_sin_inc);
 
-	if (getAbsDif(actual_current, last_step_current) > 10 && last_step_current > 0) {//posible stall reset
+	if (getAbsDif(actual_current, last_step_current) > 12 && last_step_current > 0) {//posible stall reset
 		inc = -last_inc;
 		last_step_current = 0;
 	}
