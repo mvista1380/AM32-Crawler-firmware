@@ -983,6 +983,7 @@ void tenKhzRoutine(){
 			phase_C_position = 239;
 			stepper_sine = 1;
 			last_step_current = 0;
+			minimum_duty_cycle = minimum_duty_orig;
 		}
 		else if (input < ((sine_mode_changeover / 10) * 8) && step == changeover_step) {
 			phase_A_position = 0;
@@ -990,6 +991,7 @@ void tenKhzRoutine(){
 			phase_C_position = 239;
 			stepper_sine = 1;
 			last_step_current = 0;
+			minimum_duty_cycle = minimum_duty_orig;
 		}
 
 		if(!prop_brake_active){
@@ -1617,7 +1619,7 @@ int main(void)
 				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
 				
 				if (input > sine_mode_changeover && sin_cycle_complete == 1){
-					duty_cycle = map(input, sine_mode_changeover, 2047, (minimum_duty_cycle / 10)  * 12, TIMER1_MAX_ARR);
+					duty_cycle = map(input, sine_mode_changeover, 2047, (minimum_duty_orig / 10)  * 12, TIMER1_MAX_ARR);
 					SwitchOver();
 				}
 				else {
