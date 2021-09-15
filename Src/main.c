@@ -980,7 +980,7 @@ void tenKhzRoutine(){
 			last_step_current = 0;
 			minimum_duty_cycle = minimum_duty_cycle_orig;
 		}
-		else if (input < ((sine_mode_changeover / 10) * 9) && step == changeover_step) {
+		else if (input < ((sine_mode_changeover / 10) * 8) && step == changeover_step) {
 			phase_A_position = 0;
 			phase_B_position = 119;
 			phase_C_position = 239;
@@ -1006,7 +1006,7 @@ void tenKhzRoutine(){
 					if (velocity_count > velocity_count_threshold){
 						if(commutation_interval > 9000){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
-							minimum_duty_cycle ++;
+							//minimum_duty_cycle ++;
 						}
 						else{
 						//minimum_duty_cycle--;
@@ -1021,7 +1021,7 @@ void tenKhzRoutine(){
 				}
 
 				if (input < sine_mode_changeover) {
-					duty_cycle = map(input, sine_mode_changeover, (sine_mode_changeover / 10) * 9, minimum_duty_cycle, (minimum_duty_cycle / 10) * 8);
+					duty_cycle = map(input, sine_mode_changeover, (sine_mode_changeover / 10) * 8, minimum_duty_cycle, (minimum_duty_cycle / 10) * 8);
 				}
 
 			}
@@ -1166,11 +1166,11 @@ void advanceincrement(int input){
 	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);
 
 	
-	if (getAbsDif(actual_current, last_step_current) > 15 && last_step_current > 0) {//posible stall reset
+	if (getAbsDif(actual_current, last_step_current) > 18 && last_step_current > 0) {//posible stall reset
 		sin_stall_count++;
 		if (sin_stall_count == 10) {
 			sin_stall_count = 0;
-			inc = last_inc;
+			inc = -last_inc;
 			last_step_current = 0;
 		}
 		return;
