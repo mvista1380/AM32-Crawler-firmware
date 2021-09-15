@@ -1150,7 +1150,8 @@ void advanceincrement(int input){
 			inc = -last_inc;
 			last_step_current = 0;
 		}
-		return;
+		else
+			return;
 	}
 	else
 		last_inc = inc;
