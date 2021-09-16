@@ -150,7 +150,7 @@ char drag_brake_strength = 10;		// Drag Brake Power
 char sine_mode_changeover_thottle_level = 5;	// Sine Startup Range
 char sine_mode_changeover_mutliplier = 20;
 short sine_mode_changeover = 5 * 20;
-int last_zero_crosses = 0;
+char last_zero_crosses = 0;
 
 char USE_HALL_SENSOR = 0;
 
@@ -816,6 +816,7 @@ void PeriodElapsedCallback(){
 
 	//if(zero_crosses<10000){
 		zero_crosses++;
+		last_zero_crosses = 1;
 	//}
 	//	UTILITY_TIMER->CNT = 0;
 }
@@ -1003,9 +1004,10 @@ void tenKhzRoutine(){
 					//minimum_duty_cycle = eepromBuffer[25];
 					velocity_count++;
 					if (velocity_count >= velocity_count_threshold){
-						if(zero_crosses = last_zero_crosses && zero_crosses != 0){
+						if(last_zero_crosses != 1){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
 							minimum_duty_cycle++;
+							last_zero_crosses = 0;
 						}
 						else{
 							minimum_duty_cycle--;
@@ -1021,7 +1023,7 @@ void tenKhzRoutine(){
 
 						velocity_count = 0;
 					}
-					last_zero_crosses = zero_crosses;
+					
 				}
 
 			}
@@ -1246,6 +1248,7 @@ void zcfoundroutine(){   // only used in polling mode, blocking routine.
 	bad_count = 0;
 
 	zero_crosses++;
+	last_zero_crosses = 1;
 	if(stall_protection){
 		if (zero_crosses >= 100 && commutation_interval <= 2000) {
 			old_routine = 0;
