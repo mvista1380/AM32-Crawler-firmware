@@ -1003,7 +1003,7 @@ void tenKhzRoutine(){
 					//minimum_duty_cycle = eepromBuffer[25];
 					//velocity_count++;
 					if (velocity_count > velocity_count_threshold){
-						if(getAbsDif(last_zero_crosses, zero_crosses) < 20){
+						if(getAbsDif(last_zero_crosses, zero_crosses) < 15){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
 							minimum_duty_cycle++;
 						}
@@ -1011,8 +1011,8 @@ void tenKhzRoutine(){
 							minimum_duty_cycle--;
 						}
 
-						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 20){
-							minimum_duty_cycle = (minimum_duty_orig / 10) * 20;
+						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 30){
+							minimum_duty_cycle = (minimum_duty_orig / 10) * 30;
 						}
 
 						if (minimum_duty_cycle < (minimum_duty_orig / 10) * 8) {
