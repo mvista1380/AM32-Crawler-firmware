@@ -1116,7 +1116,7 @@ void advanceincrement(int input){
 
 	if (forward){
 		
-		if(phase_A_position < 330 && phase_A_position + inc >= 330)
+		if(phase_A_position < 285 && phase_A_position + inc >= 285)
 			sin_cycle_complete = 1;
 		
 		phase_A_position += inc;
@@ -1138,7 +1138,7 @@ void advanceincrement(int input){
 	}
 	else{
 
-		if (phase_A_position > 330 && phase_A_position - inc <= 330)
+		if (phase_A_position > 285 && phase_A_position - inc <= 285)
 			sin_cycle_complete = 1;
 
 		phase_A_position -= inc;
