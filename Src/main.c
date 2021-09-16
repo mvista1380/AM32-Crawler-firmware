@@ -1001,7 +1001,7 @@ void tenKhzRoutine(){
 			if (running){
 				if(stall_protection){  // this boosts throttle as the rpm gets lower, for crawlers and rc cars only, do not use for multirotors.
 					//minimum_duty_cycle = eepromBuffer[25];
-					//velocity_count++;
+					velocity_count++;
 					if (velocity_count > velocity_count_threshold){
 						if(getAbsDif(last_zero_crosses, zero_crosses) < 15){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
