@@ -150,7 +150,7 @@ char drag_brake_strength = 10;		// Drag Brake Power
 char sine_mode_changeover_thottle_level = 5;	// Sine Startup Range
 char sine_mode_changeover_mutliplier = 20;
 short sine_mode_changeover = 5 * 20;
-char last_zero_crosses = 0;
+char zero_cross_detected = 0;
 
 char USE_HALL_SENSOR = 0;
 
@@ -816,7 +816,7 @@ void PeriodElapsedCallback(){
 
 	//if(zero_crosses<10000){
 		zero_crosses++;
-		last_zero_crosses = 1;
+		zero_cross_detected = 1;
 	//}
 	//	UTILITY_TIMER->CNT = 0;
 }
@@ -836,7 +836,7 @@ void interruptRoutine(){
 		if (stuckcounter > 100){
 			maskPhaseInterrupts();
 			zero_crosses = 0;
-			last_zero_crosses = 0;
+			zero_cross_detected = 0;
 			return;
 		}
 	}
@@ -974,7 +974,7 @@ void tenKhzRoutine(){
 				duty_cycle = 0;
 				old_routine = 1;
 				zero_crosses = 0;
-				last_zero_crosses = 0;
+				zero_cross_detected = 0;
 				bad_count = 0;
 				if(!brake_on_stop){		  
 					allOff();
@@ -1004,10 +1004,10 @@ void tenKhzRoutine(){
 					//minimum_duty_cycle = eepromBuffer[25];
 					velocity_count++;
 					if (velocity_count >= velocity_count_threshold){
-						if(last_zero_crosses != 1){
+						if(zero_cross_detected != 1){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
 							minimum_duty_cycle++;
-							last_zero_crosses = 0;
+							zero_cross_detected = 0;
 						}
 						else{
 							minimum_duty_cycle--;
@@ -1248,7 +1248,7 @@ void zcfoundroutine(){   // only used in polling mode, blocking routine.
 	bad_count = 0;
 
 	zero_crosses++;
-	last_zero_crosses = 1;
+	zero_cross_detected = 1;
 	if(stall_protection){
 		if (zero_crosses >= 100 && commutation_interval <= 2000) {
 			old_routine = 0;
@@ -1276,7 +1276,7 @@ void SwitchOver() {
 	//  minimum_duty_cycle = ;
 	//INTERVAL_TIMER->CNT = 9000;
 	zero_crosses = 0;
-	last_zero_crosses = 0;
+	zero_cross_detected = 0;
 	prop_brake_active = 0;
 
 	adjusted_duty_cycle = ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
@@ -1473,7 +1473,7 @@ int main(void)
 					if(commutation_interval > 1500 || stepper_sine){
 						forward = 1 - dir_reversed;
 						zero_crosses = 0;
-						last_zero_crosses = 0;
+						zero_cross_detected = 0;
 						old_routine = 1;
 						maskPhaseInterrupts();
 					}
@@ -1487,7 +1487,7 @@ int main(void)
 				if (forward == (1 - dir_reversed)) {
 					if(commutation_interval > 1500 || stepper_sine){
 						zero_crosses = 0;
-						last_zero_crosses = 0;
+						zero_cross_detected = 0;
 						old_routine = 1;
 						forward = dir_reversed;
 						maskPhaseInterrupts();
@@ -1508,7 +1508,7 @@ int main(void)
 					if(commutation_interval > 1500 || stepper_sine){
 						forward = 1 - dir_reversed;
 						zero_crosses = 0;
-						last_zero_crosses = 0;
+						zero_cross_detected = 0;
 						old_routine = 1;
 						maskPhaseInterrupts();
 					}
@@ -1524,7 +1524,7 @@ int main(void)
 				if (forward == (1 - dir_reversed)) {
 					if(commutation_interval > 1500 || stepper_sine){
 						zero_crosses = 0;
-						last_zero_crosses = 0;
+						zero_cross_detected = 0;
 						old_routine = 1;
 						forward = dir_reversed;
 						maskPhaseInterrupts();
@@ -1621,7 +1621,7 @@ int main(void)
 				old_routine = 1;
 				running = 0;
 				zero_crosses = 0;
-				last_zero_crosses = 0;
+				zero_cross_detected = 0;
 			}
 		}
 		else{            // stepper sine
