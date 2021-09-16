@@ -947,8 +947,8 @@ void tenKhzRoutine(){
 				#endif
 			}
 			
-			if (switchover_count < 10) {
-				duty_cycle = map(input, sine_mode_changeover, 2047, (minimum_duty_cycle / 10) * 12, TIMER1_MAX_ARR);
+			if (switchover_count < 20) {
+				duty_cycle = map(input, sine_mode_changeover, 2047, (minimum_duty_cycle / 10) * 13, TIMER1_MAX_ARR);
 				switchover_count++;
 			}
 			else
@@ -1217,7 +1217,7 @@ void advanceincrement(int input){
 		amplitude = map(degrees_celsius, 80, 110, MaxAmplitude, (MaxAmplitude / 10) * 8);
 	}
 	else {
-		amplitude = map(input, 47, sine_mode_changeover, MaxAmplitude, (MaxAmplitude / 100) *  105);
+		amplitude = map(input, 47, sine_mode_changeover, MaxAmplitude, (MaxAmplitude / 100) *  110);
 	}
 
 	TIM1->CCR1 = (amplitude * pwmSin[0][phase_A_position]) + (amplitude + 2);
@@ -1629,7 +1629,7 @@ int main(void)
 				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
 				
 				if (input > sine_mode_changeover && sin_cycle_complete == 1){
-					duty_cycle = map(input, sine_mode_changeover, 2047, (minimum_duty_orig / 10)  * 12, TIMER1_MAX_ARR);
+					duty_cycle = map(input, sine_mode_changeover, 2047, (minimum_duty_orig / 10)  * 13, TIMER1_MAX_ARR);
 					SwitchOver();
 				}
 				else {
