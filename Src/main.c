@@ -938,9 +938,9 @@ void tenKhzRoutine(){
 			minimum_duty_cycle = minimum_duty_orig;
 		}
 		else if (input < ((sine_mode_changeover / 10) * 8) && step == changeover_step) {
-			phase_A_position = 0;
-			phase_B_position = 119;
-			phase_C_position = 239;
+			phase_A_position = 330;
+			phase_B_position = 90;
+			phase_C_position = 210;
 			stepper_sine = 1;
 			last_step_current = 0;
 			minimum_duty_cycle = minimum_duty_orig;
