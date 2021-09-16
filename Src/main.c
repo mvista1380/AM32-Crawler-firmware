@@ -303,7 +303,7 @@ int bemf_timout_happened = 0;
 int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
-int changeover_step = 4;
+int changeover_step = 1;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
@@ -1110,30 +1110,20 @@ void tenKhzRoutine(){
 
 void advanceincrement(int input){	
 
-	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);
+	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);	
 
-	
-	if (getAbsDif(actual_current, last_step_current) > 30 && last_step_current > 0) {//posible stall reset
-		/*sin_stall_count++;
-		if (sin_stall_count == 20) {
-			sin_stall_count = 0;
-			inc = -last_inc;
-			last_step_current = 0;
-		}
-		else*/
-			return;
-	}
-	else
-		last_inc = inc;
-	
-	
-	last_step_current = actual_current;
+
 
 	if (forward){
+		
+		if(phase_A_position < 330 && phase_A_position + inc >= 330)
+			sin_cycle_complete = 1;
+		
 		phase_A_position += inc;
+
 		if (phase_A_position > 359){
 			phase_A_position -= 360;
-			sin_cycle_complete = 1;
+			
 		}
 
 		phase_B_position += inc;
@@ -1147,10 +1137,13 @@ void advanceincrement(int input){
 		}
 	}
 	else{
+
+		if (phase_A_position > 330 && phase_A_position - inc <= 330)
+			sin_cycle_complete = 1;
+
 		phase_A_position -= inc;
 		if (phase_A_position < 0){
 			phase_A_position += 360;
-			sin_cycle_complete = 1;
 		}
 
 		phase_B_position -= inc;
