@@ -191,7 +191,7 @@ uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
   
 uint16_t velocity_count = 0;
-uint16_t velocity_count_threshold = 20;
+uint16_t velocity_count_threshold = 10;
 
 char low_rpm_throttle_limit = 0;
 
@@ -309,8 +309,8 @@ int running = 0;
 int advance = 0;
 int advancedivisor = 6;
 char rising = 1;
-char amplitude = 170;//200 gets very hot
-char default_amplitude = 190;
+char amplitude = 200;//200 gets very hot
+char default_amplitude = 200;
 char sin_cycle_complete = 0;
 char last_inc = 1;
 char stepper_sine = 0;
@@ -1113,7 +1113,7 @@ void advanceincrement(int input){
 	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);
 
 	
-	if (getAbsDif(actual_current, last_step_current) > 25 && last_step_current > 0) {//posible stall reset
+	if (getAbsDif(actual_current, last_step_current) > 30 && last_step_current > 0) {//posible stall reset
 		/*sin_stall_count++;
 		if (sin_stall_count == 20) {
 			sin_stall_count = 0;
