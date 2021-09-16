@@ -1217,7 +1217,7 @@ void advanceincrement(int input){
 		amplitude = map(degrees_celsius, 80, 110, MaxAmplitude, (MaxAmplitude / 10) * 8);
 	}
 	else {
-		amplitude = map(input, 47, sine_mode_changeover, MaxAmplitude, (MaxAmplitude / 100) *  110);
+		amplitude = map(input, 47, sine_mode_changeover, MaxAmplitude, (MaxAmplitude / 100) *  120);
 	}
 
 	TIM1->CCR1 = (amplitude * pwmSin[0][phase_A_position]) + (amplitude + 2);
