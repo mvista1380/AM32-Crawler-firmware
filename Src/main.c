@@ -1163,13 +1163,13 @@ void advanceincrement(int input){
 
 	
 	if (getAbsDif(actual_current, last_step_current) > 25 && last_step_current > 0) {//posible stall reset
-		sin_stall_count++;
+		/*sin_stall_count++;
 		if (sin_stall_count == 20) {
 			sin_stall_count = 0;
 			inc = -last_inc;
 			last_step_current = 0;
 		}
-		else
+		else*/
 			return;
 	}
 	else
@@ -1216,8 +1216,9 @@ void advanceincrement(int input){
 	if (degrees_celsius >= 80) {
 		amplitude = map(degrees_celsius, 80, 110, MaxAmplitude, (MaxAmplitude / 10) * 8);
 	}
-	else
-		amplitude = MaxAmplitude;
+	else {
+		amplitude = map(input, 47, sine_mode_changeover, MaxAmplitude, (MaxAmplitude / 100) *  105);
+	}
 
 	TIM1->CCR1 = (amplitude * pwmSin[0][phase_A_position]) + (amplitude + 2);
 	TIM1->CCR2 = (amplitude * pwmSin[1][phase_B_position]) + (amplitude + 2);
