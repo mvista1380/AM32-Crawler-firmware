@@ -980,8 +980,8 @@ void tenKhzRoutine(){
 							minimum_duty_cycle--;
 					}
 
-					if(minimum_duty_cycle > (minimum_duty_orig / 10) * 12){
-						minimum_duty_cycle = (minimum_duty_orig / 10) * 12;
+					if(minimum_duty_cycle > (minimum_duty_orig / 100) * 125){
+						minimum_duty_cycle = (minimum_duty_orig / 100) * 125;
 					}
 
 					if (minimum_duty_cycle < minimum_duty_orig) {
