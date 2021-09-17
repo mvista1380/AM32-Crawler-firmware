@@ -1573,13 +1573,13 @@ int main(void)
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
 				
-				if (input > sine_mode_changeover && sin_cycle_complete == 1){
-					duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_orig * 2, TIMER1_MAX_ARR);
-					SwitchOver();
-				}
-				else {
+				//if (false && input > sine_mode_changeover && sin_cycle_complete == 1){
+				//	duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_orig * 2, TIMER1_MAX_ARR);
+				//	SwitchOver();
+				//}
+				//else {
 					delayMicros(step_delay);
-				}
+				//}
 			}
 			else{
 				if(brake_on_stop){
