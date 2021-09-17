@@ -239,7 +239,9 @@ typedef enum
 } GPIO_PinState;
 
 uint16_t minimum_duty_cycle = DEAD_TIME;
-uint16_t minimum_duty_orig = DEAD_TIME;
+uint16_t starting_duty_orig = DEAD_TIME;
+uint16_t maximum_duty_orig = DEAD_TIME;
+uint16_t duty_cycle_multiplier = 130; //130 = 30% power increase
 char desync_check = 0;
 char low_kv_filter_level = 20;
 
@@ -574,11 +576,13 @@ void loadEEpromSettings(){
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		minimum_duty_cycle = eepromBuffer[25];
-		minimum_duty_orig = minimum_duty_cycle;
+		starting_duty_orig = minimum_duty_cycle;
+		maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
 	}
 	else{
 		minimum_duty_cycle = 150;
-		minimum_duty_orig = minimum_duty_cycle;
+		starting_duty_orig = minimum_duty_cycle;
+		maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
 	}
 
 	motor_kv = (eepromBuffer[26] * 40) + 20;
@@ -938,7 +942,7 @@ void tenKhzRoutine(){
 			phase_C_position = 239;
 			stepper_sine = 1;
 			last_step_current = 0;
-			minimum_duty_cycle = minimum_duty_orig;
+			minimum_duty_cycle = starting_duty_orig;
 		}
 		else if (input < ((sine_mode_changeover / 10) * 8) && step == changeover_step) {
 			phase_A_position = 330;
@@ -946,7 +950,7 @@ void tenKhzRoutine(){
 			phase_C_position = 210;
 			stepper_sine = 1;
 			last_step_current = 0;
-			minimum_duty_cycle = minimum_duty_orig;
+			minimum_duty_cycle = starting_duty_orig;
 		}
 
 		if(!prop_brake_active){
@@ -980,12 +984,12 @@ void tenKhzRoutine(){
 							minimum_duty_cycle--;
 					}
 
-					if(minimum_duty_cycle > (minimum_duty_orig / 100) * 125){
-						minimum_duty_cycle = (minimum_duty_orig / 100) * 125;
+					if(minimum_duty_cycle > maximum_duty_orig){
+						minimum_duty_cycle = maximum_duty_orig;
 					}
 
-					if (minimum_duty_cycle < minimum_duty_orig) {
-						minimum_duty_cycle = minimum_duty_orig;
+					if (minimum_duty_cycle < starting_duty_orig) {
+						minimum_duty_cycle = starting_duty_orig;
 						rampdown_active == 0;
 						duty_cycle_rampdown_step = 0;
 					}
@@ -1584,7 +1588,7 @@ int main(void)
 				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
 				
 				if (input > sine_mode_changeover && sin_cycle_complete == 1){
-					duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_orig * 2, TIMER1_MAX_ARR);
+					duty_cycle = map(input, sine_mode_changeover, 2047, starting_duty_orig * 2, TIMER1_MAX_ARR);
 					SwitchOver();
 				}
 				else {
