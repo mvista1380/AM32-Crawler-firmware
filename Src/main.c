@@ -1191,7 +1191,6 @@ void zcfoundroutine(){   // only used in polling mode, blocking routine.
 	bad_count = 0;
 
 	zero_crosses++;
-	zero_cross_detected = 1;
 	if(stall_protection){
 		if (zero_crosses >= 100 && commutation_interval <= 2000) {
 			old_routine = 0;
