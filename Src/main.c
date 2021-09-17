@@ -188,9 +188,7 @@ uint16_t armed_timeout_count;
 
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
-  
-uint16_t velocity_count = 0;
-uint16_t velocity_count_threshold = 5;
+
 int duty_cycle_rampdown_delay = 7000;
 int duty_cycle_rampdown_rate = 50;
 int duty_cycle_rampdown_step = 0;
@@ -241,7 +239,7 @@ typedef enum
 uint16_t minimum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
-uint16_t duty_cycle_multiplier = 130; //130 = 30% power increase
+uint16_t duty_cycle_multiplier = 200; //130 = 30% power increase
 char desync_check = 0;
 char low_kv_filter_level = 20;
 
