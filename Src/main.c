@@ -191,7 +191,7 @@ char maximum_throttle_change_ramp = 1;
   
 uint16_t velocity_count = 0;
 uint16_t velocity_count_threshold = 5;
-int duty_cycle_rampdown_delay = 5000;
+int duty_cycle_rampdown_delay = 6000;
 int duty_cycle_rampdown_count = 0;
 char stall_detected = 0;
 
@@ -975,8 +975,8 @@ void tenKhzRoutine(){
 								minimum_duty_cycle--;
 						}
 
-						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 20){
-							minimum_duty_cycle = (minimum_duty_orig / 10) * 20;
+						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 15){
+							minimum_duty_cycle = (minimum_duty_orig / 10) * 15;
 						}
 
 						if (minimum_duty_cycle < (minimum_duty_orig / 10) * 8) {
