@@ -191,7 +191,7 @@ char maximum_throttle_change_ramp = 1;
   
 uint16_t velocity_count = 0;
 uint16_t velocity_count_threshold = 5;
-char duty_cycle_rampdown_delay = 1000;
+char duty_cycle_rampdown_delay =5000;
 char duty_cycle_rampdown_count = 0;
 char stall_detected = 0;
 
@@ -951,30 +951,32 @@ void tenKhzRoutine(){
 			if (running){
 				if(stall_protection){  // this boosts throttle as the rpm gets lower, for crawlers and rc cars only, do not use for multirotors.
 					//minimum_duty_cycle = eepromBuffer[25];
+					
+					if (stall_detected == 1) {
+						if (duty_cycle_rampdown_count < duty_cycle_rampdown_delay)
+							duty_cycle_rampdown_count++;
+						else {
+							stall_detected = 0;
+							duty_cycle_rampdown_count = 0;
+						}
+					}
+
+					
 					velocity_count++;
 					if (velocity_count >= velocity_count_threshold){
 						if(commutation_interval > 9000){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
-							minimum_duty_cycle += 2;
+							minimum_duty_cycle++;
 							stall_detected = 1;
 							duty_cycle_rampdown_count = 0;
 						}
-						else{
-							if (stall_detected == 1) {
-								if (duty_cycle_rampdown_count < duty_cycle_rampdown_delay)
-									duty_cycle_rampdown_count++;
-								else {
-									stall_detected = 0;
-									duty_cycle_rampdown_count = 0;
-								}
-							}
-							
+						else{							
 							if(stall_detected == 0)
 								minimum_duty_cycle--;
 						}
 
-						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 30){
-							minimum_duty_cycle = (minimum_duty_orig / 10) * 30;
+						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 20){
+							minimum_duty_cycle = (minimum_duty_orig / 10) * 20;
 						}
 
 						if (minimum_duty_cycle < (minimum_duty_orig / 10) * 8) {
