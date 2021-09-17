@@ -955,7 +955,7 @@ void tenKhzRoutine(){
 					if (velocity_count >= velocity_count_threshold){
 						if(commutation_interval > 9000){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
-							minimum_duty_cycle++;
+							minimum_duty_cycle += 2;
 							stall_detected = 1;
 							duty_cycle_rampdown_count = 0;
 						}
