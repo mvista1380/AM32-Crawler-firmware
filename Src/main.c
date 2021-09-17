@@ -970,17 +970,17 @@ void tenKhzRoutine(){
 							stall_detected = 1;
 							duty_cycle_rampdown_count = 0;
 						}
-						else{							
+						else if (commutation_interval < 8000) {
 							if(stall_detected == 0)
 								minimum_duty_cycle--;
 						}
 
-						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 15){
-							minimum_duty_cycle = (minimum_duty_orig / 10) * 15;
+						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 10){
+							minimum_duty_cycle = (minimum_duty_orig / 10) * 10;
 						}
 
-						if (minimum_duty_cycle < (minimum_duty_orig / 10) * 8) {
-							minimum_duty_cycle = (minimum_duty_orig / 10) * 8;
+						if (minimum_duty_cycle < minimum_duty_orig) {
+							minimum_duty_cycle = minimum_duty_orig;
 						}
 
 						velocity_count = 0;
