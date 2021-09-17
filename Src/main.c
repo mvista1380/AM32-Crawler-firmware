@@ -964,6 +964,9 @@ void tenKhzRoutine(){
 							rampdown_active = 1;
 						}
 					}
+					else if (rampdown_active == 1) {
+						duty_cycle_rampdown_step++;
+					}
 
 					
 					if(commutation_interval > 9000){
@@ -971,8 +974,9 @@ void tenKhzRoutine(){
 						stall_detected = 1;
 						duty_cycle_rampdown_count = 0;
 						rampdown_active = 0;
+						duty_cycle_rampdown_step = 0;
 					}
-					else if(rampdown_active == 1){
+					else if(rampdown_active == 1 && duty_cycle_rampdown_step % duty_cycle_rampdown_rate == 0){
 							minimum_duty_cycle--;
 					}
 
@@ -983,6 +987,7 @@ void tenKhzRoutine(){
 					if (minimum_duty_cycle < minimum_duty_orig) {
 						minimum_duty_cycle = minimum_duty_orig;
 						rampdown_active == 0;
+						duty_cycle_rampdown_step = 0;
 					}
 					
 				}
