@@ -191,9 +191,12 @@ char maximum_throttle_change_ramp = 1;
   
 uint16_t velocity_count = 0;
 uint16_t velocity_count_threshold = 5;
-int duty_cycle_rampdown_delay = 6000;
+int duty_cycle_rampdown_delay = 7000;
+int duty_cycle_rampdown_rate = 50;
+int duty_cycle_rampdown_step = 0;
 int duty_cycle_rampdown_count = 0;
 char stall_detected = 0;
+char rampdown_active = 0;
 
 char low_rpm_throttle_limit = 0;
 
@@ -958,32 +961,29 @@ void tenKhzRoutine(){
 						else {
 							stall_detected = 0;
 							duty_cycle_rampdown_count = 0;
+							rampdown_active = 1;
 						}
 					}
 
 					
-					velocity_count++;
-					if (velocity_count >= velocity_count_threshold){
-						if(commutation_interval > 9000){
-						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
-							minimum_duty_cycle++;
-							stall_detected = 1;
-							duty_cycle_rampdown_count = 0;
-						}
-						else if (commutation_interval <7500) {
-							//if(stall_detected == 0)
-								minimum_duty_cycle--;
-						}
+					if(commutation_interval > 9000){
+						minimum_duty_cycle++;
+						stall_detected = 1;
+						duty_cycle_rampdown_count = 0;
+						rampdown_active = 0;
+					}
+					else{
+						if(rampdown_active == 1)
+							minimum_duty_cycle--;
+					}
 
-						if(minimum_duty_cycle > (minimum_duty_orig / 10) * 12){
-							minimum_duty_cycle = (minimum_duty_orig / 10) * 12;
-						}
+					if(minimum_duty_cycle > (minimum_duty_orig / 10) * 12){
+						minimum_duty_cycle = (minimum_duty_orig / 10) * 12;
+					}
 
-						if (minimum_duty_cycle < minimum_duty_orig) {
-							minimum_duty_cycle = minimum_duty_orig;
-						}
-
-						velocity_count = 0;
+					if (minimum_duty_cycle < minimum_duty_orig) {
+						minimum_duty_cycle = minimum_duty_orig;
+						rampdown_active == 0;
 					}
 					
 				}
