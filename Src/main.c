@@ -304,6 +304,7 @@ int timeout_count = 0;
 int bemf_timeout_threshold = 10;
 
 int changeover_step = 1;
+int sin_swicthover_angle = 240;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
@@ -1116,7 +1117,7 @@ void advanceincrement(int input){
 
 	if (forward){
 		
-		if(phase_A_position < 285 && phase_A_position + inc >= 285)
+		if(phase_A_position < sin_swicthover_angle && phase_A_position + inc >= sin_swicthover_angle)
 			sin_cycle_complete = 1;
 		
 		phase_A_position += inc;
@@ -1138,7 +1139,7 @@ void advanceincrement(int input){
 	}
 	else{
 
-		if (phase_A_position > 285 && phase_A_position - inc <= 285)
+		if (phase_A_position > sin_swicthover_angle&& phase_A_position - inc <= sin_swicthover_angle)
 			sin_cycle_complete = 1;
 
 		phase_A_position -= inc;
@@ -1573,13 +1574,13 @@ int main(void)
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
 				
-				//if (false && input > sine_mode_changeover && sin_cycle_complete == 1){
-				//	duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_orig * 2, TIMER1_MAX_ARR);
-				//	SwitchOver();
-				//}
-				//else {
+				if (false && input > sine_mode_changeover && sin_cycle_complete == 1){
+					duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_orig * 2, TIMER1_MAX_ARR);
+					SwitchOver();
+				}
+				else {
 					delayMicros(step_delay);
-				//}
+				}
 			}
 			else{
 				if(brake_on_stop){
