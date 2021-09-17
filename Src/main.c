@@ -972,8 +972,7 @@ void tenKhzRoutine(){
 						duty_cycle_rampdown_count = 0;
 						rampdown_active = 0;
 					}
-					else{
-						if(rampdown_active == 1)
+					else if(rampdown_active == 1){
 							minimum_duty_cycle--;
 					}
 
