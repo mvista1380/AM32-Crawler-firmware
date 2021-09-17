@@ -969,7 +969,7 @@ void tenKhzRoutine(){
 								}
 							}
 							
-							if(stall_detected == 0)
+							//if(stall_detected == 0)
 								//minimum_duty_cycle--;
 						}
 
