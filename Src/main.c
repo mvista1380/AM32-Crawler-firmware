@@ -970,8 +970,8 @@ void tenKhzRoutine(){
 							stall_detected = 1;
 							duty_cycle_rampdown_count = 0;
 						}
-						else if (commutation_interval < 8000) {
-							if(stall_detected == 0)
+						else if (commutation_interval <7500) {
+							//if(stall_detected == 0)
 								minimum_duty_cycle--;
 						}
 
