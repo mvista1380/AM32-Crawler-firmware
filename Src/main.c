@@ -954,7 +954,7 @@ void tenKhzRoutine(){
 					//minimum_duty_cycle = eepromBuffer[25];
 					velocity_count++;
 					if (velocity_count >= velocity_count_threshold){
-						if(zero_cross_detected != 1){
+						if(commutation_interval > 9000){
 						// duty_cycle = duty_cycle + map(commutation_interval, 10000, 12000, 1, 100);
 							minimum_duty_cycle++;
 							zero_cross_detected = 0;
