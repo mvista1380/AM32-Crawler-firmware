@@ -191,8 +191,8 @@ char maximum_throttle_change_ramp = 1;
   
 uint16_t velocity_count = 0;
 uint16_t velocity_count_threshold = 5;
-char duty_cycle_rampdown_delay =5000;
-char duty_cycle_rampdown_count = 0;
+int duty_cycle_rampdown_delay = 5000;
+int duty_cycle_rampdown_count = 0;
 char stall_detected = 0;
 
 char low_rpm_throttle_limit = 0;
