@@ -196,7 +196,6 @@ int duty_cycle_ramp_down_step = 0;
 int duty_cycle_ramp_down_count = 0;
 int duty_cycle_ramp_up_rate = 10;
 int duty_cycle_ramp_up_step = 0;
-int duty_cycle_ramp_up_count = 0;
 char stall_detected = 0;
 char ramp_down_active = 0;
 
