@@ -117,12 +117,10 @@ Removed gd32 build, until firmware is functional
 #include "main.h"
 #include "targets.h"
 #include "signal.h"
-#include "dshot.h"
 #include "phaseouts.h"
 #include "eeprom.h"
 #include "sounds.h"
 #include "ADC.h"
-#include "serial_telemetry.h"
 #include "IO.h"
 #include "comparator.h"
 #include "functions.h"
@@ -264,8 +262,6 @@ uint16_t ADC_raw_volts;
 uint16_t ADC_raw_current;
 uint16_t ADC_raw_input;
 int adc_counter = 0;
-char send_telemetry = 0;
-char telemetry_done = 0;
 char prop_brake_active = 0;
 
 uint8_t eepromBuffer[48] ={0};
@@ -273,18 +269,13 @@ uint32_t gcr[30] =  {0,0,0,0,0,0,0,0,0,0,0,64,0,0,0,0,64,0,0,0,0,64,0,0,0,64,64,
 uint8_t gcr_size;
 uint16_t process_time = 0;
 
-char dshot_telemetry = 0;
 char output = 0;
-int dshot_frametime = 0;
 
 uint16_t phase_a_interval = 0;
 uint16_t phase_b_interval = 0;
 uint16_t phase_c_interval = 0;
 uint32_t current_EXTI_LINE;
 
-int dshot_goodcounts = 0;
-int dshot_badcounts = 0;
-uint8_t last_dshot_command = 0;
 char old_routine = 0;
 int adjusted_input;
 
@@ -484,7 +475,6 @@ uint16_t e_rpm;      // electrical revolution /100 so,  123 is 12300 erpm
 uint16_t adjusted_duty_cycle;
 
 int bad_count = 0;
-int dshotcommand;
 int armed_count_threshold = 1000;
 
 char armed = 0;
@@ -493,7 +483,6 @@ int zero_input_count = 0;
 int input = 0;
 int newinput =0;
 char inputSet = 0;
-char dshot = 0;
 char servoPwm = 0;
 int zero_crosses;
 
@@ -882,7 +871,6 @@ void tenKhzRoutine(){
 	if(THIRTY_TWO_MS_TLM){
 		thirty_two_ms_count++;
 		if(thirty_two_ms_count>320){
-			send_telemetry = 1;
 			thirty_two_ms_count = 0;
 		}
 	}
@@ -1068,18 +1056,6 @@ void tenKhzRoutine(){
 		last_average_interval = average_interval;
 	}
 
-	if(send_telemetry){
-		#ifdef	USE_SERIAL_TELEMETRY
-		makeTelemPackage(degrees_celsius,
-		battery_voltage,
-		actual_current,
-		(uint16_t)consumed_current/10,
-		e_rpm);
-		send_telem_DMA();
-		send_telemetry = 0;
-		#endif
-	}
-
 	if(commutation_interval > 400){
 		NVIC_SetPriority(IC_DMA_IRQ_NAME, 0);
 		NVIC_SetPriority(ADC1_COMP_IRQn, 1);
@@ -1230,11 +1206,7 @@ void SwitchOver() {
 	old_routine = 0;
 	prop_brake_active = 0;
 	switchover_count = 0;
-	//commutation_interval = 9000;
-	//average_interval = 9000;
 	last_average_interval = average_interval;
-	//  minimum_duty_cycle = ;
-	//INTERVAL_TIMER->CNT = 9000;
 	zero_crosses = 0;
 	prop_brake_active = 0;
 
@@ -1247,13 +1219,6 @@ void SwitchOver() {
 	step = changeover_step;
 	comStep(step);
 	changeCompInput();
-	//commutate();
-	//allOff();
-	//changeCompInput();
-	//enableCompInterrupts();
-	// rising bemf on a same as position 0.
-	//LL_TIM_GenerateEvent_UPDATE(TIM1);
-	//zcfoundroutine();
 	enableCompInterrupts();
 }
 
@@ -1356,8 +1321,7 @@ int main(void)
 	inputSet = 1;
 
 	#else
-	checkForHighSignal();     // will reboot if signal line is high for 10ms
-	receiveDshotDma();
+	checkForHighSignal();
 	#endif
 
 	#ifdef MCU_F051
@@ -1426,76 +1390,36 @@ int main(void)
 		#endif
 		stuckcounter = 0;
 
-		if (dshot == 0){
-			if (newinput > (1000 + (servo_dead_band<<1))) {
-				if (forward == dir_reversed) {
-					if(commutation_interval > 1500 || stepper_sine){
-						forward = 1 - dir_reversed;
-						zero_crosses = 0;
-						old_routine = 1;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 1000;
-					}
+		if (newinput > (1000 + (servo_dead_band<<1))) {
+			if (forward == dir_reversed) {
+				if(commutation_interval > 1500 || stepper_sine){
+					forward = 1 - dir_reversed;
+					zero_crosses = 0;
+					old_routine = 1;
+					maskPhaseInterrupts();
 				}
-				adjusted_input = map(newinput, 1000 + (servo_dead_band<<1), 2000, 47, 2047);
-			}
-			else if (newinput < (1000 -(servo_dead_band<<1))) {
-				if (forward == (1 - dir_reversed)) {
-					if(commutation_interval > 1500 || stepper_sine){
-						zero_crosses = 0;
-						old_routine = 1;
-						forward = dir_reversed;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 1000;
-					}
+				else{
+					newinput = 1000;
 				}
-				adjusted_input = map(newinput, 0, 1000-(servo_dead_band<<1), 2047, 47);
 			}
-			else if (newinput >= (1000 - (servo_dead_band << 1)) && newinput <= (1000 + (servo_dead_band <<1))) {
-				adjusted_input = 0;
-			}  			  
+			adjusted_input = map(newinput, 1000 + (servo_dead_band<<1), 2000, 47, 2047);
 		}
-		else if (dshot) {
-			if (newinput > 1047) {
-				if (forward == dir_reversed) {
-					if(commutation_interval > 1500 || stepper_sine){
-						forward = 1 - dir_reversed;
-						zero_crosses = 0;
-						old_routine = 1;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 0;
-					}
+		else if (newinput < (1000 -(servo_dead_band<<1))) {
+			if (forward == (1 - dir_reversed)) {
+				if(commutation_interval > 1500 || stepper_sine){
+					zero_crosses = 0;
+					old_routine = 1;
+					forward = dir_reversed;
+					maskPhaseInterrupts();
 				}
-
-				adjusted_input = ((newinput - 1048) * 2 + 47) - reversing_dead_band;
-			}
-			else if (newinput <= 1047  && newinput > 47) {
-			//	startcount++;
-				if (forward == (1 - dir_reversed)) {
-					if(commutation_interval > 1500 || stepper_sine){
-						zero_crosses = 0;
-						old_routine = 1;
-						forward = dir_reversed;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 0;
-					}
+				else{
+					newinput = 1000;
 				}
-				adjusted_input = ((newinput - 48) * 2 + 47) - reversing_dead_band;
 			}
-			else if ( newinput < 48) {
-				adjusted_input = 0;
-			}
+			adjusted_input = map(newinput, 0, 1000-(servo_dead_band<<1), 2047, 47);
 		}
-		else{
-			adjusted_input = newinput;
+		else if (newinput >= (1000 - (servo_dead_band << 1)) && newinput <= (1000 + (servo_dead_band <<1))) {
+			adjusted_input = 0;
 		}
 
 		if ((zero_crosses > 1000) || (adjusted_input == 0)){
