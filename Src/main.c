@@ -194,7 +194,7 @@ int duty_cycle_ramp_down_delay = 7000;
 int duty_cycle_ramp_down_rate = 50;
 int duty_cycle_ramp_down_step = 0;
 int duty_cycle_ramp_down_count = 0;
-int duty_cycle_ramp_up_rate = 15;
+int duty_cycle_ramp_up_rate = 30;
 int duty_cycle_ramp_up_step = 0;
 char stall_detected = 0;
 char ramp_down_active = 0;
@@ -494,6 +494,7 @@ char armed = 0;
 int zero_input_count = 0;
 
 int input = 0;
+int prev_input = 0;
 int newinput =0;
 char inputSet = 0;
 char dshot = 0;
@@ -966,13 +967,21 @@ void tenKhzRoutine(){
 						else {
 							stall_detected = 0;
 							duty_cycle_ramp_down_count = 0;
-							ramp_down_active = 1;
 							duty_cycle_ramp_up_step = 0;
+
+							if (input < prev_input) {
+								ramp_down_active = 1;
+							}
 						}
 					}
 					else if (ramp_down_active) {
 						duty_cycle_ramp_down_step++;
 					}
+					else if (input < prev_input && minimum_duty_cycle > starting_duty_orig) {
+						ramp_down_active = 1;
+					}
+
+					prev_input = input;
 					
 					if(commutation_interval > 10000){						
 						stall_detected = 1;
