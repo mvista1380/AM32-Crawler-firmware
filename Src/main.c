@@ -190,12 +190,15 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
-int duty_cycle_rampdown_delay = 7000;
-int duty_cycle_rampdown_rate = 50;
-int duty_cycle_rampdown_step = 0;
-int duty_cycle_rampdown_count = 0;
+int duty_cycle_ramp_down_delay = 7000;
+int duty_cycle_ramp_down_rate = 50;
+int duty_cycle_ramp_down_step = 0;
+int duty_cycle_ramp_down_count = 0;
+int duty_cycle_ramp_up_rate = 10;
+int duty_cycle_ramp_up_step = 0;
+int duty_cycle_ramp_up_count = 0;
 char stall_detected = 0;
-char rampdown_active = 0;
+char ramp_down_active = 0;
 
 char low_rpm_throttle_limit = 0;
 
@@ -240,7 +243,7 @@ typedef enum
 uint16_t minimum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
-uint16_t duty_cycle_multiplier = 250; //130 = 30% power increase
+uint16_t duty_cycle_multiplier = 220; //130 = 30% power increase
 char desync_check = 0;
 char low_kv_filter_level = 20;
 
@@ -958,39 +961,43 @@ void tenKhzRoutine(){
 				if(stall_protection){  // this boosts throttle as the rpm gets lower, for crawlers and rc cars only, do not use for multirotors.
 					//minimum_duty_cycle = eepromBuffer[25];
 					
-					if (stall_detected == 1) {
-						if (duty_cycle_rampdown_count < duty_cycle_rampdown_delay)
-							duty_cycle_rampdown_count++;
+					if (stall_detected) {
+						if (duty_cycle_ramp_down_count < duty_cycle_ramp_down_delay)
+							duty_cycle_ramp_down_count++;
 						else {
 							stall_detected = 0;
-							duty_cycle_rampdown_count = 0;
-							rampdown_active = 1;
+							duty_cycle_ramp_down_count = 0;
+							ramp_down_active = 1;
+							duty_cycle_ramp_up_step = 0;
 						}
 					}
-					else if (rampdown_active == 1) {
-						duty_cycle_rampdown_step++;
+					else if (ramp_down_active) {
+						duty_cycle_ramp_down_step++;
 					}
-
 					
-					if(commutation_interval > 9000){
-						minimum_duty_cycle++;
+					if(commutation_interval > 9000){						
 						stall_detected = 1;
-						duty_cycle_rampdown_count = 0;
-						rampdown_active = 0;
-						duty_cycle_rampdown_step = 0;
+						duty_cycle_ramp_down_count = 0;
+						ramp_down_active = 0;
+						duty_cycle_ramp_down_step = 0;
+
+						if(duty_cycle_ramp_up_step % duty_cycle_ramp_up_rate)
+							minimum_duty_cycle++;
+						
+						duty_cycle_ramp_up_step++;
 					}
-					else if(rampdown_active == 1 && duty_cycle_rampdown_step % duty_cycle_rampdown_rate == 0){
+					else if(ramp_down_active && duty_cycle_ramp_down_step % duty_cycle_ramp_down_rate == 0){
 							minimum_duty_cycle--;
 					}
 
 					if(minimum_duty_cycle > maximum_duty_orig){
 						minimum_duty_cycle = maximum_duty_orig;
+						duty_cycle_ramp_up_step = 0;
 					}
-
-					if (minimum_duty_cycle < starting_duty_orig) {
+					else if (minimum_duty_cycle < starting_duty_orig) {
 						minimum_duty_cycle = starting_duty_orig;
-						rampdown_active == 0;
-						duty_cycle_rampdown_step = 0;
+						ramp_down_active == 0;
+						duty_cycle_ramp_down_step = 0;
 					}
 					
 				}
