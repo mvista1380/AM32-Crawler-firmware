@@ -68,7 +68,6 @@ extern void tenKhzRoutine();
 extern void sendDshotDma();
 extern void receiveDshotDma();
 
-extern char send_telemetry;
 extern char telemetry_done;
 extern char servoPwm;
 /* USER CODE END EV */

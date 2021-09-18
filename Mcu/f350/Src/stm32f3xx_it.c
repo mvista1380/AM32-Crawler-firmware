@@ -68,7 +68,6 @@ extern void tenKhzRoutine();
 extern void sendDshotDma();
 extern void receiveDshotDma();
 
-extern char send_telemetry;
 extern char telemetry_done;
 extern char servoPwm;
 /* USER CODE END EV */
@@ -161,7 +160,6 @@ void DMA1_Channel2_3_IRQHandler(void)
 	  {
 	//	telemetry_done = 1;
 		serial_transfer++;
-		send_telemetry = 0;
 	    LL_DMA_ClearFlag_GI2(DMA1);
 	    LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_2);
 	    /* Call function Transmission complete Callback */

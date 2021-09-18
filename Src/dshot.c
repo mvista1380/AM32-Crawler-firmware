@@ -33,7 +33,6 @@ int shift_amount = 0;
 uint32_t gcrnumber;
 extern int e_com_time;
 extern int zero_crosses;
-extern char send_telemetry;
 extern int smoothedinput;
 extern uint8_t max_duty_cycle_change;
 int dshot_full_number;
@@ -91,9 +90,6 @@ dshot_frametime = dma_buffer[31]- dma_buffer[0];
 				if(calcCRC == checkCRC){
 					signaltimeout = 0;
 					dshot_goodcounts++;
-					if(dpulse[11]==1){
-                    send_telemetry=1;
-					}
 					if (tocheck > 47){
 
 

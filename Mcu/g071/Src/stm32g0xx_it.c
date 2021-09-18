@@ -67,7 +67,6 @@ extern void interruptRoutine();
 extern void tenKhzRoutine();
 
 
-extern char send_telemetry;
 int update_interupt = 0;
 extern char servoPwm;
 /* USER CODE END EV */
@@ -212,7 +211,6 @@ void DMA1_Channel2_3_IRQHandler(void)
 	  {
 	//	telemetry_done = 1;
 	//	  update_interupt++;
-		send_telemetry = 0;
 	    LL_DMA_ClearFlag_GI3(DMA1);
 	    LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_3);
 	    /* Call function Transmission complete Callback */

@@ -99,9 +99,7 @@ if(dshot_telemetry){
 
 		if (dshot == 1){
 			computeDshotDMA();
-			if(send_telemetry){
-            // done in 10khz routine
-			}
+			
 			receiveDshotDma();
 		}
 		if  (servoPwm == 1){
