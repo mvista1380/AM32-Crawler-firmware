@@ -139,6 +139,7 @@ char VARIABLE_PWM = 0;
 char brake_on_stop = 1;
 char stall_protection = 1;
 char THIRTY_TWO_MS_TLM = 0;
+char program_running = 1; //low voltage turns off main loop
 
 char advance_level = 2;			// 7.5 degree increments 0 , 7.5, 15, 22.5)
 uint16_t motor_kv = 2000;
@@ -1177,7 +1178,7 @@ void advanceincrement(int input){
 	}
 
 	if (degrees_celsius >= 80) {
-		amplitude = map(degrees_celsius, 80, 110, default_amplitude, (default_amplitude / 10) * 8);
+		amplitude = map(degrees_celsius, 80, 110, default_amplitude, (default_amplitude / 10) * 8);//thermal throttling, 120 should be safe 80 at the mcu should be close to right
 	}
 	else {
 		amplitude = map(input, 47, sine_mode_changeover, (default_amplitude / 10) * 8, (default_amplitude / 10) *  12);
@@ -1371,7 +1372,7 @@ int main(void)
 		temperature_offset = 230;
 	}
 	#endif
-	while (1){
+	while (program_running){
 
 		LL_IWDG_ReloadCounter(IWDG);
 
@@ -1396,6 +1397,7 @@ int main(void)
 						running = 0;
 						zero_input_count = 0;
 						armed = 0;
+						program_running = 0;
 					}
 				}
 				else{
