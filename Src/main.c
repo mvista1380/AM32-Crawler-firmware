@@ -975,7 +975,7 @@ void tenKhzRoutine(){
 						duty_cycle_ramp_down_step++;
 					}
 					
-					if(commutation_interval > 9000){						
+					if(commutation_interval > 9500){						
 						stall_detected = 1;
 						duty_cycle_ramp_down_count = 0;
 						ramp_down_active = 0;
