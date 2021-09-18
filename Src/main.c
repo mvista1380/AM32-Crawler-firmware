@@ -193,7 +193,7 @@ int duty_cycle_ramp_down_delay = 7000;
 int duty_cycle_ramp_down_rate = 50;
 int duty_cycle_ramp_down_step = 0;
 int duty_cycle_ramp_down_count = 0;
-int duty_cycle_ramp_up_rate = 30;
+int duty_cycle_ramp_up_rate = 15;
 int duty_cycle_ramp_up_step = 0;
 char stall_detected = 0;
 char ramp_down_active = 0;
@@ -971,7 +971,7 @@ void tenKhzRoutine(){
 						ramp_down_active = 0;
 						duty_cycle_ramp_down_step = 0;
 
-						if(duty_cycle_ramp_up_step % duty_cycle_ramp_up_rate)
+						if(duty_cycle_ramp_up_step % duty_cycle_ramp_up_rate == 0)
 							minimum_duty_cycle++;
 						
 						duty_cycle_ramp_up_step++;
