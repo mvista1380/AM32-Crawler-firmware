@@ -122,7 +122,6 @@ Removed gd32 build, until firmware is functional
 #include "eeprom.h"
 #include "sounds.h"
 #include "ADC.h"
-#include "serial_telemetry.h"
 #include "IO.h"
 #include "comparator.h"
 #include "functions.h"
@@ -247,11 +246,7 @@ char desync_check = 0;
 char low_kv_filter_level = 20;
 
 uint16_t tim1_arr = TIM1_AUTORELOAD;         // current auto reset value
-uint16_t TIMER1_MAX_ARR = TIM1_AUTORELOAD;      // maximum auto reset register value
-int low_rpm_level  = 20;        // thousand erpm used to set range for throttle resrictions
-int high_rpm_level = 70;      //
-int throttle_max_at_low_rpm  = 400;
-int throttle_max_at_high_rpm = TIM1_AUTORELOAD;
+uint16_t TIMER1_MAX_ARR = TIM1_AUTORELOAD;
 
 uint16_t commutation_intervals[6] = {0};
 uint32_t average_interval = 0;
@@ -267,8 +262,6 @@ uint16_t ADC_raw_volts;
 uint16_t ADC_raw_current;
 uint16_t ADC_raw_input;
 int adc_counter = 0;
-char send_telemetry = 0;
-char telemetry_done = 0;
 char prop_brake_active = 0;
 
 uint8_t eepromBuffer[48] ={0};
@@ -655,13 +648,6 @@ void loadEEpromSettings(){
 			drag_brake_strength = eepromBuffer[41];
 		}
 	}
-
-
-	if(motor_kv < 300){
-		low_rpm_throttle_limit = 0;
-	}
-	low_rpm_level  = motor_kv / 200 / (16 / motor_poles);
-	high_rpm_level = (40 + (motor_kv / 100)) / (16/motor_poles);
 }
 
 void saveEEpromSettings(){
@@ -838,9 +824,6 @@ void startMotor() {
 	sensorless = 1;
 }
 
-
-
-
 void tenKhzRoutine(){
 	consumption_timer++;
 
@@ -886,7 +869,6 @@ void tenKhzRoutine(){
 	if(THIRTY_TWO_MS_TLM){
 		thirty_two_ms_count++;
 		if(thirty_two_ms_count>320){
-			send_telemetry = 1;
 			thirty_two_ms_count = 0;
 		}
 	}
@@ -1013,7 +995,6 @@ void tenKhzRoutine(){
 			}
 
 			if(maximum_throttle_change_ramp){
-				//	max_duty_cycle_change = map(k_erpm, low_rpm_level, high_rpm_level, 1, 40);
 				if(average_interval > 500){
 					max_duty_cycle_change = 10;
 				}
@@ -1082,18 +1063,6 @@ void tenKhzRoutine(){
 		desync_check = 0;
 		//	}
 		last_average_interval = average_interval;
-	}
-
-	if(send_telemetry){
-		#ifdef	USE_SERIAL_TELEMETRY
-		makeTelemPackage(degrees_celsius,
-		battery_voltage,
-		actual_current,
-		(uint16_t)consumed_current/10,
-		e_rpm);
-		send_telem_DMA();
-		send_telemetry = 0;
-		#endif
 	}
 
 	if(commutation_interval > 400){
