@@ -242,7 +242,7 @@ typedef enum
 uint16_t minimum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
-uint16_t duty_cycle_multiplier = 220; //130 = 30% power increase
+uint16_t duty_cycle_multiplier = 200; //130 = 30% power increase
 char desync_check = 0;
 char low_kv_filter_level = 20;
 
@@ -318,8 +318,8 @@ int running = 0;
 int advance = 0;
 int advancedivisor = 6;
 char rising = 1;
-char amplitude = 170;//200 gets very hot
-char default_amplitude = 170;
+char amplitude = 165;//200 gets very hot
+char default_amplitude = 165;
 char sin_cycle_complete = 0;
 char last_inc = 1;
 char stepper_sine = 0;
@@ -974,7 +974,7 @@ void tenKhzRoutine(){
 						duty_cycle_ramp_down_step++;
 					}
 					
-					if(commutation_interval > 9500){						
+					if(commutation_interval > 10000){						
 						stall_detected = 1;
 						duty_cycle_ramp_down_count = 0;
 						ramp_down_active = 0;
