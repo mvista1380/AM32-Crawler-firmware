@@ -65,6 +65,8 @@ extern void PeriodElapsedCallback();
 extern void interruptRoutine();
 extern void doPWMChanges();
 extern void tenKhzRoutine();
+extern void sendDshotDma();
+extern void receiveDshotDma();
 
 extern char telemetry_done;
 extern char servoPwm;
