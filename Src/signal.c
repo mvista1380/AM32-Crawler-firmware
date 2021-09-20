@@ -8,7 +8,6 @@
 #include "targets.h"
 #include "signal.h"
 #include  "IO.h"
-#include "dshot.h"
 #include "serial_telemetry.h"
 #include "functions.h"
 
@@ -59,66 +58,31 @@ void computeServoInput(){
 }
 
 void transfercomplete(){
-	if(armed && dshot_telemetry){
-	    if(out_put){
 
-
-	  	receiveDshotDma();
-	   	return;
-	    }else{
-
-			sendDshotDma();
-			make_dshot_package();
-			computeDshotDMA();
-	    return;
-	    }
-	}
 
 	  if (inputSet == 0){
 	 	 detectInput();
-	 	receiveDshotDma();
 	 return;
 	  }
 
 	if (inputSet == 1){
-
-
-
-if(dshot_telemetry){
-    if(out_put){
-//    	TIM17->CNT = 0;
-    	make_dshot_package();          // this takes around 10us !!
-  	computeDshotDMA();             //this is slow too..
-  	receiveDshotDma();             //holy smokes.. reverse the line and set up dma again
-   	return;
-    }else{
-		sendDshotDma();
-    return;
-    }
-}else{
-
-		if (dshot == 1){
-			computeDshotDMA();
-			
-			receiveDshotDma();
-		}
+		
 		if  (servoPwm == 1){
 			computeServoInput();
 			LL_TIM_IC_SetPolarity(IC_TIMER_REGISTER, IC_TIMER_CHANNEL, LL_TIM_IC_POLARITY_RISING); // setup rising pin trigger.
-     		receiveDshotDma();
-     	    LL_DMA_EnableIT_HT(DMA1, INPUT_DMA_CHANNEL);
+     		LL_DMA_EnableIT_HT(DMA1, INPUT_DMA_CHANNEL);
 		}
 
-	}
-if(!armed){
-	if (adjusted_input < 0){
-		adjusted_input = 0;
+		if(!armed){
+			if (adjusted_input < 0){
+				adjusted_input = 0;
+			}
+			if (adjusted_input == 0){                       // note this in input..not newinput so it will be adjusted be main loop
+	 			zero_input_count++;
+	 		}
+			else{
+	 			zero_input_count = 0;
+	 		}
 		}
-	 if (adjusted_input == 0){                       // note this in input..not newinput so it will be adjusted be main loop
-	 	zero_input_count++;
-	 		}else{
-	 	zero_input_count = 0;
-	 	}
-	}
 	}
 }

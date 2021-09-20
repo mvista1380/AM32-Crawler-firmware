@@ -117,7 +117,6 @@ Removed gd32 build, until firmware is functional
 #include "main.h"
 #include "targets.h"
 #include "signal.h"
-#include "dshot.h"
 #include "phaseouts.h"
 #include "eeprom.h"
 #include "sounds.h"
@@ -269,18 +268,13 @@ uint32_t gcr[30] =  {0,0,0,0,0,0,0,0,0,0,0,64,0,0,0,0,64,0,0,0,0,64,0,0,0,64,64,
 uint8_t gcr_size;
 uint16_t process_time = 0;
 
-char dshot_telemetry = 0;
 char output = 0;
-int dshot_frametime = 0;
 
 uint16_t phase_a_interval = 0;
 uint16_t phase_b_interval = 0;
 uint16_t phase_c_interval = 0;
 uint32_t current_EXTI_LINE;
 
-int dshot_goodcounts = 0;
-int dshot_badcounts = 0;
-uint8_t last_dshot_command = 0;
 char old_routine = 0;
 int adjusted_input;
 
@@ -480,7 +474,6 @@ uint16_t e_rpm;      // electrical revolution /100 so,  123 is 12300 erpm
 uint16_t adjusted_duty_cycle;
 
 int bad_count = 0;
-int dshotcommand;
 int armed_count_threshold = 1000;
 
 char armed = 0;
@@ -490,7 +483,6 @@ int input = 0;
 int prev_input = 0;
 int newinput =0;
 char inputSet = 0;
-char dshot = 0;
 char servoPwm = 0;
 int zero_crosses;
 
@@ -1342,7 +1334,6 @@ int main(void)
 
 	#else
 	checkForHighSignal();     // will reboot if signal line is high for 10ms
-	receiveDshotDma();
 	#endif
 
 	#ifdef MCU_F051
@@ -1412,77 +1403,38 @@ int main(void)
 		#endif
 		stuckcounter = 0;
 
-		if (dshot == 0){
-			if (newinput > (1000 + (servo_dead_band<<1))) {
-				if (forward == dir_reversed) {
-					if(commutation_interval > 1500 || stepper_sine){
-						forward = 1 - dir_reversed;
-						zero_crosses = 0;
-						old_routine = 1;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 1000;
-					}
+		if (newinput > (1000 + (servo_dead_band<<1))) {
+			if (forward == dir_reversed) {
+				if(commutation_interval > 1500 || stepper_sine){
+					forward = 1 - dir_reversed;
+					zero_crosses = 0;
+					old_routine = 1;
+					maskPhaseInterrupts();
 				}
-				adjusted_input = map(newinput, 1000 + (servo_dead_band<<1), 2000, 47, 2047);
-			}
-			else if (newinput < (1000 -(servo_dead_band<<1))) {
-				if (forward == (1 - dir_reversed)) {
-					if(commutation_interval > 1500 || stepper_sine){
-						zero_crosses = 0;
-						old_routine = 1;
-						forward = dir_reversed;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 1000;
-					}
+				else{
+					newinput = 1000;
 				}
-				adjusted_input = map(newinput, 0, 1000-(servo_dead_band<<1), 2047, 47);
 			}
-			else if (newinput >= (1000 - (servo_dead_band << 1)) && newinput <= (1000 + (servo_dead_band <<1))) {
-				adjusted_input = 0;
-			}  			  
+			adjusted_input = map(newinput, 1000 + (servo_dead_band<<1), 2000, 47, 2047);
 		}
-		else if (dshot) {
-			if (newinput > 1047) {
-				if (forward == dir_reversed) {
-					if(commutation_interval > 1500 || stepper_sine){
-						forward = 1 - dir_reversed;
-						zero_crosses = 0;
-						old_routine = 1;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 0;
-					}
+		else if (newinput < (1000 -(servo_dead_band<<1))) {
+			if (forward == (1 - dir_reversed)) {
+				if(commutation_interval > 1500 || stepper_sine){
+					zero_crosses = 0;
+					old_routine = 1;
+					forward = dir_reversed;
+					maskPhaseInterrupts();
 				}
-
-				adjusted_input = ((newinput - 1048) * 2 + 47) - reversing_dead_band;
-			}
-			else if (newinput <= 1047  && newinput > 47) {
-			//	startcount++;
-				if (forward == (1 - dir_reversed)) {
-					if(commutation_interval > 1500 || stepper_sine){
-						zero_crosses = 0;
-						old_routine = 1;
-						forward = dir_reversed;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 0;
-					}
+				else{
+					newinput = 1000;
 				}
-				adjusted_input = ((newinput - 48) * 2 + 47) - reversing_dead_band;
 			}
-			else if ( newinput < 48) {
-				adjusted_input = 0;
-			}
+			adjusted_input = map(newinput, 0, 1000-(servo_dead_band<<1), 2047, 47);
 		}
-		else{
-			adjusted_input = newinput;
-		}
+		else if (newinput >= (1000 - (servo_dead_band << 1)) && newinput <= (1000 + (servo_dead_band <<1))) {
+			adjusted_input = 0;
+		}  			  
+		
 
 		if ((zero_crosses > 1000) || (adjusted_input == 0)){
 			bemf_timout_happened = 0;

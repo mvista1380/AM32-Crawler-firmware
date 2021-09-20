@@ -12,7 +12,6 @@ extern int input;
 extern int adjusted_input;
 extern int newinput;
 extern char inputSet;
-extern char dshot;
 extern char servoPwm;
 extern uint32_t gcr[];
 extern int armed_count_threshold;
