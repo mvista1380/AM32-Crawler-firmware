@@ -1603,6 +1603,8 @@ int main(void)
 		}
 	}
 
+	delayMillis(2000);
+
 	if (!program_running) {
 		allOff();
 		maskPhaseInterrupts();
