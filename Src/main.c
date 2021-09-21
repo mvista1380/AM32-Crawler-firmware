@@ -1606,7 +1606,7 @@ int main(void)
 	if (!program_running) {
 		allOff();
 		maskPhaseInterrupts();
-		HAL_PWR_EnterSTANDBYMode()
+		LL_PWR_MODE_STANDBY();
 
 		while (1) {}
 	}
