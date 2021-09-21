@@ -1602,6 +1602,14 @@ int main(void)
 			}	 			
 		}
 	}
+
+	if (!program_running) {
+		allOff();
+		maskPhaseInterrupts();
+		PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
+
+		while (1) {}
+	}
 }
 
 
