@@ -138,7 +138,7 @@ char VARIABLE_PWM = 0;
 char brake_on_stop = 1;
 char stall_protection = 1;
 char THIRTY_TWO_MS_TLM = 0;
-char program_running = 1; //low voltage turns off main loop
+char program_running = 0; //low voltage turns off main loop
 
 char advance_level = 2;			// 7.5 degree increments 0 , 7.5, 15, 22.5)
 uint16_t motor_kv = 2000;
