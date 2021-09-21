@@ -1606,9 +1606,8 @@ int main(void)
 	if (!program_running) {
 		allOff();
 		maskPhaseInterrupts();
-		__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
-		__HAL_RTC_WAKEUPTIMER_CLEAR_FLAG(&hrtc, RTC_FLAG_WUTF);
-		HAL_PWR_EnterSTANDBYMode();
+		LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
+		LL_LPM_EnableDeepSleep();
 
 		while (1) {}
 	}
