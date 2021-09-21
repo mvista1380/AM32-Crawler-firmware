@@ -1606,6 +1606,7 @@ int main(void)
 	if (!program_running) {
 		allOff();
 		maskPhaseInterrupts();
+		playPowerDownTune();
 		LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
 		LL_SYSTICK_DisableIT();
 		LL_LPM_EnableDeepSleep();

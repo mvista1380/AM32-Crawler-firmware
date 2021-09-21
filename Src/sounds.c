@@ -135,6 +135,35 @@ void playStartupTune(){
 	__enable_irq();
 }
 
+void playPowerDownTune() {
+	__disable_irq();
+
+	uint8_t value = *(uint8_t*)(EEPROM_START_ADD + 48);
+	if (value != 0xFF) {
+		playBlueJayTune();
+	}
+	else {
+
+		setCaptureCompare();
+		comStep(3);       // activate a pwm channel
+
+		TIM1->PSC = 25;        // frequency of beep
+		delayMillis(200);         // duration of beep
+		comStep(5);
+
+		TIM1->PSC = 40;            // next beep is higher frequency
+		delayMillis(200);
+
+		comStep(6);
+		TIM1->PSC = 50;         // higher again..
+		delayMillis(200);
+		allOff();                // turn all channels low again
+		TIM1->PSC = 0;           // set prescaler back to 0.
+		signaltimeout = 0;
+	}
+	__enable_irq();
+}
+
 void playBrushedStartupTune(){
 	__disable_irq();
 	setCaptureCompare();
