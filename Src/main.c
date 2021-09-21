@@ -1601,8 +1601,6 @@ int main(void)
 				}
 			}	 			
 		}
-
-		program_running = 0;
 	}
 
 	delayMillis(2000);
