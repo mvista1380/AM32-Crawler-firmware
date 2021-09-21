@@ -1606,7 +1606,7 @@ int main(void)
 	if (!program_running) {
 		allOff();
 		maskPhaseInterrupts();
-		LL_PWR_MODE_STANDBY();
+		__WFI();
 
 		while (1) {}
 	}
