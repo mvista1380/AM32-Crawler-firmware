@@ -1607,6 +1607,7 @@ int main(void)
 		allOff();
 		maskPhaseInterrupts();
 		LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
+		LL_SYSTICK_DisableIT();
 		LL_LPM_EnableDeepSleep();
 
 		while (1) {}
