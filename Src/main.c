@@ -1607,6 +1607,11 @@ int main(void)
 		allOff();
 		maskPhaseInterrupts();
 		playPowerDownTune();
+
+		if (LL_PWR_IsActiveFlag_WU()) {
+			LL_PWR_ClearFlag_WU();
+		}
+
 		LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
 		LL_SYSTICK_DisableIT();
 		LL_LPM_EnableDeepSleep();
