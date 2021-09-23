@@ -963,7 +963,7 @@ void tenKhzRoutine(){
 						ramp_down_active = 1;
 					}
 
-					prev_input = input;
+					prev_input = input - 10;
 					
 					if(commutation_interval > 10000){						
 						stall_detected = 1;
