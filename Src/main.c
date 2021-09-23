@@ -962,6 +962,9 @@ void tenKhzRoutine(){
 					else if (input < prev_input && minimum_duty_cycle > starting_duty_orig) {
 						ramp_down_active = 1;
 					}
+					else if (input >= prev_input && ramp_down_active) {
+						ramp_down_active = 0;
+					}
 
 					prev_input = input - 10;
 					
