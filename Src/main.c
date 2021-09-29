@@ -140,7 +140,7 @@ char stall_protection = 1;
 char THIRTY_TWO_MS_TLM = 0;
 char program_running = 1; //low voltage turns off main loop
 
-char advance_level = 2;			// 7.5 degree increments 0 , 7.5, 15, 22.5)
+char advance_level = 0;			// 7.5 degree increments 0 , 7.5, 15, 22.5)
 uint16_t motor_kv = 2000;
 char motor_poles = 14;
 //add Startup Power
@@ -217,9 +217,6 @@ float consumed_current = 0;
 uint16_t smoothed_raw_current = 0;
 uint16_t actual_current = 0;
 uint16_t last_step_current = 0;
-
-char lowkv = 0;
-char bemf_timeout = 10;
 
 char startup_boost = 35;
 char reversing_dead_band = 1;
@@ -299,10 +296,6 @@ int total = 0;
 int readings[30];
 int tempraw = 0;
 int temp_degrees = 0;
-
-int bemf_timout_happened = 0;
-int timeout_count = 0;
-int bemf_timeout_threshold = 10;
 
 int changeover_step = 1;
 int sin_swicthover_angle = 240;
@@ -509,7 +502,6 @@ uint16_t commutation_interval = 12500;
 int pwm = 1;
 int floating =2;
 int lowside = 3;
-int sensorless = 1;
 uint32_t waitTime = 0;
 int signaltimeout = 0;
 
@@ -747,7 +739,6 @@ void commutate(){
 
 	bemfcounter = 0;
 	zcfound = 0;
-	timeout_count = 0;
 }
 
 void PeriodElapsedCallback(){
@@ -821,7 +812,6 @@ void startMotor() {
 		running = 1;
 	}
 	enableCompInterrupts();
-	sensorless = 1;
 }
 
 void tenKhzRoutine(){
@@ -1488,7 +1478,6 @@ int main(void)
 		}
 
 		if ((zero_crosses > 1000) || (adjusted_input == 0)){
-			bemf_timout_happened = 0;
 			#ifdef tmotor55
 			if(adjusted_input == 0 && armed){
 			GPIOA->BSRR = LL_GPIO_PIN_15; // on green
@@ -1496,21 +1485,6 @@ int main(void)
 			GPIOB->BRR = LL_GPIO_PIN_3;  //off red
 			}
 			#endif
-		}
-
-		if(zero_crosses > 100 && adjusted_input < 200){
-			bemf_timout_happened = 0;
-		}
-
-		if(adjusted_input < 160){
-			bemf_timout_happened = 0;
-		}
- 	 	 
-		if (adjusted_input < 150){              // startup duty cycle should be low enough to not burn motor
-			bemf_timeout = 100;
-		}
-		else{
-			bemf_timeout = 10;
 		}
 	  	  	
 		if(adjusted_input < 30){           // dead band ?
@@ -1535,10 +1509,6 @@ int main(void)
 				filter_level = 2;
 			}
 
-			if(lowkv){
-				filter_level = low_kv_filter_level;
-			}
-
 			/**************** old routine*********************/
 			if (old_routine && running){
 				maskPhaseInterrupts();
@@ -1559,7 +1529,6 @@ int main(void)
 				}
 			}
 			if (INTERVAL_TIMER->CNT > 45000 && running == 1){
-				bemf_timout_happened ++;
 				zcfoundroutine();
 				maskPhaseInterrupts();
 				old_routine = 1;
