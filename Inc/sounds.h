@@ -11,6 +11,7 @@
 #include "main.h"
 
 void playStartupTune(void);
+void playPowerDownTune(void);
 void playInputTune(void);
 void playBrushedStartupTune(void);
 void playInputTune2(void);
