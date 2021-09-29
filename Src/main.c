@@ -931,7 +931,7 @@ void tenKhzRoutine(){
 					}
 					else if (minimum_duty_cycle < starting_duty_orig) {
 						minimum_duty_cycle = starting_duty_orig;
-						ramp_down_active == 0;
+						ramp_down_active = 0;
 						duty_cycle_ramp_down_step = 0;
 					}
 					
