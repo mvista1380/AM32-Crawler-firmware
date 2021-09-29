@@ -134,15 +134,12 @@ Removed gd32 build, until firmware is functional
 #define VERSION_MAJOR 1
 #define VERSION_MINOR 75
 char dir_reversed = 0;
-char VARIABLE_PWM = 0;
 char brake_on_stop = 1;
 char stall_protection = 1;
 char THIRTY_TWO_MS_TLM = 0;
 char program_running = 1; //low voltage turns off main loop
 
-char advance_level = 0;			// 7.5 degree increments 0 , 7.5, 15, 22.5)
-uint16_t motor_kv = 2000;
-char motor_poles = 14;
+char advance_level = 0;
 //add Startup Power
 //Add PWM Frequency
 //Add Beep Volume
@@ -150,8 +147,6 @@ char drag_brake_strength = 10;		// Drag Brake Power
 char sine_mode_changeover_thottle_level = 5;	// Sine Startup Range
 char sine_mode_changeover_mutliplier = 20;
 short sine_mode_changeover = 5 * 20;
-
-char USE_HALL_SENSOR = 0;
 
 //============================= Servo Settings ==============================
 uint16_t servo_low_threshold = 1100;	// anything below this point considered 0
@@ -218,7 +213,6 @@ uint16_t smoothed_raw_current = 0;
 uint16_t actual_current = 0;
 uint16_t last_step_current = 0;
 
-char startup_boost = 35;
 char reversing_dead_band = 1;
 
 int checkcount = 0;
@@ -538,13 +532,6 @@ void loadEEpromSettings(){
 		dir_reversed = 0;
 	}
 
-	if(eepromBuffer[21] == 0x01){
-		VARIABLE_PWM = 1;
-	}
-	else{
-		VARIABLE_PWM = 0;
-	}
-
 	if(eepromBuffer[23] < 4){
 		advance_level = eepromBuffer[23];
 	}
@@ -552,14 +539,7 @@ void loadEEpromSettings(){
 		advance_level = 2;  // * 7.5 increments
 	}
 
-	if(eepromBuffer[24] < 49 && eepromBuffer[24] > 23){
-		TIMER1_MAX_ARR = map (eepromBuffer[24], 24, 48, TIM1_AUTORELOAD ,TIM1_AUTORELOAD/2);
-		TIM1->ARR = TIMER1_MAX_ARR;	   
-	}
-	else{
-		tim1_arr = TIM1_AUTORELOAD;
-		TIM1->ARR = tim1_arr;
-	}
+	TIM1->ARR = tim1_arr;	
 
 	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
 		minimum_duty_cycle = eepromBuffer[25];
@@ -572,21 +552,11 @@ void loadEEpromSettings(){
 		maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
 	}
 
-	motor_kv = (eepromBuffer[26] * 40) + 20;
-	motor_poles = eepromBuffer[27];
-
 	if(eepromBuffer[28] == 0x01){
 		brake_on_stop = 1;
 	}
 	else{
 		brake_on_stop = 0;
-	}
-
-	if(eepromBuffer[29] == 0x01){
-		stall_protection = 1;
-	}
-	else{
-		stall_protection = 0;
 	}
 
 	setVolume(5);
@@ -619,17 +589,6 @@ void loadEEpromSettings(){
 		}
 
 		low_cell_volt_cutoff = eepromBuffer[37] + 250; // 2.5 to 3.5 volts per cell range
-		   
-		if(eepromBuffer[39] == 0x01){
-			#ifdef HAS_HALL_SENSORS
-			USE_HALL_SENSOR = 1;
-			#else
-			USE_HALL_SENSOR = 0;
-			#endif
-		}
-		else{
-			USE_HALL_SENSOR = 0;
-		}
 
 		if(eepromBuffer[40] > 4 && eepromBuffer[40] < 26){            // sine mode changeover 5-25 percent throttle
 			sine_mode_changeover_thottle_level = eepromBuffer[40];
@@ -651,13 +610,6 @@ void saveEEpromSettings(){
 	}
 
 	eepromBuffer[19] = 0x01;
-
-	if(VARIABLE_PWM == 1){
-		eepromBuffer[21] = 0x01;
-	}
-	else{
-		eepromBuffer[21] = 0x00;
-	}
 
 	eepromBuffer[23] = advance_level;
 
@@ -1016,10 +968,6 @@ void tenKhzRoutine(){
 		}
 
 		if (armed && running && (input > 47)){
-			if(VARIABLE_PWM){
-				tim1_arr = map(commutation_interval, 96, 200, TIMER1_MAX_ARR/2, TIMER1_MAX_ARR);
-				advance_level = eepromBuffer[23];
-			}
 			adjusted_duty_cycle = ((duty_cycle * tim1_arr)/TIMER1_MAX_ARR)+1;
 		}
 		else{
