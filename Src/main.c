@@ -1249,10 +1249,6 @@ int main(void)
 		}
 		saveEEpromSettings();
 	}
-	//  if(EEPROM_VERSION != eepromBuffer[2]){
-	//	  eepromBuffer[2] = EEPROM_VERSION;
-	//	  saveEEpromSettings();
-	//  }
 
 	if (dir_reversed == 1){
 		forward = 0;
