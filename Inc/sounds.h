@@ -12,6 +12,7 @@
 
 void playStartupTune(void);
 void playPowerDownTune(void);
+void playThermalWarningTune(void);
 void playInputTune(void);
 void playBrushedStartupTune(void);
 void playInputTune2(void);

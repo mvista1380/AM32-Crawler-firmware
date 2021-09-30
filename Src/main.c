@@ -264,9 +264,6 @@ char dshot_telemetry = 0;
 char output = 0;
 int dshot_frametime = 0;
 
-uint16_t phase_a_interval = 0;
-uint16_t phase_b_interval = 0;
-uint16_t phase_c_interval = 0;
 uint32_t current_EXTI_LINE;
 
 int dshot_goodcounts = 0;
@@ -588,7 +585,7 @@ void loadEEpromSettings(){
 			LOW_VOLTAGE_CUTOFF = 0;
 		}
 
-		low_cell_volt_cutoff = eepromBuffer[37] + 250; // 2.5 to 3.5 volts per cell range
+		low_cell_volt_cutoff = eepromBuffer[37] + 300; // 2.5 to 3.5 volts per cell range
 
 		if(eepromBuffer[40] > 4 && eepromBuffer[40] < 26){            // sine mode changeover 5-25 percent throttle
 			sine_mode_changeover_thottle_level = eepromBuffer[40];
@@ -1055,9 +1052,7 @@ void tenKhzRoutine(){
 
 void advanceincrement(int input){	
 
-	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);	
-
-
+	char inc = map(input, 47, sine_mode_changeover, 1, max_sin_inc);
 
 	if (forward){
 		
@@ -1112,10 +1107,6 @@ void advanceincrement(int input){
 	TIM1->CCR1 = (amplitude * pwmSin[0][phase_A_position]) + (amplitude + 2);
 	TIM1->CCR2 = (amplitude * pwmSin[1][phase_B_position]) + (amplitude + 2);
 	TIM1->CCR3 = (amplitude * pwmSin[2][phase_C_position]) + (amplitude + 2);
-
-	//TIM1->CCR1 = ((2*pwmSin[phase_A_position]/SINE_DIVIDER)+ gate_drive_offset)*TIM1_AUTORELOAD/2000;
-	//TIM1->CCR2 = ((2*pwmSin[phase_B_position]/SINE_DIVIDER)+ gate_drive_offset)*TIM1_AUTORELOAD/2000;
-	//TIM1->CCR3 = ((2*pwmSin[phase_C_position]/SINE_DIVIDER)+ gate_drive_offset)*TIM1_AUTORELOAD/2000;
     
 }
 
@@ -1330,6 +1321,12 @@ int main(void)
 				}
 			}
 			adc_counter = 0;
+
+			if (degrees_celsius >= 115) {
+				playThermalWarningTune();
+				delayMillis(2000);
+				continue;
+			}
 
 			#ifdef USE_ADC_INPUT
 			if(ADC_raw_input < 10){
