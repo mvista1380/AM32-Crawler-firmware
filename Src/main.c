@@ -1319,6 +1319,14 @@ int main(void)
 			adc_counter = 0;
 
 			if (degrees_celsius >= 115) {
+				allOff();
+				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
+				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
+				TIM1->CCR1 = adjusted_duty_cycle;
+				TIM1->CCR2 = adjusted_duty_cycle;
+				TIM1->CCR3 = adjusted_duty_cycle;
+				proportionalBrake();
+				prop_brake_active = 1;
 				playThermalWarningTune();
 				delayMillis(2000);
 				continue;
