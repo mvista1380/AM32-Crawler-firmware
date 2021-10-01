@@ -44,7 +44,6 @@
 #define FIRMWARE_NAME           "IFlight_80A "
 #define DEAD_TIME               45
 #define HARDWARE_GROUP_F0_B
-#define PA6_VOLTAGE
 #endif
 
 #ifdef MP6531
