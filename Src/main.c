@@ -1174,6 +1174,23 @@ void SwitchOver() {
 	enableCompInterrupts();
 }
 
+void EnterStandbyMode(){
+	CLEAR_BIT(PWR->CSR, PWR_CSR_EWUP1);
+	SET_BIT(PWR->CR, PWR_CR_CWUF);
+	SET_BIT(PWR->CR, PWR_CR_ULP);
+	MODIFY_REG(PWR->CR, PWR_CR_PDDS, PWR_CR_PDDS);
+	SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+
+#if defined ( __CC_ARM)
+
+	__force_stores();
+
+#endif
+
+	__WFI();
+
+}
+
 
 int main(void)
 {
@@ -1535,11 +1552,13 @@ int main(void)
 			LL_PWR_ClearFlag_WU();
 		}
 
-		LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
+		EnterStandbyMode();
+
+		/*LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
 		LL_SYSTICK_DisableIT();
 		LL_LPM_EnableDeepSleep();
-
-		while (1) {}
+		*/
+		//while (1) {}
 	}
 }
 
