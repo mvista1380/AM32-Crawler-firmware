@@ -40,6 +40,13 @@
 #define USE_SERIAL_TELEMETRY
 #endif
 
+#ifdef IFLIGHT80
+#define FIRMWARE_NAME           "IFlight_80A "
+#define DEAD_TIME               45
+#define HARDWARE_GROUP_F0_B
+#define PA6_VOLTAGE
+#endif
+
 #ifdef MP6531
 #define FIRMWARE_NAME           "Mp6531_Dev  "
 #define DEAD_TIME               45
