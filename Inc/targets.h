@@ -111,9 +111,9 @@
 #endif
 
 #ifdef WRAITH32
-#define FIRMWARE_NAME           "Wraith_32   "
+#define FIRMWARE_NAME           "Wraith_32 v2"
 #define DEAD_TIME               45
-#define TARGET_VOLTAGE_DIVIDER  75
+#define TARGET_VOLTAGE_DIVIDER  80
 #define SINE_DIVIDER 			4
 #define HARDWARE_GROUP_F0_C
 //#define USE_SERIAL_TELEMETRY
