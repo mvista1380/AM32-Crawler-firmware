@@ -1534,7 +1534,7 @@ int main(void)
 		LL_PWR_ClearFlag_WU();
 	}
 
-	TIM_ITConfig(TIM6, TIM_IT_Update, DISABLE);
+	__HAL_TIM_DISABLE_IT(TIM6, TIM_IT_Update);
 	TIM_Cmd(TIM6, DISABLE);
 
 	LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
