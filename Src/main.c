@@ -1014,7 +1014,7 @@ void tenKhzRoutine(){
 
 	if (program_running) {
 		signaltimeout++;
-		if (signaltimeout > 2500 * (servoPwm + 1)) { // quarter second timeout when armed half second for servo;
+		if (signaltimeout > 5000) { // quarter second timeout when armed half second for servo;
 			if (armed) {
 				allOff();
 				armed = 0;
