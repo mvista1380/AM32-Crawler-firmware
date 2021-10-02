@@ -1529,16 +1529,19 @@ int main(void)
 	maskPhaseInterrupts();
 	playPowerDownTune();
 
-	/*
+	
 	if (LL_PWR_IsActiveFlag_WU()) {
 		LL_PWR_ClearFlag_WU();
 	}
 
+	TIM_ITConfig(TIM6, TIM_IT_Update, DISABLE);
+	TIM_Cmd(TIM6, DISABLE);
+
 	LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
 	LL_SYSTICK_DisableIT();
 	LL_LPM_EnableDeepSleep();
-	*/
-	while (1);
+	
+	//while (1);
 }
 
 
