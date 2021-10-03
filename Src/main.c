@@ -772,6 +772,7 @@ void tenKhzRoutine(){
 	}
 
 	if (!program_running) {
+		allOff();
 		return;
 	}
 
