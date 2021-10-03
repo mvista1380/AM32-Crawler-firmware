@@ -141,11 +141,12 @@
 #endif
 
 #ifdef FLYCOLOR
-#define FIRMWARE_NAME           "Flycolor Gen"
+#define FIRMWARE_NAME           "Flycolor 50A"
 #define DEAD_TIME               45
 #define HARDWARE_GROUP_F0_A
 //#define USE_SERIAL_TELEMETRY
 #define PA6_VOLTAGE
+#define TARGET_VOLTAGE_DIVIDER  80
 #endif
 
 #ifdef TMOTORF45A

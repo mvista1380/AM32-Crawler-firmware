@@ -909,7 +909,7 @@ void tenKhzRoutine(){
 						ramp_down_active = 0;
 					}
 
-					prev_input = input - 10;
+					prev_input = input - 10;//buffer
 					
 					if(commutation_interval > 9000){						
 						stall_detected = 1;
