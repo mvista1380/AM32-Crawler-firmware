@@ -771,6 +771,9 @@ void tenKhzRoutine(){
 		consumption_timer = 0;
 	}
 
+	if (!program_running) {
+		return;
+	}
 
 	if(!armed && inputSet){
 		if(adjusted_input == 0){
@@ -1012,42 +1015,41 @@ void tenKhzRoutine(){
 		NVIC_SetPriority(ADC1_COMP_IRQn, 0);
 	}
 
-	if (program_running) {
-		signaltimeout++;
-		if (signaltimeout > 5000) { // quarter second timeout when armed half second for servo;
-			if (armed) {
-				allOff();
-				armed = 0;
-				input = 0;
-				inputSet = 0;
-				zero_input_count = 0;
-				TIM1->CCR1 = 0;
-				TIM1->CCR2 = 0;
-				TIM1->CCR3 = 0;
-				IC_TIMER_REGISTER->PSC = 0;
-				IC_TIMER_REGISTER->CNT = 0;
-				for (int i = 0; i < 64; i++) {
-					dma_buffer[i] = 0;
-				}
-				NVIC_SystemReset();
+	
+	signaltimeout++;
+	if (signaltimeout > 5000) { // quarter second timeout when armed half second for servo;
+		if (armed) {
+			allOff();
+			armed = 0;
+			input = 0;
+			inputSet = 0;
+			zero_input_count = 0;
+			TIM1->CCR1 = 0;
+			TIM1->CCR2 = 0;
+			TIM1->CCR3 = 0;
+			IC_TIMER_REGISTER->PSC = 0;
+			IC_TIMER_REGISTER->CNT = 0;
+			for (int i = 0; i < 64; i++) {
+				dma_buffer[i] = 0;
 			}
+			NVIC_SystemReset();
+		}
 
-			if (signaltimeout > 25000) {     // 2.5 second
-				allOff();
-				armed = 0;
-				input = 0;
-				inputSet = 0;
-				zero_input_count = 0;
-				TIM1->CCR1 = 0;
-				TIM1->CCR2 = 0;
-				TIM1->CCR3 = 0;
-				IC_TIMER_REGISTER->PSC = 0;
-				IC_TIMER_REGISTER->CNT = 0;
-				for (int i = 0; i < 64; i++) {
-					dma_buffer[i] = 0;
-				}
-				NVIC_SystemReset();
+		if (signaltimeout > 25000) {     // 2.5 second
+			allOff();
+			armed = 0;
+			input = 0;
+			inputSet = 0;
+			zero_input_count = 0;
+			TIM1->CCR1 = 0;
+			TIM1->CCR2 = 0;
+			TIM1->CCR3 = 0;
+			IC_TIMER_REGISTER->PSC = 0;
+			IC_TIMER_REGISTER->CNT = 0;
+			for (int i = 0; i < 64; i++) {
+				dma_buffer[i] = 0;
 			}
+			NVIC_SystemReset();
 		}
 	}
 }
