@@ -915,6 +915,11 @@ void tenKhzRoutine(){
 						duty_cycle_ramp_down_count = 0;
 						ramp_down_active = 0;
 						duty_cycle_ramp_down_step = 0;
+						
+						if (forward == 1)
+							step++;
+						else
+							step--;
 
 						if(duty_cycle_ramp_up_step % duty_cycle_ramp_up_rate == 0)
 							minimum_duty_cycle++;
