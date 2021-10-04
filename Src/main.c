@@ -188,7 +188,7 @@ int duty_cycle_ramp_down_delay = 7000;
 int duty_cycle_ramp_down_rate = 50;
 int duty_cycle_ramp_down_step = 0;
 int duty_cycle_ramp_down_count = 0;
-int duty_cycle_ramp_up_rate = 5;
+int duty_cycle_ramp_up_rate = 10;
 int duty_cycle_ramp_up_step = 0;
 char stall_detected = 0;
 char ramp_down_active = 0;
@@ -893,6 +893,7 @@ void tenKhzRoutine(){
 							stall_detected = 0;
 							duty_cycle_ramp_down_count = 0;
 							duty_cycle_ramp_up_step = 0;
+							restep = 0;
 
 							if (input < prev_input) {
 								ramp_down_active = 1;
@@ -924,6 +925,15 @@ void tenKhzRoutine(){
 					}
 					else if(ramp_down_active && duty_cycle_ramp_down_step % duty_cycle_ramp_down_rate == 0){
 							minimum_duty_cycle--;
+					}
+
+					if (duty_cycle_ramp_down_count == 0 && restep = 0) {//retry the same step that stalled
+						if (forward)
+							step--;
+						else
+							step++;
+
+						restep = 1;
 					}
 
 					if(minimum_duty_cycle > maximum_duty_orig){
