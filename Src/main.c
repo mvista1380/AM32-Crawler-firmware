@@ -135,7 +135,6 @@ Removed gd32 build, until firmware is functional
 #define VERSION_MINOR 75
 char dir_reversed = 0;
 char brake_on_stop = 1;
-char stall_protection = 1;
 char THIRTY_TWO_MS_TLM = 0;
 char program_running = 1; //low voltage turns off main loop
 
@@ -682,7 +681,7 @@ void commutate(){
 
 	changeCompInput();
 
-	if(average_interval > 2000 && stall_protection){
+	if(average_interval > 2000){
 		old_routine = 1;
 	}
 
@@ -883,71 +882,65 @@ void tenKhzRoutine(){
 		if(!prop_brake_active){
 
 			if (running){
-				if(stall_protection){  // this boosts throttle as the rpm gets lower, for crawlers and rc cars only, do not use for multirotors.
-					//minimum_duty_cycle = eepromBuffer[25];
-					
-					if (stall_detected) {
-						if (duty_cycle_ramp_down_count < duty_cycle_ramp_down_delay)
-							duty_cycle_ramp_down_count++;
-						else {
-							stall_detected = 0;
-							duty_cycle_ramp_down_count = 0;
-							duty_cycle_ramp_up_step = 0;
-							restep = 0;
+				if (stall_detected) {
+					if (duty_cycle_ramp_down_count < duty_cycle_ramp_down_delay)
+						duty_cycle_ramp_down_count++;
+					else {
+						stall_detected = 0;
+						duty_cycle_ramp_down_count = 0;
+						duty_cycle_ramp_up_step = 0;
+						restep = 0;
 
-							if (input < prev_input) {
-								ramp_down_active = 1;
-							}
+						if (input < prev_input) {
+							ramp_down_active = 1;
 						}
 					}
-					else if (ramp_down_active) {
-						duty_cycle_ramp_down_step++;
-					}
-					else if (input < prev_input && minimum_duty_cycle > starting_duty_orig) {
-						ramp_down_active = 1;
-					}
-					else if (input >= prev_input && ramp_down_active) {
-						ramp_down_active = 0;
-					}
-
-					prev_input = input - 10;//buffer
-					
-					if(commutation_interval > 9000){						
-						stall_detected = 1;
-						duty_cycle_ramp_down_count = 0;
-						ramp_down_active = 0;
-						duty_cycle_ramp_down_step = 0;
-
-						if(duty_cycle_ramp_up_step % duty_cycle_ramp_up_rate == 0)
-							minimum_duty_cycle++;
-						
-						duty_cycle_ramp_up_step++;
-					}
-					else if(ramp_down_active && duty_cycle_ramp_down_step % duty_cycle_ramp_down_rate == 0){
-							minimum_duty_cycle--;
-					}
-
-					if (duty_cycle_ramp_down_count == 0 && restep = 0) {//retry the same step that stalled
-						if (forward)
-							step--;
-						else
-							step++;
-
-						restep = 1;
-					}
-
-					if(minimum_duty_cycle > maximum_duty_orig){
-						minimum_duty_cycle = maximum_duty_orig;
-						duty_cycle_ramp_up_step = 0;
-					}
-					else if (minimum_duty_cycle < starting_duty_orig) {
-						minimum_duty_cycle = starting_duty_orig;
-						ramp_down_active = 0;
-						duty_cycle_ramp_down_step = 0;
-					}
-					
+				}
+				else if (ramp_down_active) {
+					duty_cycle_ramp_down_step++;
+				}
+				else if (input < prev_input && minimum_duty_cycle > starting_duty_orig) {
+					ramp_down_active = 1;
+				}
+				else if (input >= prev_input && ramp_down_active) {
+					ramp_down_active = 0;
 				}
 
+				prev_input = input - 10;//buffer
+					
+				if(commutation_interval > 9000){						
+					stall_detected = 1;
+					duty_cycle_ramp_down_count = 0;
+					ramp_down_active = 0;
+					duty_cycle_ramp_down_step = 0;
+
+					if(duty_cycle_ramp_up_step % duty_cycle_ramp_up_rate == 0)
+						minimum_duty_cycle++;
+						
+					duty_cycle_ramp_up_step++;
+				}
+				else if(ramp_down_active && duty_cycle_ramp_down_step % duty_cycle_ramp_down_rate == 0){
+						minimum_duty_cycle--;
+				}
+
+				if (duty_cycle_ramp_down_count == 0 && restep = 0) {//retry the same step that stalled
+					if (forward)
+						step--;
+					else
+						step++;
+
+					restep = 1;
+				}
+
+				if(minimum_duty_cycle > maximum_duty_orig){
+					minimum_duty_cycle = maximum_duty_orig;
+					duty_cycle_ramp_up_step = 0;
+				}
+				else if (minimum_duty_cycle < starting_duty_orig) {
+					minimum_duty_cycle = starting_duty_orig;
+					ramp_down_active = 0;
+					duty_cycle_ramp_down_step = 0;
+				}
 			}
 
 			if(maximum_throttle_change_ramp){
@@ -1124,17 +1117,10 @@ void zcfoundroutine(){   // only used in polling mode, blocking routine.
 	bad_count = 0;
 
 	zero_crosses++;
-	if(stall_protection){
-		if (zero_crosses >= 100 && commutation_interval <= 2000) {
-			old_routine = 0;
-			enableCompInterrupts();          // enable interrupt
-		}
-	}
-	else{
-		if(zero_crosses > 30){
-			old_routine = 0;
-			enableCompInterrupts();          // enable interrupt
-		}
+	
+	if (zero_crosses >= 100 && commutation_interval <= 2000) {
+		old_routine = 0;
+		enableCompInterrupts();          // enable interrupt
 	}
 }
 
@@ -1145,11 +1131,7 @@ void SwitchOver() {
 	old_routine = 0;
 	prop_brake_active = 0;
 	switchover_count = 0;
-	//commutation_interval = 9000;
-	//average_interval = 9000;
 	last_average_interval = average_interval;
-	//  minimum_duty_cycle = ;
-	//INTERVAL_TIMER->CNT = 9000;
 	zero_crosses = 0;
 	prop_brake_active = 0;
 
@@ -1162,13 +1144,6 @@ void SwitchOver() {
 	step = changeover_step;
 	comStep(step);
 	changeCompInput();
-	//commutate();
-	//allOff();
-	//changeCompInput();
-	//enableCompInterrupts();
-	// rising bemf on a same as position 0.
-	//LL_TIM_GenerateEvent_UPDATE(TIM1);
-	//zcfoundroutine();
 	enableCompInterrupts();
 }
 
