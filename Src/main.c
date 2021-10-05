@@ -193,7 +193,6 @@ char stall_detected = 0;
 char ramp_down_active = 0;
 char restep = 0;
 
-
 char low_rpm_throttle_limit = 0;
 
 uint16_t low_voltage_count = 0;
@@ -925,7 +924,7 @@ void tenKhzRoutine(){
 						minimum_duty_cycle--;
 				}
 
-				if (duty_cycle_ramp_down_count == 0 && restep = 0) {//retry the same step that stalled
+				if (duty_cycle_ramp_down_count == 0 && restep == 0) {//retry the same step that stalled
 					if (forward)
 						step--;
 					else
