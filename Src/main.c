@@ -1314,13 +1314,13 @@ int main(void)
 		if (!armed && newinput > 100 && (newinput > (1000 + (servo_dead_band << 1)) || newinput < (1000 - (servo_dead_band << 1)))) {
 			allOff();
 			playLearnModeTune();
-			throttle_learn_active = 1;
 			int starting_input = newinput;
 			int current_max = newinput;
 			int current_min = newinput;
 			int last_input = newinput;
 			int timout_counter = 0;
 			char changed = 0;
+			char throttle_learn_active = 1;
 			
 			while (throttle_learn_active) {
 				signaltimeout = 0;
