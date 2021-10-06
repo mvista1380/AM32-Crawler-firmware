@@ -135,7 +135,6 @@ Removed gd32 build, until firmware is functional
 #define VERSION_MINOR 75
 char dir_reversed = 0;
 char brake_on_stop = 1;
-char THIRTY_TWO_MS_TLM = 0;
 char program_running = 1; //low voltage turns off main loop
 
 char advance_level = 0;
@@ -254,6 +253,7 @@ uint16_t ADC_raw_current;
 uint16_t ADC_raw_input;
 int adc_counter = 0;
 char prop_brake_active = 0;
+char thermal_protection_active = 0;
 
 uint8_t eepromBuffer[48] ={0};
 uint32_t gcr[30] =  {0,0,0,0,0,0,0,0,0,0,0,64,0,0,0,0,64,0,0,0,0,64,0,0,0,64,64,0,64,0};
@@ -566,13 +566,6 @@ void loadEEpromSettings(){
 			setVolume(eepromBuffer[30]);
 		}
 
-		if(eepromBuffer[31] == 0x01){
-			THIRTY_TWO_MS_TLM = 1;
-		}
-		else{
-			THIRTY_TWO_MS_TLM = 0;
-		}
-
 		servo_low_threshold = (eepromBuffer[32]*2) + 750; // anything below this point considered 0
 		servo_high_threshold = (eepromBuffer[33]*2) + 1750;;  // anything above this point considered 2000 (max)
 		servo_neutral = (eepromBuffer[34]) + 1374;
@@ -710,14 +703,6 @@ void PeriodElapsedCallback(){
 
 void interruptRoutine(){
 	if (average_interval > 125){
-		/*if ((INTERVAL_TIMER->CNT < 125) && (duty_cycle < 600) && (zero_crosses < 500)){    //should be impossible, desync?exit anyway
-			return;
-		}
-
-		if (INTERVAL_TIMER->CNT < (commutation_interval >> 1)){
-			return;
-		}*/
-
 		stuckcounter++;             // stuck at 100 interrupts before the main loop happens again.
 		if (stuckcounter > 100){
 			maskPhaseInterrupts();
@@ -776,6 +761,9 @@ void tenKhzRoutine(){
 		return;
 	}
 
+	if (thermal_protection_active)
+		return;
+
 	if(!armed && inputSet){
 		if(adjusted_input == 0){
 			armed_timeout_count++;
@@ -806,13 +794,6 @@ void tenKhzRoutine(){
 		}
 		else{
 			armed_timeout_count =0;
-		}
-	}
-
-	if(THIRTY_TWO_MS_TLM){
-		thirty_two_ms_count++;
-		if(thirty_two_ms_count>320){
-			thirty_two_ms_count = 0;
 		}
 	}
 
@@ -1300,10 +1281,13 @@ int main(void)
 				TIM1->CCR3 = adjusted_duty_cycle;
 				proportionalBrake();
 				prop_brake_active = 1;
+				thermal_protection_active = 1;
 				playThermalWarningTune();
 				delayMillis(2000);
 				continue;
 			}
+			else if (thermal_protection_active)
+				thermal_protection_active = 0;
 
 			#ifdef USE_ADC_INPUT
 			if(ADC_raw_input < 10){
@@ -1326,6 +1310,12 @@ int main(void)
 		}
 		#endif
 		stuckcounter = 0;
+
+		if (!armed && (newinput > (1000 + (servo_dead_band << 1)) || newinput < (1000 - (servo_dead_band << 1)))) {
+			allOff();
+			playLearnModeTune();
+			delayMillis(500);
+		}
 
 		if (dshot == 0){
 			if (newinput > (1000 + (servo_dead_band<<1))) {
