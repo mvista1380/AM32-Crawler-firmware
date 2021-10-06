@@ -136,6 +136,7 @@ Removed gd32 build, until firmware is functional
 char dir_reversed = 0;
 char brake_on_stop = 1;
 char program_running = 1; //low voltage turns off main loop
+char throttle_learn_active = 0;
 
 char advance_level = 0;
 //add Startup Power
@@ -761,7 +762,7 @@ void tenKhzRoutine(){
 		return;
 	}
 
-	if (thermal_protection_active)
+	if (thermal_protection_active || throttle_learn_active)
 		return;
 
 	if(!armed && inputSet){
