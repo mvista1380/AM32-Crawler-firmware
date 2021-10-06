@@ -1321,7 +1321,7 @@ int main(void)
 			int last_input = newinput;
 			int timout_counter = 0;
 			char changed = 0;
-			char throttle_learn_active = 1;
+			throttle_learn_active = 1;
 			
 			while (throttle_learn_active) {
 				LL_IWDG_ReloadCounter(IWDG);
