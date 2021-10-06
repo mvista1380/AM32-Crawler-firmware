@@ -1333,12 +1333,12 @@ int main(void)
 				}
 				#endif
 
-				last_input = newinput;
-
 				if (getAbsDif(last_input, newinput) < 10)
 					timout_counter++;
 				else
 					changed = 1;
+
+				last_input = newinput;
 
 				if (timout_counter >= 20000)
 					throttle_learn_active = 0;
