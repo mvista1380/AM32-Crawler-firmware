@@ -1322,7 +1322,7 @@ int main(void)
 			char changed = 0;
 			char throttle_learn_active = 1;
 			
-			while (throttle_learn_active) {
+			while (throttle_learn_active == 1) {
 				signaltimeout = 0;
 
 				#ifdef USE_ADC_INPUT
@@ -1335,12 +1335,14 @@ int main(void)
 
 				if (getAbsDif(last_input, newinput) < 10)
 					timout_counter++;
-				else
+				else {
 					changed = 1;
+					timout_counter = 0;
+				}
 
 				last_input = newinput;
 
-				if (timout_counter >= 100000)
+				if (timout_counter >= 1000000)
 					throttle_learn_active = 0;
 
 				if (newinput > current_max)
