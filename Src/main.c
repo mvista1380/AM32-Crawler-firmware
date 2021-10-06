@@ -1340,7 +1340,7 @@ int main(void)
 
 				last_input = newinput;
 
-				if (timout_counter >= 20000)
+				if (timout_counter >= 100000)
 					throttle_learn_active = 0;
 
 				if (newinput > current_max)
