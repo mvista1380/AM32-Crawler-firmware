@@ -201,6 +201,41 @@ void playLearnModeTune() {
 	__enable_irq();
 }
 
+void playEndLearnModeTune() {
+	__disable_irq();
+
+	setCaptureCompare();
+	comStep(3);       // activate a pwm channel
+
+	TIM1->PSC = 25;        // frequency of beep
+	delayMillis(200);         // duration of beep
+	comStep(5);
+
+	TIM1->PSC = 25;            // next beep is higher frequency
+	delayMillis(200);              // turn all channels low again
+
+	TIM1->PSC = 0;           // set prescaler back to 0.
+	signaltimeout = 0;
+
+	__enable_irq();
+}
+
+void playSingleBeep() {
+	__disable_irq();
+
+	setCaptureCompare();
+	comStep(3);       // activate a pwm channel
+
+	TIM1->PSC = 50;        // frequency of beep
+	delayMillis(200);         // duration of beep
+
+	TIM1->PSC = 0;           // set prescaler back to 0.
+	signaltimeout = 0;
+
+	__enable_irq();
+}
+
+
 void playBrushedStartupTune(){
 	__disable_irq();
 	setCaptureCompare();

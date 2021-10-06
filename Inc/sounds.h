@@ -21,6 +21,8 @@ void playDuskingTune(void);
 void playDefaultTone(void);
 void playChangedTone(void);
 void playLearnModeTune(void);
+void playEndLearnModeTune(void);
+void playSingleBeep(void);
 
 void saveEEpromSettings(void);
 void setVolume(uint8_t volume);
