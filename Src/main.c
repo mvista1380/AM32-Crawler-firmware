@@ -1323,6 +1323,7 @@ int main(void)
 			char throttle_learn_active = 1;
 			
 			while (throttle_learn_active) {
+				LL_IWDG_ReloadCounter(IWDG);
 				signaltimeout = 0;
 
 				#ifdef USE_ADC_INPUT
