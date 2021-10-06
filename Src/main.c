@@ -1311,7 +1311,7 @@ int main(void)
 		#endif
 		stuckcounter = 0;
 
-		if (!armed && newinput > 100 && (newinput > (1000 + (servo_dead_band << 1)) || newinput < (1000 - (servo_dead_band << 1)))) {
+		if (!armed && newinput > (1000 + (servo_dead_band << 1))) {
 			allOff();
 			playLearnModeTune();
 			int starting_input = newinput;
