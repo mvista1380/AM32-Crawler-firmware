@@ -1333,6 +1333,8 @@ int main(void)
 				}
 				#endif
 
+				last_input = newinput;
+
 				if (getAbsDif(last_input, newinput) < 10)
 					timout_counter++;
 				else
