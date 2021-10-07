@@ -34,7 +34,7 @@
 //===========================================================================
 
 #define VERSION_MAJOR 1
-#define VERSION_MINOR 00
+#define VERSION_MINOR 0
 char dir_reversed = 0;
 char brake_on_stop = 1;
 char program_running = 1; //low voltage turns off main loop
