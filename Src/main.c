@@ -1130,6 +1130,16 @@ void SwitchOver() {
 	enableCompInterrupts();
 }
 
+void UpdateADCInput() {
+	signaltimeout = 0;
+	ADC_smoothed_input = (((10 * ADC_smoothed_input) + ADC_raw_input) / 11);
+	newinput = ADC_smoothed_input / 2;
+	if (newinput > 2000) {
+		newinput = 2000;
+	}
+}
+
+
 void CalibrateThrottle() {
 	allOff();
 	playLearnModeTune();
@@ -1143,14 +1153,9 @@ void CalibrateThrottle() {
 
 	while (throttle_learn_active) {
 		LL_IWDG_ReloadCounter(IWDG);
-		signaltimeout = 0;
 
 #ifdef USE_ADC_INPUT
-		ADC_smoothed_input = (((10 * ADC_smoothed_input) + ADC_raw_input) / 11);
-		newinput = ADC_smoothed_input / 2;
-		if (newinput > 2000) {
-			newinput = 2000;
-		}
+		UpdateADCInput();
 #endif
 
 		if (getAbsDif(last_input, newinput) < 10)
@@ -1295,6 +1300,16 @@ int main(void)
 		temperature_offset = 230;
 	}
 	#endif
+
+#ifdef USE_ADC_INPUT
+	UpdateADCInput();
+#endif
+	stuckcounter = 0;
+
+	if (!armed && newinput > (1000 + (servo_dead_band << 1))) {
+		CalibrateThrottle();
+	}
+
 	while (program_running){
 
 		LL_IWDG_ReloadCounter(IWDG);
@@ -1358,19 +1373,9 @@ int main(void)
 
 
 		#ifdef USE_ADC_INPUT
-
-		signaltimeout = 0;
-		ADC_smoothed_input = (((10*ADC_smoothed_input) + ADC_raw_input)/11);
-		newinput = ADC_smoothed_input / 2;
-		if(newinput > 2000){
-			newinput = 2000;
-		}
+		UpdateADCInput();		
 		#endif
 		stuckcounter = 0;
-
-		if (!armed && newinput > (1000 + (servo_dead_band << 1))) {
-			CalibrateThrottle();
-		}
 
 		if (dshot == 0){
 			if (newinput > (1000 + (servo_dead_band<<1))) {
