@@ -1155,21 +1155,23 @@ void CalibrateThrottle() {
 
 		if (getAbsDif(last_input, newinput) < 10)
 			timout_counter++;
-		else {
-			changed = 1;
+		else			
 			timout_counter = 0;
-		}
 
 		last_input = newinput;
 
 		if (timout_counter >= 5000)
 			throttle_learn_active = 0;
 
-		if (newinput > current_max)
+		if (newinput > current_max) {
 			current_max = newinput;
+			changed = 1;
+		}
 
-		if (newinput < current_min)
+		if (newinput < current_min) {
 			current_min = newinput;
+			changed = 1;
+		}
 
 		delayMillis(1);
 	}
