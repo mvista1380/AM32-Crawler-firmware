@@ -1130,6 +1130,60 @@ void SwitchOver() {
 	enableCompInterrupts();
 }
 
+void CalibrateThrottle() {
+	allOff();
+	playLearnModeTune();
+	int starting_input = newinput;
+	int current_max = newinput;
+	int current_min = newinput;
+	int last_input = newinput;
+	int timout_counter = 0;
+	char changed = 0;
+	throttle_learn_active = 1;
+
+	while (throttle_learn_active) {
+		LL_IWDG_ReloadCounter(IWDG);
+		signaltimeout = 0;
+
+#ifdef USE_ADC_INPUT
+		ADC_smoothed_input = (((10 * ADC_smoothed_input) + ADC_raw_input) / 11);
+		newinput = ADC_smoothed_input / 2;
+		if (newinput > 2000) {
+			newinput = 2000;
+		}
+#endif
+
+		if (getAbsDif(last_input, newinput) < 10)
+			timout_counter++;
+		else {
+			changed = 1;
+			timout_counter = 0;
+		}
+
+		last_input = newinput;
+
+		if (timout_counter >= 5000)
+			throttle_learn_active = 0;
+
+		if (newinput > current_max)
+			current_max = newinput;
+
+		if (newinput < current_min)
+			current_min = newinput;
+
+		delayMillis(1);
+	}
+
+	if (changed) {
+		eepromBuffer[32] = (current_min - 750) / 2;
+		eepromBuffer[33] = (current_max - 1750) / 2;
+		eepromBuffer[34] = ((current_min + current_max) / 2) - 1374;
+		saveEEpromSettings();
+	}
+
+	playEndLearnModeTune();
+}
+
 int main(void)
 {
 	initAfterJump();
@@ -1313,57 +1367,7 @@ int main(void)
 		stuckcounter = 0;
 
 		if (!armed && newinput > (1000 + (servo_dead_band << 1))) {
-			allOff();
-			playLearnModeTune();
-			int starting_input = newinput;
-			int current_max = newinput;
-			int current_min = newinput;
-			int last_input = newinput;
-			int timout_counter = 0;
-			char changed = 0;
-			throttle_learn_active = 1;
-			
-			while (throttle_learn_active) {
-				LL_IWDG_ReloadCounter(IWDG);
-				signaltimeout = 0;
-
-				#ifdef USE_ADC_INPUT
-				ADC_smoothed_input = (((10 * ADC_smoothed_input) + ADC_raw_input) / 11);
-				newinput = ADC_smoothed_input / 2;
-				if (newinput > 2000) {
-					newinput = 2000;
-				}
-				#endif
-
-				if (getAbsDif(last_input, newinput) < 10)
-					timout_counter++;
-				else {
-					changed = 1;
-					timout_counter = 0;
-				}
-
-				last_input = newinput;
-
-				if (timout_counter >= 5000)
-					throttle_learn_active = 0;
-
-				if (newinput > current_max)
-					current_max = newinput;
-
-				if (newinput < current_min)
-					current_min = newinput;
-
-				delayMillis(1);
-			}
-			
-			if (changed) {
-				eepromBuffer[32] = (current_min - 750) / 2;
-				eepromBuffer[33] = (current_max - 1750) / 2;
-				eepromBuffer[34] = ((current_min + current_max) / 2) - 1374;
-				saveEEpromSettings();
-			}
-
-			playEndLearnModeTune();
+			CalibrateThrottle();
 		}
 
 		if (dshot == 0){
