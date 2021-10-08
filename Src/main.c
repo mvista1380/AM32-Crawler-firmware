@@ -592,10 +592,6 @@ void saveEEpromSettings(){
 	save_flash_nolib(eepromBuffer, 48, EEPROM_START_ADD);
 }
 
-
-
-
-
 void getSmoothedInput() {
 	total = total - readings[readIndex];
 	readings[readIndex] = commutation_interval;
@@ -1176,6 +1172,38 @@ void CalibrateThrottle() {
 	playEndLearnModeTune();
 }
 
+int MapThrottle(int requested_throttle) {
+	int throttle_curve_point = map(requested_throttle, 47, 2047, 0, 100);
+	int new_throttle_percent = 0;
+	int new_throttle = requested_throttle;
+
+	if (throttle_curve_point <= 10)
+		new_throttle_percent = map(throttle_curve_point, 0, 10, 0, eepromBuffer[31]);
+	else if (throttle_curve_point <= 20)
+		new_throttle_percent = map(throttle_curve_point, 11, 20, 0, eepromBuffer[32]);
+	else if (throttle_curve_point <= 30)
+		new_throttle_percent = map(throttle_curve_point, 21, 30, 0, eepromBuffer[33]);
+	else if (throttle_curve_point <= 40)
+		new_throttle_percent = map(throttle_curve_point, 31, 40, 0, eepromBuffer[34]);
+	else if (throttle_curve_point <= 50)
+		new_throttle_percent = map(throttle_curve_point, 41, 50, 0, eepromBuffer[35]);
+	else if (throttle_curve_point <= 60)
+		new_throttle_percent = map(throttle_curve_point, 51, 60, 0, eepromBuffer[36]);
+	else if (throttle_curve_point <= 70)
+		new_throttle_percent = map(throttle_curve_point, 61, 70, 0, eepromBuffer[37]);
+	else if (throttle_curve_point <= 80)
+		new_throttle_percent = map(throttle_curve_point, 71, 80, 0, eepromBuffer[38]);
+	else if (throttle_curve_point <= 90)
+		new_throttle_percent = map(throttle_curve_point, 81, 90, 0, eepromBuffer[39]);
+	else if (throttle_curve_point <= 100)
+		new_throttle_percent = map(throttle_curve_point, 91, 100, 0, eepromBuffer[40]);
+
+	if (new_throttle_percent > 0)
+		return map(new_throttle_percent, 0, 100, 47, 2047);
+	else
+		return requested_throttle;
+}
+
 int main(void)
 {
 	initAfterJump();
@@ -1362,76 +1390,36 @@ int main(void)
 		#endif
 		stuckcounter = 0;
 
-		if (dshot == 0){
-			if (newinput > (1000 + (servo_dead_band<<1))) {
-				if (forward == dir_reversed) {
-					if(commutation_interval > 1500 || stepper_sine){
-						forward = 1 - dir_reversed;
-						zero_crosses = 0;
-						old_routine = 1;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 1000;
-					}
+		if (newinput > (1000 + (servo_dead_band<<1))) {
+			if (forward == dir_reversed) {
+				if(commutation_interval > 1500 || stepper_sine){
+					forward = 1 - dir_reversed;
+					zero_crosses = 0;
+					old_routine = 1;
+					maskPhaseInterrupts();
 				}
-				adjusted_input = map(newinput, 1000 + (servo_dead_band<<1), 2000, 47, 2047);
-			}
-			else if (newinput < (1000 -(servo_dead_band<<1))) {
-				if (forward == (1 - dir_reversed)) {
-					if(commutation_interval > 1500 || stepper_sine){
-						zero_crosses = 0;
-						old_routine = 1;
-						forward = dir_reversed;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 1000;
-					}
+				else{
+					newinput = 1000;
 				}
-				adjusted_input = map(newinput, 0, 1000-(servo_dead_band<<1), 2047, 47);
 			}
-			else if (newinput >= (1000 - (servo_dead_band << 1)) && newinput <= (1000 + (servo_dead_band <<1))) {
-				adjusted_input = 0;
-			}  			  
+			adjusted_input = MapThrottle(map(newinput, 1000 + (servo_dead_band<<1), 2000, 47, 2047));
 		}
-		else if (dshot) {
-			if (newinput > 1047) {
-				if (forward == dir_reversed) {
-					if(commutation_interval > 1500 || stepper_sine){
-						forward = 1 - dir_reversed;
-						zero_crosses = 0;
-						old_routine = 1;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 0;
-					}
+		else if (newinput < (1000 -(servo_dead_band<<1))) {
+			if (forward == (1 - dir_reversed)) {
+				if(commutation_interval > 1500 || stepper_sine){
+					zero_crosses = 0;
+					old_routine = 1;
+					forward = dir_reversed;
+					maskPhaseInterrupts();
 				}
-
-				adjusted_input = ((newinput - 1048) * 2 + 47) - reversing_dead_band;
-			}
-			else if (newinput <= 1047  && newinput > 47) {
-			//	startcount++;
-				if (forward == (1 - dir_reversed)) {
-					if(commutation_interval > 1500 || stepper_sine){
-						zero_crosses = 0;
-						old_routine = 1;
-						forward = dir_reversed;
-						maskPhaseInterrupts();
-					}
-					else{
-						newinput = 0;
-					}
+				else{
+					newinput = 1000;
 				}
-				adjusted_input = ((newinput - 48) * 2 + 47) - reversing_dead_band;
 			}
-			else if ( newinput < 48) {
-				adjusted_input = 0;
-			}
+			adjusted_input = MapThrottle(map(newinput, 0, 1000-(servo_dead_band<<1), 2047, 47));
 		}
-		else{
-			adjusted_input = newinput;
+		else if (newinput >= (1000 - (servo_dead_band << 1)) && newinput <= (1000 + (servo_dead_band <<1))) {
+			adjusted_input = 0;
 		}
 
 		if ((zero_crosses > 1000) || (adjusted_input == 0)){
