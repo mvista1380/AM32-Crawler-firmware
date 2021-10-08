@@ -1180,23 +1180,23 @@ int MapThrottle(int requested_throttle) {
 	if (throttle_curve_point <= 10)
 		new_throttle_percent = map(throttle_curve_point, 0, 10, 0, eepromBuffer[31]);
 	else if (throttle_curve_point <= 20)
-		new_throttle_percent = map(throttle_curve_point, 11, 20, 0, eepromBuffer[32]);
+		new_throttle_percent = map(throttle_curve_point, 11, 20, eepromBuffer[31] + 1, eepromBuffer[32]);
 	else if (throttle_curve_point <= 30)
-		new_throttle_percent = map(throttle_curve_point, 21, 30, 0, eepromBuffer[33]);
+		new_throttle_percent = map(throttle_curve_point, 21, 30, eepromBuffer[32] + 1, eepromBuffer[33]);
 	else if (throttle_curve_point <= 40)
-		new_throttle_percent = map(throttle_curve_point, 31, 40, 0, eepromBuffer[34]);
+		new_throttle_percent = map(throttle_curve_point, 31, 40, eepromBuffer[33] + 1, eepromBuffer[34]);
 	else if (throttle_curve_point <= 50)
-		new_throttle_percent = map(throttle_curve_point, 41, 50, 0, eepromBuffer[35]);
+		new_throttle_percent = map(throttle_curve_point, 41, 50, eepromBuffer[34] + 1, eepromBuffer[35]);
 	else if (throttle_curve_point <= 60)
-		new_throttle_percent = map(throttle_curve_point, 51, 60, 0, eepromBuffer[36]);
+		new_throttle_percent = map(throttle_curve_point, 51, 60, eepromBuffer[35] + 1, eepromBuffer[36]);
 	else if (throttle_curve_point <= 70)
-		new_throttle_percent = map(throttle_curve_point, 61, 70, 0, eepromBuffer[37]);
+		new_throttle_percent = map(throttle_curve_point, 61, 70, eepromBuffer[36] + 1, eepromBuffer[37]);
 	else if (throttle_curve_point <= 80)
-		new_throttle_percent = map(throttle_curve_point, 71, 80, 0, eepromBuffer[38]);
+		new_throttle_percent = map(throttle_curve_point, 71, 80, eepromBuffer[37] + 1, eepromBuffer[38]);
 	else if (throttle_curve_point <= 90)
-		new_throttle_percent = map(throttle_curve_point, 81, 90, 0, eepromBuffer[39]);
+		new_throttle_percent = map(throttle_curve_point, 81, 90, eepromBuffer[38] + 1, eepromBuffer[39]);
 	else if (throttle_curve_point <= 100)
-		new_throttle_percent = map(throttle_curve_point, 91, 100, 0, eepromBuffer[40]);
+		new_throttle_percent = map(throttle_curve_point, 91, 100, eepromBuffer[39] + 1, eepromBuffer[40]);
 
 	if (new_throttle_percent > 0)
 		return map(new_throttle_percent, 0, 100, 47, 2047);
