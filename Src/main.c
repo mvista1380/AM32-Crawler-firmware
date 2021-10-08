@@ -530,8 +530,8 @@ void loadEEpromSettings(){
 		dir_reversed = 0;
 	}
 
-	if(eepromBuffer[23] < 4){
-		advance_level = eepromBuffer[23];
+	if(eepromBuffer[19] < 4){
+		advance_level = eepromBuffer[19];
 	}
 	else{
 		advance_level = 2;  // * 7.5 increments
@@ -539,8 +539,8 @@ void loadEEpromSettings(){
 
 	TIM1->ARR = tim1_arr;	
 
-	if(eepromBuffer[25] < 151 && eepromBuffer[25] > 49){
-		minimum_duty_cycle = eepromBuffer[25];
+	if(eepromBuffer[20] < 151 && eepromBuffer[20] > 49){
+		minimum_duty_cycle = eepromBuffer[20];
 		starting_duty_orig = minimum_duty_cycle;
 		maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
 	}
@@ -550,7 +550,7 @@ void loadEEpromSettings(){
 		maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
 	}
 
-	if(eepromBuffer[28] == 0x01){
+	if(eepromBuffer[21] == 0x01){
 		brake_on_stop = 1;
 	}
 	else{
@@ -560,50 +560,39 @@ void loadEEpromSettings(){
 	setVolume(5);
 
 	if(eepromBuffer[1] > 0){             // these commands weren't introduced until eeprom version 1.
-		if(eepromBuffer[30] > 11){
+		if(eepromBuffer[22] > 11){
 			setVolume(5);
 		}
 		else{
-			setVolume(eepromBuffer[30]);
+			setVolume(eepromBuffer[22]);
 		}
 
-		servo_low_threshold = (eepromBuffer[32]*2) + 750; // anything below this point considered 0
-		servo_high_threshold = (eepromBuffer[33]*2) + 1750;;  // anything above this point considered 2000 (max)
-		servo_neutral = (eepromBuffer[34]) + 1374;
-		servo_dead_band = eepromBuffer[35];
+		servo_low_threshold = (eepromBuffer[23]*2) + 750; // anything below this point considered 0
+		servo_high_threshold = (eepromBuffer[24]*2) + 1750;;  // anything above this point considered 2000 (max)
+		servo_neutral = (eepromBuffer[25]) + 1374;
+		servo_dead_band = eepromBuffer[26];
 
-		if(eepromBuffer[36] == 0x01){
+		if(eepromBuffer[27] == 0x01){
 			LOW_VOLTAGE_CUTOFF = 1;
 		}
 		else{
 			LOW_VOLTAGE_CUTOFF = 0;
 		}
 
-		low_cell_volt_cutoff = eepromBuffer[37] + 300; // 2.5 to 3.5 volts per cell range
+		low_cell_volt_cutoff = eepromBuffer[28] + 300; // 2.5 to 3.5 volts per cell range
 
-		if(eepromBuffer[40] > 4 && eepromBuffer[40] < 26){            // sine mode changeover 5-25 percent throttle
-			sine_mode_changeover_thottle_level = eepromBuffer[40];
+		if(eepromBuffer[29] > 4 && eepromBuffer[29] < 26){            // sine mode changeover 5-25 percent throttle
+			sine_mode_changeover_thottle_level = eepromBuffer[29];
 			sine_mode_changeover = map(sine_mode_changeover_thottle_level, 5, 25, ((TIM1_AUTORELOAD + 1) / 100) * 5, ((TIM1_AUTORELOAD + 1) / 100) * 25);
 		}
 
-		if(eepromBuffer[41] > 0 && eepromBuffer[41] < 11){        // drag brake 0-10
-			drag_brake_strength = eepromBuffer[41];
+		if(eepromBuffer[30] > 0 && eepromBuffer[30] < 11){        // drag brake 0-10
+			drag_brake_strength = eepromBuffer[30];
 		}
 	}
 }
 
 void saveEEpromSettings(){
-	if(dir_reversed == 1){
-		eepromBuffer[17] = 0x01;
-	}
-	else{
-		eepromBuffer[17] = 0x00;
-	}
-
-	eepromBuffer[19] = 0x01;
-
-	eepromBuffer[23] = advance_level;
-
 	save_flash_nolib(eepromBuffer, 48, EEPROM_START_ADD);
 }
 
@@ -1182,9 +1171,9 @@ void CalibrateThrottle() {
 	}
 
 	if (changed) {
-		eepromBuffer[32] = (current_min - 750) / 2;
-		eepromBuffer[33] = (current_max - 1750) / 2;
-		eepromBuffer[34] = ((current_min + current_max) / 2) - 1374;
+		eepromBuffer[23] = (current_min - 750) / 2;
+		eepromBuffer[24] = (current_max - 1750) / 2;
+		eepromBuffer[25] = ((current_min + current_max) / 2) - 1374;
 		saveEEpromSettings();
 	}
 
