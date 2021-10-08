@@ -539,16 +539,14 @@ void loadEEpromSettings(){
 
 	TIM1->ARR = tim1_arr;	
 
-	if(eepromBuffer[20] < 151 && eepromBuffer[20] > 49){
+	if(eepromBuffer[20] < 151 && eepromBuffer[20] > 49)
 		minimum_duty_cycle = eepromBuffer[20];
-		starting_duty_orig = minimum_duty_cycle;
-		maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
-	}
-	else{
+	else
 		minimum_duty_cycle = 150;
-		starting_duty_orig = minimum_duty_cycle;
-		maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
-	}
+
+	starting_duty_orig = minimum_duty_cycle;
+	maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
+
 
 	if(eepromBuffer[21] == 0x01){
 		brake_on_stop = 1;
@@ -559,36 +557,34 @@ void loadEEpromSettings(){
 
 	setVolume(5);
 
-	if(eepromBuffer[1] > 0){             // these commands weren't introduced until eeprom version 1.
-		if(eepromBuffer[22] > 11){
-			setVolume(5);
-		}
-		else{
-			setVolume(eepromBuffer[22]);
-		}
+	if(eepromBuffer[22] > 11){
+		setVolume(5);
+	}
+	else{
+		setVolume(eepromBuffer[22]);
+	}
 
-		servo_low_threshold = (eepromBuffer[23]*2) + 750; // anything below this point considered 0
-		servo_high_threshold = (eepromBuffer[24]*2) + 1750;;  // anything above this point considered 2000 (max)
-		servo_neutral = (eepromBuffer[25]) + 1374;
-		servo_dead_band = eepromBuffer[26];
+	servo_low_threshold = (eepromBuffer[23]*2) + 750; // anything below this point considered 0
+	servo_high_threshold = (eepromBuffer[24]*2) + 1750;;  // anything above this point considered 2000 (max)
+	servo_neutral = (eepromBuffer[25]) + 1374;
+	servo_dead_band = eepromBuffer[26];
 
-		if(eepromBuffer[27] == 0x01){
-			LOW_VOLTAGE_CUTOFF = 1;
-		}
-		else{
-			LOW_VOLTAGE_CUTOFF = 0;
-		}
+	if(eepromBuffer[27] == 0x01){
+		LOW_VOLTAGE_CUTOFF = 1;
+	}
+	else{
+		LOW_VOLTAGE_CUTOFF = 0;
+	}
 
-		low_cell_volt_cutoff = eepromBuffer[28] + 300; // 2.5 to 3.5 volts per cell range
+	low_cell_volt_cutoff = eepromBuffer[28] + 300; // 2.5 to 3.5 volts per cell range
 
-		if(eepromBuffer[29] > 4 && eepromBuffer[29] < 26){            // sine mode changeover 5-25 percent throttle
-			sine_mode_changeover_thottle_level = eepromBuffer[29];
-			sine_mode_changeover = map(sine_mode_changeover_thottle_level, 5, 25, ((TIM1_AUTORELOAD + 1) / 100) * 5, ((TIM1_AUTORELOAD + 1) / 100) * 25);
-		}
+	if(eepromBuffer[29] > 4 && eepromBuffer[29] < 26){            // sine mode changeover 5-25 percent throttle
+		sine_mode_changeover_thottle_level = eepromBuffer[29];
+		sine_mode_changeover = map(sine_mode_changeover_thottle_level, 5, 25, ((TIM1_AUTORELOAD + 1) / 100) * 5, ((TIM1_AUTORELOAD + 1) / 100) * 25);
+	}
 
-		if(eepromBuffer[30] > 0 && eepromBuffer[30] < 11){        // drag brake 0-10
-			drag_brake_strength = eepromBuffer[30];
-		}
+	if(eepromBuffer[30] > 0 && eepromBuffer[30] < 11){        // drag brake 0-10
+		drag_brake_strength = eepromBuffer[30];
 	}
 }
 
