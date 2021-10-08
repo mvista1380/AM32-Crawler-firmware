@@ -1402,7 +1402,7 @@ int main(void)
 					newinput = 1000;
 				}
 			}
-			adjusted_input = MapThrottle(map(newinput, 1000 + (servo_dead_band<<1), 2000, 47, 2047));
+			adjusted_input = map(newinput, 1000 + (servo_dead_band<<1), 2000, 47, 2047);
 		}
 		else if (newinput < (1000 -(servo_dead_band<<1))) {
 			if (forward == (1 - dir_reversed)) {
@@ -1416,7 +1416,7 @@ int main(void)
 					newinput = 1000;
 				}
 			}
-			adjusted_input = MapThrottle(map(newinput, 0, 1000-(servo_dead_band<<1), 2047, 47));
+			adjusted_input = map(newinput, 0, 1000-(servo_dead_band<<1), 2047, 47);
 		}
 		else if (newinput >= (1000 - (servo_dead_band << 1)) && newinput <= (1000 + (servo_dead_band <<1))) {
 			adjusted_input = 0;
@@ -1432,11 +1432,11 @@ int main(void)
 			#endif
 		}
 	  	  	
-		if(adjusted_input < 30){           // dead band ?
+		if(adjusted_input < 47){           // dead band ?
 			input= 0;
 		}
 		else {
-			input = map(adjusted_input, 30, 2000, 47, 2000);
+			input = MapThrottle(adjusted_input);
 		}
 	 	  
 		if ( stepper_sine == 0){
