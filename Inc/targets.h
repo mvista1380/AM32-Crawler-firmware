@@ -58,7 +58,6 @@
 #define FIRMWARE_NAME           "T-MOTOR 55A "
 #define DEAD_TIME               45
 #define HARDWARE_GROUP_F0_B
-#define USE_SERIAL_TELEMETRY
 #endif
 
 #ifdef TMOTOR45
