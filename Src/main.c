@@ -906,7 +906,7 @@ void tenKhzRoutine(){
 					max_duty_cycle_change = 5;
 				}
 				else{
-					max_duty_cycle_change = 15;
+					max_duty_cycle_change = 10;
 				}
 
 				if ((duty_cycle - last_duty_cycle) > max_duty_cycle_change){
