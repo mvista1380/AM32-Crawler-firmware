@@ -795,7 +795,7 @@ void tenKhzRoutine(){
 				#endif
 			}
 			
-			duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, TIMER1_MAX_ARR);
+			duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, (TIMER1_MAX_ARR / 100) * 90);
 			prop_brake_active = 0;
 		}
 
@@ -903,10 +903,10 @@ void tenKhzRoutine(){
 
 			if(maximum_throttle_change_ramp){
 				if(average_interval > 500){
-					max_duty_cycle_change = 10;
+					max_duty_cycle_change = 5;
 				}
 				else{
-					max_duty_cycle_change = 30;
+					max_duty_cycle_change = 15;
 				}
 
 				if ((duty_cycle - last_duty_cycle) > max_duty_cycle_change){
