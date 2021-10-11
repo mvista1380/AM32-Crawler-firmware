@@ -1099,6 +1099,7 @@ void SwitchOver() {
 	zero_crosses = 0;
 	prop_brake_active = 0;
 
+	last_duty_cycle = duty_cycle;
 	adjusted_duty_cycle = ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
 	TIM1->ARR = tim1_arr;
 	TIM1->CCR1 = adjusted_duty_cycle;
@@ -1420,16 +1421,6 @@ int main(void)
 		}
 		else if (newinput >= (1000 - (servo_dead_band << 1)) && newinput <= (1000 + (servo_dead_band <<1))) {
 			adjusted_input = 0;
-		}
-
-		if ((zero_crosses > 1000) || (adjusted_input == 0)){
-			#ifdef tmotor55
-			if(adjusted_input == 0 && armed){
-			GPIOA->BSRR = LL_GPIO_PIN_15; // on green
-			GPIOB->BRR = LL_GPIO_PIN_5;  // off blue
-			GPIOB->BRR = LL_GPIO_PIN_3;  //off red
-			}
-			#endif
 		}
 	  	  	
 		if(adjusted_input < 47){           // dead band ?
