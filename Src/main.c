@@ -230,6 +230,7 @@ typedef enum
 } GPIO_PinState;
 
 uint16_t minimum_duty_cycle = DEAD_TIME;
+uint16_t maximum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
 uint16_t duty_cycle_multiplier = 200; //130 = 30% power increase
@@ -546,6 +547,7 @@ void loadEEpromSettings(){
 
 	starting_duty_orig = minimum_duty_cycle;
 	maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
+	maximum_duty_cycle = (TIMER1_MAX_ARR / 100) * 85;
 
 
 	if(eepromBuffer[21] == 0x01){
@@ -795,7 +797,7 @@ void tenKhzRoutine(){
 				#endif
 			}
 			
-			duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, (TIMER1_MAX_ARR / 100) * 90);
+			duty_cycle = map(input, sine_mode_changeover, 2047, minimum_duty_cycle, maximum_duty_cycle);
 			prop_brake_active = 0;
 		}
 
