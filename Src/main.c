@@ -1398,7 +1398,7 @@ int main(void)
 				thermal_protection_active = 1;
 				playThermalWarningTune();
 				last_error = 2;
-				delayMillis(2000);
+				delayMillis(1500);
 				continue;
 			}
 			else if (thermal_protection_active)
