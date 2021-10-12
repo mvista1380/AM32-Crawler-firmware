@@ -139,6 +139,7 @@ char program_running = 1; //low voltage turns off main loop
 char throttle_learn_active = 0;
 
 char advance_level = 0;
+char last_error = 0; //0 = no error, 1 = signal loss/brownout, 2 = thermal shutdown, 3 = voltage too low
 //add Startup Power
 //Add PWM Frequency
 //Add Beep Volume
@@ -588,9 +589,20 @@ void loadEEpromSettings(){
 	if(eepromBuffer[30] > 0 && eepromBuffer[30] < 11){        // drag brake 0-10
 		drag_brake_strength = eepromBuffer[30];
 	}
+
+	if (eepromBuffer[41] >= 60 && eepromBuffer[41] <= 200)
+	{
+		amplitude = eepromBuffer[41];
+		default_amplitude = eepromBuffer[41];
+	}
+
 }
 
 void saveEEpromSettings(){
+	
+	if(last_error != 0)
+		eepromBuffer[42] = last_error;
+
 	save_flash_nolib(eepromBuffer, 48, EEPROM_START_ADD);
 }
 
@@ -996,6 +1008,8 @@ void tenKhzRoutine(){
 			for (int i = 0; i < 64; i++) {
 				dma_buffer[i] = 0;
 			}
+			last_error = 1;
+
 			NVIC_SystemReset();
 		}
 	}
@@ -1049,10 +1063,10 @@ void advanceincrement(int input){
 	}
 
 	if (degrees_celsius >= 80) {
-		amplitude = map(degrees_celsius, 80, 110, default_amplitude, (default_amplitude / 10) * 8);//thermal throttling, 120 should be safe 80 at the mcu should be close to right
+		amplitude = map(degrees_celsius, 80, 110, default_amplitude, (default_amplitude / 10) * 7);//thermal throttling, 120 should be safe 80 at the mcu should be close to right
 	}
 	else {
-		amplitude = map(input, 47, sine_mode_changeover, (default_amplitude / 10) * 8, (default_amplitude / 10) *  12);
+		amplitude = map(input, 47, sine_mode_changeover, (default_amplitude / 10) * 7, (default_amplitude / 10) *  12);
 	}
 
 	TIM1->CCR1 = (amplitude * pwmSin[0][phase_A_position]) + (amplitude + 2);
@@ -1363,6 +1377,7 @@ int main(void)
 						zero_input_count = 0;
 						armed = 0;
 						program_running = 0;
+						last_error = 3;
 					}
 				}
 				else{
@@ -1382,6 +1397,7 @@ int main(void)
 				prop_brake_active = 1;
 				thermal_protection_active = 1;
 				playThermalWarningTune();
+				last_error = 2;
 				delayMillis(2000);
 				continue;
 			}
@@ -1542,6 +1558,9 @@ int main(void)
 	LL_TIM_DisableUpdateEvent(TIM6);
 	LL_TIM_DisableAllOutputs(TIM6);
 	LL_TIM_DisableIT_UPDATE(TIM6);
+	LL_IWDG_EnableWriteAccess(IWDG);
+	LL_IWDG_SetPrescaler(IWDG, LL_IWDG_PRESCALER_256);
+	LL_IWDG_SetReloadCounter(IWDG, UINT32_MAX);
 
 	LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
 	LL_SYSTICK_DisableIT();
