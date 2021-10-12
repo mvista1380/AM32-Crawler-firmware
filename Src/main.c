@@ -1561,6 +1561,7 @@ int main(void)
 	LL_IWDG_EnableWriteAccess(IWDG);
 	LL_IWDG_SetPrescaler(IWDG, LL_IWDG_PRESCALER_256);
 	LL_IWDG_SetReloadCounter(IWDG, UINT32_MAX);
+	LL_IWDG_ReloadCounter(IWDG);
 
 	LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
 	LL_SYSTICK_DisableIT();
