@@ -1009,7 +1009,7 @@ void tenKhzRoutine(){
 				dma_buffer[i] = 0;
 			}
 			last_error = 1;
-
+			saveEEpromSettings();
 			NVIC_SystemReset();
 		}
 	}
@@ -1378,6 +1378,7 @@ int main(void)
 						armed = 0;
 						program_running = 0;
 						last_error = 3;
+						saveEEpromSettings();
 					}
 				}
 				else{
@@ -1395,9 +1396,14 @@ int main(void)
 				TIM1->CCR3 = adjusted_duty_cycle;
 				proportionalBrake();
 				prop_brake_active = 1;
-				thermal_protection_active = 1;
+				
 				playThermalWarningTune();
 				last_error = 2;
+
+				if(thermal_protection_active ==0)
+					saveEEpromSettings();				
+				
+				thermal_protection_active = 1;
 				delayMillis(1500);
 				continue;
 			}
