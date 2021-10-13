@@ -299,6 +299,8 @@ int advancedivisor = 6;
 char rising = 1;
 char amplitude = 165;//200 gets very hot
 char default_amplitude = 165;
+char min_amplitude = 115;
+char max_amplitude = 180;
 char sin_cycle_complete = 0;
 char last_inc = 1;
 char stepper_sine = 0;
@@ -593,6 +595,8 @@ void loadEEpromSettings(){
 	{
 		amplitude = eepromBuffer[41];
 		default_amplitude = eepromBuffer[41];
+		min_amplitude = (default_amplitude / 10) * 7;
+		max_amplitude = (default_amplitude / 10) * 11;
 	}
 
 }
@@ -1060,10 +1064,10 @@ void advanceincrement(int input){
 	}
 
 	if (degrees_celsius >= 80) {
-		amplitude = map(degrees_celsius, 80, 110, default_amplitude, (default_amplitude / 10) * 7);//thermal throttling, 120 should be safe 80 at the mcu should be close to right
+		amplitude = map(degrees_celsius, 80, 110, default_amplitude, min_amplitude);//thermal throttling, 120 should be safe 80 at the mcu should be close to right
 	}
 	else {
-		amplitude = map(input, 47, sine_mode_changeover, (default_amplitude / 10) * 7, (default_amplitude / 10) *  12);
+		amplitude = map(input, 47, sine_mode_changeover, min_amplitude, max_amplitude);
 	}
 
 	TIM1->CCR1 = (amplitude * pwmSin[0][phase_A_position]) + (amplitude + 2);
