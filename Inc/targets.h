@@ -156,6 +156,13 @@
 #define TARGET_VOLTAGE_DIVIDER  72
 #endif
 
+#ifdef TurnigyMultiStar
+#define FIRMWARE_NAME           "MultiStar51A"
+#define DEAD_TIME               45
+#define HARDWARE_GROUP_F0_B
+#define TARGET_VOLTAGE_DIVIDER  93
+#endif
+
 
 /*******************************   G071 Targets *********************************/
 
