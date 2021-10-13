@@ -1072,8 +1072,7 @@ void advanceincrement(int input){
 
 	TIM1->CCR1 = (amplitude * pwmSin[0][phase_A_position]) + (amplitude + 2);
 	TIM1->CCR2 = (amplitude * pwmSin[1][phase_B_position]) + (amplitude + 2);
-	TIM1->CCR3 = (amplitude * pwmSin[2][phase_C_position]) + (amplitude + 2);
-    
+	TIM1->CCR3 = (amplitude * pwmSin[2][phase_C_position]) + (amplitude + 2);    
 }
 
 void zcfoundroutine(){   // only used in polling mode, blocking routine.
