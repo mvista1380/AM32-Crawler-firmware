@@ -212,7 +212,6 @@ uint16_t consumption_timer = 0;
 float consumed_current = 0;
 uint16_t smoothed_raw_current = 0;
 uint16_t actual_current = 0;
-uint16_t last_step_current = 0;
 
 char reversing_dead_band = 1;
 
@@ -839,7 +838,6 @@ void tenKhzRoutine(){
 			phase_B_position = 119;
 			phase_C_position = 239;
 			stepper_sine = 1;
-			last_step_current = 0;
 			minimum_duty_cycle = starting_duty_orig;
 		}
 		else if (input < ((sine_mode_changeover / 100) * 95) && step == changeover_step) {
@@ -847,7 +845,6 @@ void tenKhzRoutine(){
 			phase_B_position = 180;
 			phase_C_position = 300;
 			stepper_sine = 1;
-			last_step_current = 0;
 			minimum_duty_cycle = starting_duty_orig;
 		}
 
@@ -1063,10 +1060,10 @@ void advanceincrement(int input){
 	}
 
 	if (degrees_celsius >= 80) {
-		amplitude = map(degrees_celsius, 80, 110, default_amplitude, (default_amplitude / 10) * 7);//thermal throttling, 120 should be safe 80 at the mcu should be close to right
+		amplitude = map(degrees_celsius, 80, 110, default_amplitude, (default_amplitude / 10) * 6);//thermal throttling, 120 should be safe 80 at the mcu should be close to right
 	}
 	else {
-		amplitude = map(input, 47, sine_mode_changeover, (default_amplitude / 10) * 7, (default_amplitude / 10) *  12);
+		amplitude = map(input, 47, sine_mode_changeover, (default_amplitude / 10) * 6, (default_amplitude / 10) *  12);
 	}
 
 	TIM1->CCR1 = (amplitude * pwmSin[0][phase_A_position]) + (amplitude + 2);
