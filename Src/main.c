@@ -1060,10 +1060,10 @@ void advanceincrement(int input){
 	}
 
 	if (degrees_celsius >= 80) {
-		amplitude = map(degrees_celsius, 80, 110, default_amplitude, (default_amplitude / 10) * 6);//thermal throttling, 120 should be safe 80 at the mcu should be close to right
+		amplitude = map(degrees_celsius, 80, 110, default_amplitude, (default_amplitude / 10) * 7);//thermal throttling, 120 should be safe 80 at the mcu should be close to right
 	}
 	else {
-		amplitude = map(input, 47, sine_mode_changeover, (default_amplitude / 10) * 6, (default_amplitude / 10) *  12);
+		amplitude = map(input, 47, sine_mode_changeover, (default_amplitude / 10) * 7, (default_amplitude / 10) *  12);
 	}
 
 	TIM1->CCR1 = (amplitude * pwmSin[0][phase_A_position]) + (amplitude + 2);
