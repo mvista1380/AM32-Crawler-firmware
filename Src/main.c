@@ -137,6 +137,8 @@ char dir_reversed = 0;
 char brake_on_stop = 1;
 char program_running = 1; //low voltage turns off main loop
 char throttle_learn_active = 0;
+char BRUSHED_MODE = 0;
+char brushed_direction_set = 0;
 
 char advance_level = 0;
 char last_error = 0; //0 = no error, 1 = signal loss/brownout, 2 = thermal shutdown, 3 = voltage too low
@@ -599,6 +601,7 @@ void loadEEpromSettings(){
 		max_amplitude = (default_amplitude / 10) * 11;
 	}
 
+	BRUSHED_MODE = eepromBuffer[43];
 }
 
 void saveEEpromSettings(){
@@ -796,7 +799,7 @@ void tenKhzRoutine(){
 		}
 	}
 
-	if(!stepper_sine){
+	if(!stepper_sine && BRUSHED_MODE == 0){
 		if (input >= 127 && armed){
 			if (running == 0){
 				allOff();
@@ -1316,7 +1319,13 @@ int main(void)
 
 	tim1_arr = TIMER1_MAX_ARR;
 	
-	playStartupTune();
+	if (BRUSHED_MODE) {
+		playBrushedStartupTune();
+		commutation_interval = 5000;
+	}
+	else
+		playStartupTune();
+
 	zero_input_count = 0;
 	MX_IWDG_Init();
 	LL_IWDG_ReloadCounter(IWDG);
@@ -1463,6 +1472,42 @@ int main(void)
 		}
 		else {
 			input = MapThrottle(adjusted_input);
+		}
+
+		if (BRUSHED_MODE) {
+
+			input = map(input, 48, 2047, 0, maximum_duty_cycle);
+
+			if (brushed_direction_set == 0 && input > 47) {
+				if (forward) {
+					allOff();
+					delayMicros(10);
+					comStep(6);
+				}
+				else {
+					allOff();
+					delayMicros(10);
+					comStep(3);
+				}
+				brushed_direction_set = 1;
+			}
+			else if (brushed_direction_set == 1 && input <= 47) {
+				brushed_direction_set = 0;
+			}
+
+			if (input > 0 && armed) {
+				TIM1->CCR1 = input;
+				TIM1->CCR2 = input;
+				TIM1->CCR3 = input;
+			}
+			else {
+				TIM1->CCR1 = 0;
+				TIM1->CCR2 = 0;
+				TIM1->CCR3 = 0;
+				//	fullBrake();
+			}
+
+			continue; //skip the rest of the while loop for brushed motors
 		}
 	 	  
 		if ( stepper_sine == 0){
