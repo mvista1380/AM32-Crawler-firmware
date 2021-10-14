@@ -95,9 +95,13 @@ float K_p_duty = 40;
 float K_i_duty = 10;
 float K_d_duty = 0;
 
-float error = 0;
-float prev_rror = 0;
+float p_error_integral = 0;
+float p_error_derivative = 0;
+float p_prev_rror = 0;
+float p_error = 0;
+int minimum_commutation = 9000;
 
+/*
 int duty_cycle_ramp_down_delay = 7000;
 int duty_cycle_ramp_down_rate = 50;
 int duty_cycle_ramp_down_step = 0;
@@ -107,7 +111,7 @@ int duty_cycle_ramp_up_step = 0;
 char stall_detected = 0;
 char ramp_down_active = 0;
 char restep = 0;
-
+*/
 char low_rpm_throttle_limit = 0;
 
 uint16_t low_voltage_count = 0;
@@ -770,6 +774,36 @@ void tenKhzRoutine(){
 		if(!prop_brake_active){
 
 			if (running){
+
+				if (commutation_interval > minimum_commutation) {
+					p_error = commutation_interval - (minimum_commutation - 100); // buffer so it doesnt bounce
+
+					p_error_integral = p_error_integral + p_error;
+					
+					if (p_error_integral > 25)
+						p_error_integral = 25;
+					else if (p_error_integral < -25)
+						p_error_integral = -25;
+
+					p_error_derivative = p_error - p_prev_rror;
+					p_prev_rror = p_error;
+
+					new_min_duty = (K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative);
+
+					if (new_min_duty > maximum_duty_orig)
+						new_min_duty = maximum_duty_orig;
+					else if (new_min_duty < starting_duty_orig)
+						new_min_duty = starting_duty_orig;
+
+					duty_cycle = new_min_duty;
+				}
+				else {
+					p_error_integral = 0;
+					p_error_derivative = 0;
+					p_prev_rror = 0;
+					p_error = 0;
+				}
+				/*
 				if (stall_detected) {
 					if (duty_cycle_ramp_down_count < duty_cycle_ramp_down_delay)
 						duty_cycle_ramp_down_count++;
@@ -829,6 +863,7 @@ void tenKhzRoutine(){
 					ramp_down_active = 0;
 					duty_cycle_ramp_down_step = 0;
 				}
+				*/
 			}
 
 			if(maximum_throttle_change_ramp){
@@ -1067,7 +1102,6 @@ void UpdateADCInput() {
 void CalibrateThrottle() {
 	allOff();
 	playLearnModeTune();
-	int starting_input = newinput;
 	int current_max = newinput;
 	int current_min = newinput;
 	int last_input = newinput;
@@ -1118,7 +1152,6 @@ void CalibrateThrottle() {
 int MapThrottle(int requested_throttle) {
 	int throttle_curve_point = map(requested_throttle, 47, 2047, 0, 100);
 	int new_throttle_percent = 0;
-	int new_throttle = requested_throttle;
 
 	if (throttle_curve_point <= 10)
 		new_throttle_percent = map(throttle_curve_point, 0, 10, 0, eepromBuffer[31]);
