@@ -91,8 +91,8 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
-float K_p_duty = 2;
-float K_i_duty = 1;
+float K_p_duty = 0.05;
+float K_i_duty = 0.1;
 float K_d_duty = 0;
 
 float p_error_integral = 0;
@@ -785,10 +785,10 @@ void tenKhzRoutine(){
 
 					p_error_integral = p_error_integral + p_error;
 					
-					if (p_error_integral > 1000)
-						p_error_integral = 1000;
-					else if (p_error_integral < -1000)
-						p_error_integral = - 1000;
+					if (p_error_integral > 2000)
+						p_error_integral = 2000;
+					else if (p_error_integral < -2000)
+						p_error_integral = - 2000;
 
 					p_error_derivative = p_error - p_prev_rror;
 					p_prev_rror = p_error;
