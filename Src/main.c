@@ -785,10 +785,10 @@ void tenKhzRoutine(){
 
 					p_error_integral = p_error_integral + p_error;
 					
-					if (p_error_integral > 25)
-						p_error_integral = 25;
-					else if (p_error_integral < -25)
-						p_error_integral = -25;
+					if (p_error_integral > 100)
+						p_error_integral = 100;
+					else if (p_error_integral < -100)
+						p_error_integral = -100;
 
 					p_error_derivative = p_error - p_prev_rror;
 					p_prev_rror = p_error;
