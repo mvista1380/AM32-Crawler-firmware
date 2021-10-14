@@ -780,33 +780,27 @@ void tenKhzRoutine(){
 
 			if (running){
 
-				if (commutation_interval > minimum_commutation) {
-					p_error = commutation_interval - (minimum_commutation - 100); // buffer so it doesnt bounce
+				
+				p_error = commutation_interval - minimum_commutation; // buffer so it doesnt bounce
 
-					p_error_integral = p_error_integral + p_error;
+				p_error_integral = p_error_integral + p_error;
 					
-					if (p_error_integral > 2000)
-						p_error_integral = 2000;
-					else if (p_error_integral < -2000)
-						p_error_integral = - 2000;
+				if (p_error_integral > 2000)
+					p_error_integral = 2000;
+				else if (p_error_integral < -2000)
+					p_error_integral = - 2000;
 
-					p_error_derivative = p_error - p_prev_rror;
-					p_prev_rror = p_error;
+				p_error_derivative = p_error - p_prev_rror;
+				p_prev_rror = p_error;
 
-					minimum_duty_cycle = (K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative);
+				minimum_duty_cycle = (K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative);
 
-					if (minimum_duty_cycle > maximum_duty_orig)
-						minimum_duty_cycle = maximum_duty_orig;
-					else if (minimum_duty_cycle < starting_duty_orig)
-						minimum_duty_cycle = starting_duty_orig;
+				if (minimum_duty_cycle > maximum_duty_orig)
+					minimum_duty_cycle = maximum_duty_orig;
+				else if (minimum_duty_cycle < starting_duty_orig)
+					minimum_duty_cycle = starting_duty_orig;
 
-				}
-				else {
-					p_error_integral = 0;
-					p_error_derivative = 0;
-					p_prev_rror = 0;
-					p_error = 0;
-				}
+				
 				/*
 				if (stall_detected) {
 					if (duty_cycle_ramp_down_count < duty_cycle_ramp_down_delay)
