@@ -99,7 +99,7 @@ float p_error_integral = 0;
 float p_error_derivative = 0;
 float p_prev_rror = 0;
 float p_error = 0;
-int minimum_commutation = 10000;
+uint16_t minimum_commutation = 12500;
 char enable_pid = 0;
 
 /*
@@ -805,7 +805,6 @@ void tenKhzRoutine(){
 						minimum_duty_cycle = starting_duty_orig;
 						enable_pid = 0;
 					}
-
 				}
 				/*
 				if (stall_detected) {
