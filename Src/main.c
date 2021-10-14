@@ -787,7 +787,7 @@ void tenKhzRoutine(){
 					enable_pid = 1;
 				
 				if (enable_pid) {
-					p_error = commutation_interval - minimum_commutation; // buffer so it doesnt bounce
+					p_error = commutation_interval - (minimum_commutation - 100); // buffer so it doesnt bounce
 
 					p_error_integral = p_error_integral + p_error;
 
@@ -807,6 +807,12 @@ void tenKhzRoutine(){
 						minimum_duty_cycle = starting_duty_orig;
 						enable_pid = 0;
 					}
+				}
+				else if (p_error != 0) {
+					p_error = 0;
+					p_error_integral = 0;
+					p_error_derivative = 0;
+					p_prev_rror = 0;
 				}
 				/*
 				if (stall_detected) {
