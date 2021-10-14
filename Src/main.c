@@ -100,6 +100,7 @@ float p_error_derivative = 0;
 float p_prev_rror = 0;
 float p_error = 0;
 uint16_t minimum_commutation = 13000;
+uint8_t pid_update_count = 0;
 char enable_pid = 0;
 
 /*
@@ -787,25 +788,29 @@ void tenKhzRoutine(){
 					enable_pid = 1;
 				
 				if (enable_pid) {
-					p_error = commutation_interval - (minimum_commutation - 100); // buffer so it doesnt bounce
+					pid_update_count++;
+					if (pid_update_count == 50) {
+						pid_update_count = 0;
 
-					p_error_integral = p_error_integral + p_error;
+						p_error = commutation_interval - (minimum_commutation - 100); // buffer so it doesnt bounce
+						p_error_integral = p_error_integral + p_error;
 
-					if (p_error_integral > 1000)
-						p_error_integral = 1000;
-					else if (p_error_integral < -1000)
-						p_error_integral = -1000;
+						if (p_error_integral > 1000)
+							p_error_integral = 1000;
+						else if (p_error_integral < -1000)
+							p_error_integral = -1000;
 
-					p_error_derivative = p_error - p_prev_rror;
-					p_prev_rror = p_error;
+						p_error_derivative = p_error - p_prev_rror;
+						p_prev_rror = p_error;
 
-					minimum_duty_cycle = (K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative);
+						minimum_duty_cycle = (K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative);
 
-					if (minimum_duty_cycle > maximum_duty_orig)
-						minimum_duty_cycle = maximum_duty_orig;
-					else if (minimum_duty_cycle < starting_duty_orig) {
-						minimum_duty_cycle = starting_duty_orig;
-						enable_pid = 0;
+						if (minimum_duty_cycle > maximum_duty_orig)
+							minimum_duty_cycle = maximum_duty_orig;
+						else if (minimum_duty_cycle < starting_duty_orig) {
+							minimum_duty_cycle = starting_duty_orig;
+							enable_pid = 0;
+						}
 					}
 				}
 				else if (p_error != 0) {
