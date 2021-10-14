@@ -793,12 +793,12 @@ void tenKhzRoutine(){
 					p_error_derivative = p_error - p_prev_rror;
 					p_prev_rror = p_error;
 
-					duty_cycle = (K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative);
+					minimum_duty_cycle = (K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative);
 
-					if (duty_cycle > maximum_duty_orig)
-						duty_cycle = maximum_duty_orig;
-					else if (duty_cycle < starting_duty_orig)
-						duty_cycle = starting_duty_orig;
+					if (minimum_duty_cycle > maximum_duty_orig)
+						minimum_duty_cycle = maximum_duty_orig;
+					else if (minimum_duty_cycle < starting_duty_orig)
+						minimum_duty_cycle = starting_duty_orig;
 
 				}
 				else {
