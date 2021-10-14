@@ -99,7 +99,7 @@ float p_error_integral = 0;
 float p_error_derivative = 0;
 float p_prev_rror = 0;
 float p_error = 0;
-int minimum_commutation = 9000;
+int minimum_commutation = 10000;
 
 /*
 int duty_cycle_ramp_down_delay = 7000;
