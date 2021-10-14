@@ -789,16 +789,16 @@ void tenKhzRoutine(){
 				
 				//if (enable_pid) {
 				pid_update_count++;
-				if (pid_update_count == 100) {
+				if (pid_update_count == 50) {
 					pid_update_count = 0;
 
 					p_error = commutation_interval - (minimum_commutation - 100); // buffer so it doesnt bounce
 					p_error_integral = p_error_integral + p_error;
 
-					if (p_error_integral > 1000)
-						p_error_integral = 1000;
-					else if (p_error_integral < -1000)
-						p_error_integral = -1000;
+					if (p_error_integral > 25)
+						p_error_integral = 25;
+					else if (p_error_integral < -25)
+						p_error_integral = -25;
 
 					p_error_derivative = p_error - p_prev_rror;
 					p_prev_rror = p_error;
