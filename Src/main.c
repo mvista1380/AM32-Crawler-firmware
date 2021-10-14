@@ -91,6 +91,13 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
+float K_p_duty = 40;
+float K_i_duty = 10;
+float K_d_duty = 0;
+
+float error = 0;
+float prev_rror = 0;
+
 int duty_cycle_ramp_down_delay = 7000;
 int duty_cycle_ramp_down_rate = 50;
 int duty_cycle_ramp_down_step = 0;
