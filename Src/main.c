@@ -227,7 +227,7 @@ char max_amplitude = 180;
 char sin_cycle_complete = 0;
 char last_inc = 1;
 char stepper_sine = 0;
-char max_sin_inc = 3;
+char max_sin_inc = 4;
 char sin_stall_count = 0;
 char switchover_count = 0;
 
