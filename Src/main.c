@@ -798,7 +798,7 @@ void tenKhzRoutine(){
 				pid_update_count++;
 				if (pid_update_count == 100) {
 					pid_update_count = 0;
-					raw_error = commutation_interval - (minimum_commutation - 100);
+					raw_error = commutation_interval - minimum_commutation;
 
 					p_error = map(raw_error, -2000, 2000, -maximum_duty_orig, maximum_duty_orig);
 
