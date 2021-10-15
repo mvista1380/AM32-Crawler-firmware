@@ -105,7 +105,7 @@ float p_error_derivative = 0;
 float p_prev_rror = 0;
 int p_error = 0;
 int boost = 0;
-uint16_t minimum_commutation = 20000;
+uint16_t minimum_commutation = 10000;
 uint8_t pid_update_count = 0;
 char switched_comm_set = 0;
 char switchover_happened = 0;
@@ -619,10 +619,11 @@ void commutate(){
 void PeriodElapsedCallback(){
 	COM_TIMER->DIER &= ~((0x1UL << (0U)));             // disable interrupt
 	commutation_interval = (( 3*commutation_interval) + thiszctime)>>2;
-	if (switched_comm_set == 0 && switchover_happened) {
+	
+	/*if (switched_comm_set == 0 && switchover_happened) {
 		minimum_commutation = commutation_interval - 1000;
 		switched_comm_set = 1;
-	}
+	}*/
 	commutate();
 	advance = (commutation_interval>>3) * advance_level;   // 60 divde 8 7.5 degree increments
 	waitTime = (commutation_interval >>1)  - advance;
