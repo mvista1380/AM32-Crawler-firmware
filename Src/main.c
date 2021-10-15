@@ -1554,13 +1554,12 @@ int main(void)
 		}
 	}
 
-	delayMillis(2000);
-
 	allOff();
 	maskPhaseInterrupts();
+	delayMillis(1000);		
 	playPowerDownTune();
-
 	
+	/*
 	if (LL_PWR_IsActiveFlag_WU()) {
 		LL_PWR_ClearFlag_WU();
 	}
@@ -1577,8 +1576,11 @@ int main(void)
 	LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
 	LL_SYSTICK_DisableIT();
 	LL_LPM_EnableDeepSleep();
+	*/
 	
-	//while (1);
+	while (1) {
+		LL_IWDG_ReloadCounter(IWDG);
+	};
 }
 
 
