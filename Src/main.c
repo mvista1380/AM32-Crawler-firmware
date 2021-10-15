@@ -96,7 +96,7 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
-float K_p_duty = 0.5f;
+float K_p_duty = 0.6f;
 float K_i_duty = 0.1f;
 float K_d_duty = 0.3f;
 
@@ -160,7 +160,7 @@ int minimum_duty_cycle = DEAD_TIME;
 uint16_t maximum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
-uint16_t duty_cycle_multiplier = 210; //130 = 30% power increase
+uint16_t duty_cycle_multiplier = 250; //130 = 30% power increase
 char desync_check = 0;
 char low_kv_filter_level = 20;
 
