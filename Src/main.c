@@ -96,7 +96,7 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
-float K_p_duty = 0.7;
+float K_p_duty = 0;
 float K_i_duty = 0;
 float K_d_duty = 0;
 
@@ -231,7 +231,7 @@ char max_amplitude = 180;
 char sin_cycle_complete = 0;
 char last_inc = 1;
 char stepper_sine = 0;
-char max_sin_inc = 4;
+char max_sin_inc = 3;
 char sin_stall_count = 0;
 char switchover_count = 0;
 
