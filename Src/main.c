@@ -91,15 +91,15 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
-float K_p_duty = 0.015;
-float K_i_duty = 0.05;
-float K_d_duty = 0.01;
+float K_p_duty = 0.0097;
+float K_i_duty = 0.0005;
+float K_d_duty = 0.001;
 
 float p_error_integral = 0;
 float p_error_derivative = 0;
 float p_prev_rror = 0;
 float p_error = 0;
-uint16_t minimum_commutation = 13000;
+uint16_t minimum_commutation = 14000;
 uint8_t pid_update_count = 0;
 char enable_pid = 0;
 char switched_comm_set = 0;
@@ -524,9 +524,9 @@ void loadEEpromSettings(){
 	BRUSHED_MODE = eepromBuffer[43];
 
 	//development only - will be removed
-	K_p_duty = eepromBuffer[44] / (float)10000;
-	K_i_duty = eepromBuffer[45] / (float)1000;
-	K_d_duty = (eepromBuffer[46] * 2) / (float)1000;
+	//K_p_duty = eepromBuffer[44] / (float)10000;
+	//K_i_duty = eepromBuffer[45] / (float)1000;
+	//K_d_duty = (eepromBuffer[46] * 2) / (float)1000;
 }
 
 void saveEEpromSettings(){
@@ -614,7 +614,7 @@ void PeriodElapsedCallback(){
 	COM_TIMER->DIER &= ~((0x1UL << (0U)));             // disable interrupt
 	commutation_interval = (( 3*commutation_interval) + thiszctime)>>2;
 	if (switched_comm_set == 0 && switchover_happened) {
-		minimum_commutation = commutation_interval;
+		minimum_commutation = commutation_interval + 500;
 		switched_comm_set = 1;
 	}
 	commutate();
