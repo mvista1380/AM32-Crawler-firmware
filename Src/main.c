@@ -1345,9 +1345,9 @@ int main(void)
 						running = 0;
 						zero_input_count = 0;
 						armed = 0;
-						program_running = 0;
 						last_error = 3;
 						saveEEpromSettings();
+						program_running = 0;
 					}
 				}
 				else{
