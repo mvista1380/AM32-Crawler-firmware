@@ -155,6 +155,7 @@ uint16_t minimum_duty_cycle = DEAD_TIME;
 uint16_t maximum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
+uint16_t p_duty_cycle_max = DEAD_TIME;
 uint16_t duty_cycle_multiplier = 210; //130 = 30% power increase
 char desync_check = 0;
 char low_kv_filter_level = 20;
@@ -471,6 +472,7 @@ void loadEEpromSettings(){
 
 	starting_duty_orig = minimum_duty_cycle;
 	maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
+	p_duty_cycle_max = maximum_duty_cycle * (1 + (1 - K_p_duty);
 	maximum_duty_cycle = (TIMER1_MAX_ARR / 100) * 85;
 
 
@@ -794,7 +796,7 @@ void tenKhzRoutine(){
 					pid_update_count = 0;
 					raw_error = commutation_interval - minimum_commutation;
 
-					p_error = map(raw_error, -2000, 2000, -maximum_duty_orig, maximum_duty_orig);
+					p_error = map(raw_error, -2000, 2000, -p_duty_cycle_max, p_duty_cycle_max);
 
 					p_error_integral += (p_error * 10); //10 millisecond interval
 
