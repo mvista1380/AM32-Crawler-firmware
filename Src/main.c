@@ -788,6 +788,7 @@ void tenKhzRoutine(){
 					//enable_pid = 1;
 				
 				//if (enable_pid) {
+				/*
 				pid_update_count++;
 				if (pid_update_count == 100) {
 					pid_update_count = 0;
