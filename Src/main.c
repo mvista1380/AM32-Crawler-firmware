@@ -96,7 +96,7 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
-float K_p_duty = 0;
+float K_p_duty = 0.001;
 float K_i_duty = 0;
 float K_d_duty = 0;
 
@@ -798,10 +798,11 @@ void tenKhzRoutine(){
 				pid_update_count++;
 				if (pid_update_count == 100) {
 					pid_update_count = 0;
-					raw_error = commutation_interval - minimum_commutation;
+					//raw_error = commutation_interval - minimum_commutation;
 
-					p_error = map(raw_error, -2000, 2000, (maximum_duty_orig * -1), maximum_duty_orig);
+					//p_error = map(raw_error, -2000, 2000, (maximum_duty_orig * -1), maximum_duty_orig);
 
+					p_error = commutation_interval - minimum_commutation;
 					p_error_integral += (p_error * 10); //10 millisecond interval
 
 					if (p_error_integral > 25)
