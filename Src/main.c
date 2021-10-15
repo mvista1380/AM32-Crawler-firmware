@@ -97,8 +97,8 @@ uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
 float K_p_duty = 0.5f;
-float K_i_duty = 0.2f;
-float K_d_duty = 0.1f;
+float K_i_duty = 0.1f;
+float K_d_duty = 0f;
 
 float p_error_integral = 0;
 float p_error_derivative = 0;
@@ -620,7 +620,7 @@ void PeriodElapsedCallback(){
 	COM_TIMER->DIER &= ~((0x1UL << (0U)));             // disable interrupt
 	commutation_interval = (( 3*commutation_interval) + thiszctime)>>2;
 	if (switched_comm_set == 0 && switchover_happened) {
-		minimum_commutation = commutation_interval - 500;
+		minimum_commutation = commutation_interval - 1000;
 		switched_comm_set = 1;
 	}
 	commutate();
