@@ -98,7 +98,7 @@ char maximum_throttle_change_ramp = 1;
 
 float K_p_duty = 0.5f;
 float K_i_duty = 0.1f;
-float K_d_duty = 0.0f;
+float K_d_duty = 0.3f;
 
 float p_error_integral = 0;
 float p_error_derivative = 0;
@@ -810,7 +810,7 @@ void tenKhzRoutine(){
 					p_error_derivative = (p_error - p_prev_rror) / 10;
 					p_prev_rror = p_error;
 
-					boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative * 1000));
+					boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
 
 					 minimum_duty_cycle = starting_duty_orig + boost;
 
