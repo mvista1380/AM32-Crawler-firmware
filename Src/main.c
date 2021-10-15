@@ -91,14 +91,15 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
-float K_p_duty = 0.0097;
-float K_i_duty = 0.001;
-float K_d_duty = 0.0005;
+float K_p_duty = 0.9;
+float K_i_duty = 0.1;
+float K_d_duty = 0.1;
 
 float p_error_integral = 0;
 float p_error_derivative = 0;
 float p_prev_rror = 0;
-float p_error = 0;
+int p_error = 0;
+int raw_error = 0;
 uint16_t minimum_commutation = 14000;
 uint8_t pid_update_count = 0;
 char enable_pid = 0;
@@ -523,10 +524,10 @@ void loadEEpromSettings(){
 
 	BRUSHED_MODE = eepromBuffer[43];
 
-	//development only - will be removed
-	//K_p_duty = eepromBuffer[44] / (float)10000;
-	//K_i_duty = eepromBuffer[45] / (float)1000;
-	//K_d_duty = (eepromBuffer[46] * 2) / (float)1000;
+	development only - will be removed
+	K_p_duty = eepromBuffer[44] / (float)10;
+	K_i_duty = eepromBuffer[45] / (float)10;
+	K_d_duty = eepromBuffer[46] / (float)10;
 }
 
 void saveEEpromSettings(){
@@ -795,21 +796,23 @@ void tenKhzRoutine(){
 				
 				//if (enable_pid) {
 				pid_update_count++;
-				if (pid_update_count == 200) {
+				if (pid_update_count == 100) {
 					pid_update_count = 0;
+					raw_error = commutation_interval - (minimum_commutation - 100);
 
-					p_error = commutation_interval - (minimum_commutation - 100); // buffer so it doesnt bounce
-					p_error_integral = p_error_integral + p_error;
+					p_error = map(raw_error, -2000, 2000, -maximum_duty_orig, maximum_duty_orig);
 
-					if (p_error_integral > 100)
-						p_error_integral = 100;
-					else if (p_error_integral < -100)
-						p_error_integral = -100;
+					p_error_integral += (p_error * 10); //10 millisecond interval
 
-					p_error_derivative = p_error - p_prev_rror;
+					if (p_error_integral > 25)
+						p_error_integral = 25;
+					else if (p_error_integral < -25)
+						p_error_integral = -25;
+
+					p_error_derivative = (p_error - p_prev_rror) / 10;
 					p_prev_rror = p_error;
 
-					minimum_duty_cycle = (K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative);
+					minimum_duty_cycle = (K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative * 1000);
 
 					if (minimum_duty_cycle > maximum_duty_orig)
 						minimum_duty_cycle = maximum_duty_orig;
