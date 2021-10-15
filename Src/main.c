@@ -102,7 +102,6 @@ int p_error = 0;
 int raw_error = 0;
 uint16_t minimum_commutation = 14000;
 uint8_t pid_update_count = 0;
-char enable_pid = 0;
 char switched_comm_set = 0;
 char switchover_happened = 0;
 
@@ -775,7 +774,6 @@ void tenKhzRoutine(){
 			phase_B_position = 119;
 			phase_C_position = 239;
 			stepper_sine = 1;
-			enable_pid = 0;
 			minimum_duty_cycle = starting_duty_orig;
 		}
 		else if (input < ((sine_mode_changeover / 100) * 95) && step == changeover_step) {
@@ -783,7 +781,6 @@ void tenKhzRoutine(){
 			phase_B_position = 180;
 			phase_C_position = 300;
 			stepper_sine = 1;
-			enable_pid = 0;
 			minimum_duty_cycle = starting_duty_orig;
 		}
 
@@ -791,10 +788,7 @@ void tenKhzRoutine(){
 
 			if (running){
 
-				//if (commutation_interval > minimum_commutation)
-					//enable_pid = 1;
 				
-				//if (enable_pid) {
 				pid_update_count++;
 				if (pid_update_count == 100) {
 					pid_update_count = 0;
@@ -818,7 +812,6 @@ void tenKhzRoutine(){
 						minimum_duty_cycle = maximum_duty_orig;
 					else if (minimum_duty_cycle < starting_duty_orig) {
 						minimum_duty_cycle = starting_duty_orig;
-						enable_pid = 0;
 					}
 				}
 				//}
