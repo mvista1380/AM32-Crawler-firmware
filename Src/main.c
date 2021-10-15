@@ -96,8 +96,8 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
-float K_p_duty = 1000.0f;
-float K_i_duty = 0;
+float K_p_duty = 0.5f;
+float K_i_duty = 1;
 float K_d_duty = 0;
 
 float p_error_integral = 0;
@@ -105,7 +105,7 @@ float p_error_derivative = 0;
 float p_prev_rror = 0;
 int p_error = 0;
 int boost = 0;
-uint16_t minimum_commutation = 9000;
+uint16_t minimum_commutation = 8000;
 uint8_t pid_update_count = 0;
 char switched_comm_set = 0;
 char switchover_happened = 0;
