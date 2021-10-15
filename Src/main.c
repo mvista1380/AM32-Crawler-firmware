@@ -795,7 +795,7 @@ void tenKhzRoutine(){
 				
 				//if (enable_pid) {
 				pid_update_count++;
-				if (pid_update_count == 100) {
+				if (pid_update_count == 200) {
 					pid_update_count = 0;
 
 					p_error = commutation_interval - (minimum_commutation - 100); // buffer so it doesnt bounce
