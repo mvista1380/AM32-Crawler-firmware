@@ -524,7 +524,7 @@ void loadEEpromSettings(){
 
 	BRUSHED_MODE = eepromBuffer[43];
 
-	development only - will be removed
+	//development only - will be removed
 	K_p_duty = eepromBuffer[44] / (float)10;
 	K_i_duty = eepromBuffer[45] / (float)10;
 	K_d_duty = eepromBuffer[46] / (float)10;
