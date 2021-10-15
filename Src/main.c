@@ -9,14 +9,19 @@
 * V1 - AM32 - Crawler Firmware
 * First of the full working crawler version
 *	Current features Added
-		-Stall compensation drastically changed to smooth out transistion
-		-sine mode step angle range added for smoother slow start and high speed at the top of sine mode
-		-variable current based on user adjustable current/amplitude selection
-		-brushed mode is configurable through config tool
-		-drastically simplified config options
-		-auto throttle input calibration
-		-sine mode/trap mode smooth transfer
-		-throttle curve implemented
+*		-Stall compensation drastically changed to smooth out transistion
+*		-sine mode step angle range added for smoother slow start and high speed at the top of sine mode
+*		-variable current based on user adjustable current/amplitude selection
+*		-brushed mode is configurable through config tool
+*		-drastically simplified config options
+*		-auto throttle input calibration
+*		-sine mode/trap mode smooth transfer
+*		-throttle curve implemented
+*
+* V1.1 - Change Log
+*	-Added PID stall compensation Loop
+*	-Fixed Debug Logging
+*	-Fixed Low Voltage shutdown
 */
 #include <stdint.h>
 #include "main.h"
