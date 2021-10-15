@@ -102,6 +102,8 @@ float p_error = 0;
 uint16_t minimum_commutation = 13000;
 uint8_t pid_update_count = 0;
 char enable_pid = 0;
+char switched_comm_set = 0;
+char switchover_happened = 0;
 
 /*
 int duty_cycle_ramp_down_delay = 7000;
@@ -611,6 +613,10 @@ void commutate(){
 void PeriodElapsedCallback(){
 	COM_TIMER->DIER &= ~((0x1UL << (0U)));             // disable interrupt
 	commutation_interval = (( 3*commutation_interval) + thiszctime)>>2;
+	if (switched_comm_set == 0 && switchover_happened) {
+		minimum_commutation = commutation_interval;
+		switched_comm_set = 1;
+	}
 	commutate();
 	advance = (commutation_interval>>3) * advance_level;   // 60 divde 8 7.5 degree increments
 	waitTime = (commutation_interval >>1)  - advance;
@@ -788,7 +794,6 @@ void tenKhzRoutine(){
 					//enable_pid = 1;
 				
 				//if (enable_pid) {
-				/*
 				pid_update_count++;
 				if (pid_update_count == 100) {
 					pid_update_count = 0;
@@ -1066,6 +1071,7 @@ void SwitchOver() {
 	old_routine = 0;
 	prop_brake_active = 0;
 	switchover_count = 0;
+	switchover_happened = 1;
 	last_average_interval = average_interval;
 	zero_crosses = 0;
 	prop_brake_active = 0;
