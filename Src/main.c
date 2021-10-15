@@ -472,7 +472,7 @@ void loadEEpromSettings(){
 
 	starting_duty_orig = minimum_duty_cycle;
 	maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
-	p_duty_cycle_max = maximum_duty_cycle * (1 + (1 - K_p_duty);
+	p_duty_cycle_max = maximum_duty_cycle * (1 + (1 - K_p_duty));
 	maximum_duty_cycle = (TIMER1_MAX_ARR / 100) * 85;
 
 
