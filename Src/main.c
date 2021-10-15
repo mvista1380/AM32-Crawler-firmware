@@ -96,15 +96,15 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
-float K_p_duty = 0.0001;
-float K_i_duty = 0;
-float K_d_duty = 0;
+float K_p_duty = 0.3f;
+float K_i_duty = 0.1f;
+float K_d_duty = 0f;
 
 float p_error_integral = 0;
 float p_error_derivative = 0;
 float p_prev_rror = 0;
 int p_error = 0;
-int raw_error = 0;
+int boost = 0;
 uint16_t minimum_commutation = 20000;
 uint8_t pid_update_count = 0;
 char switched_comm_set = 0;
@@ -156,7 +156,7 @@ typedef enum
 	GPIO_PIN_SET
 } GPIO_PinState;
 
-uint16_t minimum_duty_cycle = DEAD_TIME;
+int minimum_duty_cycle = DEAD_TIME;
 uint16_t maximum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
@@ -620,7 +620,7 @@ void PeriodElapsedCallback(){
 	COM_TIMER->DIER &= ~((0x1UL << (0U)));             // disable interrupt
 	commutation_interval = (( 3*commutation_interval) + thiszctime)>>2;
 	if (switched_comm_set == 0 && switchover_happened) {
-		minimum_commutation = commutation_interval + 1000;
+		minimum_commutation = commutation_interval - 500;
 		switched_comm_set = 1;
 	}
 	commutate();
@@ -798,9 +798,6 @@ void tenKhzRoutine(){
 				pid_update_count++;
 				if (pid_update_count == 100) {
 					pid_update_count = 0;
-					//raw_error = commutation_interval - minimum_commutation;
-
-					//p_error = map(raw_error, -2000, 2000, (maximum_duty_orig * -1), maximum_duty_orig);
 
 					p_error = commutation_interval - minimum_commutation;
 					p_error_integral += (p_error * 10); //10 millisecond interval
@@ -813,7 +810,9 @@ void tenKhzRoutine(){
 					p_error_derivative = (p_error - p_prev_rror) / 10;
 					p_prev_rror = p_error;
 
-					minimum_duty_cycle = (K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative * 1000);
+					boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative * 1000));
+
+					 minimum_duty_cycle = starting_duty_orig + boost;
 
 					if (minimum_duty_cycle > maximum_duty_orig)
 						minimum_duty_cycle = maximum_duty_orig;
