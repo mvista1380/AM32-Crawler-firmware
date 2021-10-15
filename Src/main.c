@@ -800,7 +800,7 @@ void tenKhzRoutine(){
 					pid_update_count = 0;
 					raw_error = commutation_interval - minimum_commutation;
 
-					p_error = map(raw_error, -2000, 2000, -maximum_duty_orig, maximum_duty_orig);
+					p_error = map(raw_error, -2000, 2000, (maximum_duty_orig * -1), maximum_duty_orig);
 
 					p_error_integral += (p_error * 10); //10 millisecond interval
 
