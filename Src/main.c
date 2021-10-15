@@ -96,7 +96,7 @@ uint16_t armed_timeout_count;
 uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
-float K_p_duty = 100.0f;
+float K_p_duty = 1000.0f;
 float K_i_duty = 0;
 float K_d_duty = 0;
 
