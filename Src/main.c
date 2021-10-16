@@ -97,8 +97,8 @@ uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
 float K_p_duty = 0.03;
-float K_i_duty = 0.01;
-float K_d_duty = 0;
+float K_i_duty = 0.001;
+float K_d_duty = 0.001;
 
 float p_error_integral = 0;
 float p_error_derivative = 0;
