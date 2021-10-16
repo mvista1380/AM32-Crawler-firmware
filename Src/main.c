@@ -105,7 +105,7 @@ float p_error_derivative = 0;
 float p_prev_rror = 0;
 int p_error = 0;
 int boost = 0;
-uint16_t minimum_commutation = 6000;
+uint16_t minimum_commutation = 5000;
 uint8_t pid_update_count = 0;
 char switched_comm_set = 0;
 char switchover_happened = 0;
@@ -160,7 +160,7 @@ int minimum_duty_cycle = DEAD_TIME;
 uint16_t maximum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
-uint16_t duty_cycle_multiplier = 250; //130 = 30% power increase
+uint16_t duty_cycle_multiplier = 300; //130 = 30% power increase
 char desync_check = 0;
 char low_kv_filter_level = 20;
 
