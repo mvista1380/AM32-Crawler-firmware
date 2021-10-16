@@ -621,7 +621,7 @@ void PeriodElapsedCallback(){
 	commutation_interval = (( 3*commutation_interval) + thiszctime)>>2;
 	
 	if (switched_comm_set == 0 && switchover_happened) {
-		minimum_commutation = commutation_interval;
+		minimum_commutation = commutation_interval - 1000;
 		switched_comm_set = 1;
 	}
 	commutate();
