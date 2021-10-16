@@ -797,18 +797,18 @@ void tenKhzRoutine(){
 
 				
 				pid_update_count++;
-				if (pid_update_count == 50) {
+				if (pid_update_count == 100) {
 					pid_update_count = 0;
 
 					p_error = commutation_interval - minimum_commutation;
-					p_error_integral += (p_error * 5); //10 millisecond interval
+					p_error_integral += (p_error * 10); //10 millisecond interval
 
 					if (p_error_integral > 50)
 						p_error_integral = 50;
 					else if (p_error_integral < -50)
 						p_error_integral = -50;
 
-					p_error_derivative = (p_error - p_prev_rror) / 5;
+					p_error_derivative = (p_error - p_prev_rror) / 10;
 					p_prev_rror = p_error;
 
 					boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
