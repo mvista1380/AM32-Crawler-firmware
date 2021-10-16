@@ -98,7 +98,7 @@ char maximum_throttle_change_ramp = 1;
 
 float K_p_duty = 0.5f;
 float K_i_duty = 10;
-float K_d_duty = 0;
+float K_d_duty = .3;
 
 float p_error_integral = 0;
 float p_error_derivative = 0;
