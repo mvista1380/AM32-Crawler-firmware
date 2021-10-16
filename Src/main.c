@@ -796,31 +796,31 @@ void tenKhzRoutine(){
 			if (running){
 
 				
-				pid_update_count++;
-				if (pid_update_count == 100) {
-					pid_update_count = 0;
+				//pid_update_count++;
+				//if (pid_update_count == 100) {
+					//pid_update_count = 0;
 
-					p_error = commutation_interval - minimum_commutation;
-					p_error_integral += (p_error * 10); //10 millisecond interval
+				p_error = commutation_interval - minimum_commutation;
+				p_error_integral += (p_error); //10 millisecond interval
 
-					if (p_error_integral > maximum_duty_orig)
-						p_error_integral = maximum_duty_orig;
-					else if (p_error_integral < -maximum_duty_orig)
-						p_error_integral = -maximum_duty_orig;
+				if (p_error_integral > maximum_duty_orig)
+					p_error_integral = maximum_duty_orig;
+				else if (p_error_integral < -maximum_duty_orig)
+					p_error_integral = -maximum_duty_orig;
 
-					p_error_derivative = (p_error - p_prev_rror) / 10;
-					p_prev_rror = p_error;
+				p_error_derivative = (p_error - p_prev_rror);
+				p_prev_rror = p_error;
 
-					boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
+				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
 
-					 minimum_duty_cycle = starting_duty_orig + boost;
+					minimum_duty_cycle = starting_duty_orig + boost;
 
-					if (minimum_duty_cycle > maximum_duty_orig)
-						minimum_duty_cycle = maximum_duty_orig;
-					else if (minimum_duty_cycle < starting_duty_orig) {
-						minimum_duty_cycle = starting_duty_orig;
-					}
+				if (minimum_duty_cycle > maximum_duty_orig)
+					minimum_duty_cycle = maximum_duty_orig;
+				else if (minimum_duty_cycle < starting_duty_orig) {
+					minimum_duty_cycle = starting_duty_orig;
 				}
+				//}
 				//}
 				/*
 				if (stall_detected) {
