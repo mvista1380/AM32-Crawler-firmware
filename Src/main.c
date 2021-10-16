@@ -97,15 +97,15 @@ uint8_t desync_happened = 0;
 char maximum_throttle_change_ramp = 1;
 
 float K_p_duty = 0.03;
-float K_i_duty = 0.001;
-float K_d_duty = 0.001;
+float K_i_duty = 0.0001;
+float K_d_duty = 0.01;
 
 float p_error_integral = 0;
 float p_error_derivative = 0;
 float p_prev_rror = 0;
 int p_error = 0;
 int boost = 0;
-uint16_t minimum_commutation = 5000;
+uint16_t minimum_commutation = 3000;
 uint8_t pid_update_count = 0;
 char switched_comm_set = 0;
 char switchover_happened = 0;
