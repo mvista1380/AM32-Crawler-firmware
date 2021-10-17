@@ -16,11 +16,11 @@ MAIN_INC_DIR := Inc
 SRC_DIRS_COMMON := $(MAIN_SRC_DIR)
 
 # Include processor specific makefiles
-include f051makefile.mk
+#include f051makefile.mk
 include g071makefile.mk
 
 # Default MCU type to F051
-MCU_TYPE ?= F051
+MCU_TYPE ?= g071
 
 # additional libs
 LIBS := -lc -lm -lnosys
