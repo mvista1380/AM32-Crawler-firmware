@@ -21,7 +21,6 @@ include g071makefile.mk
 
 # Default MCU type to F051
 MCU_TYPE ?= G071
-MCU_CFLAG = MCU_G071
 
 # additional libs
 LIBS := -lc -lm -lnosys
@@ -78,7 +77,7 @@ $(TARGETS_G071) :
 
 # Compile target
 $(TARGET_BASENAME).elf: SRC := $(SRC_COMMON) $(SRC_$(MCU_TYPE))
-$(TARGET_BASENAME).elf: CFLAGS := $(MCU_CFLAG) $(CFLAGS_$(MCU_TYPE)) $(CFLAGS_COMMON)
+$(TARGET_BASENAME).elf: CFLAGS := $(MCU_G071) $(CFLAGS_$(MCU_TYPE)) $(CFLAGS_COMMON)
 $(TARGET_BASENAME).elf: LDFLAGS := $(LDFLAGS_COMMON) $(LDFLAGS_$(MCU_TYPE)) -T$(LDSCRIPT_$(MCU_TYPE))
 $(TARGET_BASENAME).elf: $(SRC)
 	@$(ECHO) Compiling $(notdir $@)
