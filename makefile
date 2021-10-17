@@ -20,7 +20,7 @@ SRC_DIRS_COMMON := $(MAIN_SRC_DIR)
 include g071makefile.mk
 
 # Default MCU type to F051
-MCU_TYPE ?= g071
+MCU_TYPE ?= G071
 
 # additional libs
 LIBS := -lc -lm -lnosys
