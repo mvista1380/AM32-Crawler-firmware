@@ -2,3 +2,7 @@ obj/
 downloads/
 tools/
 .vscode
+/.vs/slnx.sqlite
+/.vs/ProjectSettings.json
+/.vs/AM32-Crawler-firmware_exp/v16/Browse.VC.opendb
+/.vs/AM32-Crawler-firmware_exp/v16/Browse.VC.db
