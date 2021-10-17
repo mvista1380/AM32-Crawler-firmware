@@ -1309,7 +1309,7 @@ int main(void)
 	stuckcounter = 0;
 
 	if (!armed && newinput > (1000 + (servo_dead_band << 1))) {
-		CalibrateThrottle();
+		//CalibrateThrottle();
 	}
 
 	while (program_running){
