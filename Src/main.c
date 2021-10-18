@@ -1355,7 +1355,8 @@ int main(void)
 			adc_counter = 0;
 			
 			if (degrees_celsius >= 115 && armed) {
-				if (thermal_protection_active == 0) {
+				
+				/*if (thermal_protection_active == 0) {
 					allOff();
 					maskPhaseInterrupts();
 					eepromBuffer[44] = converted_degrees >> 8;
