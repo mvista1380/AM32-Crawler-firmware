@@ -1379,10 +1379,13 @@ int main(void)
 					saveEEpromSettings();
 				}
 
-				thermal_protection_active = 1;				
-				signaltimeout = 0;
-				LL_IWDG_ReloadCounter(IWDG);
-				delayMillis(1500);
+				thermal_protection_active = 1;
+				short thermal_counter = 1500;
+				while (1) {
+					signaltimeout = 0;
+					LL_IWDG_ReloadCounter(IWDG);
+					delayMillis(1);
+				}
 				continue;
 			}
 			else if (thermal_protection_active)
