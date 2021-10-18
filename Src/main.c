@@ -1360,10 +1360,7 @@ int main(void)
 					maskPhaseInterrupts();
 					eepromBuffer[44] = converted_degrees >> 8;
 					eepromBuffer[45] = converted_degrees & 0xFF;
-					saveEEpromSettings();
 				}
-
-				signaltimeout = 0;
 
 				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
 				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
@@ -1380,7 +1377,13 @@ int main(void)
 					saveEEpromSettings();				
 				
 				thermal_protection_active = 1;
-				delayMillis(1500);
+				short thermal_counter = 1500;
+				while (thermal_counter > 0) {
+					signaltimeout = 0;
+					LL_IWDG_ReloadCounter(IWDG);
+					delayMillis(1);
+					thermal_counter--;
+				}
 				continue;
 			}
 			else if (thermal_protection_active)
