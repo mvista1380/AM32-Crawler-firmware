@@ -1371,7 +1371,7 @@ int main(void)
 				proportionalBrake();
 				prop_brake_active = 1;
 				*/
-				//playThermalWarningTune();
+				playThermalWarningTune();
 				//last_error = 2;
 
 				if(thermal_protection_active ==0)
