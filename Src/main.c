@@ -1354,6 +1354,10 @@ int main(void)
 			}
 			adc_counter = 0;
 			
+			last_error = 2;
+			saveEEpromSettings();
+			delay(1500);
+
 			if (degrees_celsius >= 115 && armed) {
 				
 				/*if (thermal_protection_active == 0) {
@@ -1381,12 +1385,12 @@ int main(void)
 
 				thermal_protection_active = 1;
 				short thermal_counter = 1500;
-				while (1) {
+				/*while (1) {
 					signaltimeout = 0;
 					LL_IWDG_ReloadCounter(IWDG);
 					delayMillis(1);
 				}
-				continue;
+				continue;*/
 			}
 			else if (thermal_protection_active)
 				thermal_protection_active = 0;
