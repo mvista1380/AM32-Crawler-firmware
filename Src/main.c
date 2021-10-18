@@ -1371,14 +1371,14 @@ int main(void)
 				proportionalBrake();
 				prop_brake_active = 1;
 				*/
-				playThermalWarningTune();
-				last_error = 2;
+				//playThermalWarningTune();
+				//last_error = 2;
 
 				//if(thermal_protection_active ==0)
 					//saveEEpromSettings();				
 				
 				thermal_protection_active = 1;
-				short thermal_counter = 1500;
+				//short thermal_counter = 1500;
 				while (1) {
 					signaltimeout = 0;
 					LL_IWDG_ReloadCounter(IWDG);
