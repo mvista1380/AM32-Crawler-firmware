@@ -1358,6 +1358,8 @@ int main(void)
 				if (thermal_protection_active == 0) {
 					allOff();
 					maskPhaseInterrupts();
+					eepromBuffer[44] = converted_degrees >> 8;
+					eepromBuffer[45] = converted_degrees & 0xFF;
 				}
 
 				signaltimeout = 0;
