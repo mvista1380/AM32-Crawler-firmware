@@ -83,7 +83,7 @@ typedef struct __attribute__((packed)) {
 firmware_info_s __attribute__ ((section(".firmware_info"))) firmware_info = {
 	version_major: VERSION_MAJOR,
 	version_minor: VERSION_MINOR,
-	device_name: FIRMWARE_NAME
+	device_name: "Test Saving"
 };
 
 uint8_t EEPROM_VERSION;
@@ -537,8 +537,8 @@ void loadEEpromSettings(){
 
 void saveEEpromSettings(){
 	
-	if(last_error != 0)
-		eepromBuffer[42] = last_error;
+	//if(last_error != 0)
+		eepromBuffer[42] = 0x01;
 
 	save_flash_nolib(eepromBuffer, 48, EEPROM_START_ADD);
 }
@@ -1353,10 +1353,6 @@ int main(void)
 				}
 			}
 			adc_counter = 0;
-			
-			last_error = 2;
-			saveEEpromSettings();
-			delayMillis(1500);
 
 			if (degrees_celsius >= 115 && armed) {
 				
