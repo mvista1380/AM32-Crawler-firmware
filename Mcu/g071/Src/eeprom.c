@@ -87,7 +87,7 @@ void save_flash_nolib(uint8_t* data, int length, uint32_t add) {
 
 	// unlock flash
 
-	while ((FLASH->SR & FLASH_SR_BSY) != 0) {
+	while ((FLASH->SR & FLASH_SR_BSY1) != 0) {
 		/*  add time-out*/
 	}
 	if ((FLASH->CR & FLASH_CR_LOCK) != 0) {
@@ -102,7 +102,7 @@ void save_flash_nolib(uint8_t* data, int length, uint32_t add) {
 		FLASH->CR |= FLASH_CR_PER;
 		FLASH->AR = add;
 		FLASH->CR |= FLASH_CR_STRT;
-		while ((FLASH->SR & FLASH_SR_BSY) != 0) {
+		while ((FLASH->SR & FLASH_SR_BSY1) != 0) {
 			/*  add time-out */
 		}
 		if ((FLASH->SR & FLASH_SR_EOP) != 0) {
@@ -121,7 +121,7 @@ void save_flash_nolib(uint8_t* data, int length, uint32_t add) {
 
 		FLASH->CR |= FLASH_CR_PG; /* (1) */
 		*(__IO uint16_t*)(add + write_cnt) = data_to_FLASH[index];
-		while ((FLASH->SR & FLASH_SR_BSY) != 0) { /*  add time-out  */
+		while ((FLASH->SR & FLASH_SR_BSY1) != 0) { /*  add time-out  */
 		}
 		if ((FLASH->SR & FLASH_SR_EOP) != 0) {
 			FLASH->SR = FLASH_SR_EOP;
