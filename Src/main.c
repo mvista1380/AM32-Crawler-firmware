@@ -1355,7 +1355,13 @@ int main(void)
 			adc_counter = 0;
 
 			if (degrees_celsius >= 115) {
-				allOff();
+				if (thermal_protection_active == 0) {
+					allOff();
+					maskPhaseInterrupts();
+				}
+
+				signaltimeout = 0;
+
 				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
 				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
 				TIM1->CCR1 = adjusted_duty_cycle;
