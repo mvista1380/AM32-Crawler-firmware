@@ -1374,8 +1374,8 @@ int main(void)
 				//playThermalWarningTune();
 				//last_error = 2;
 
-				//if(thermal_protection_active ==0)
-					//saveEEpromSettings();				
+				if(thermal_protection_active ==0)
+					saveEEpromSettings();				
 				
 				thermal_protection_active = 1;
 				//short thermal_counter = 1500;
