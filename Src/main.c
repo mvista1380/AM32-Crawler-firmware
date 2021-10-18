@@ -1309,7 +1309,7 @@ int main(void)
 	stuckcounter = 0;
 
 	if (!armed && newinput > (1000 + (servo_dead_band << 1))) {
-		//CalibrateThrottle();
+		CalibrateThrottle();
 	}
 
 	while (program_running){
@@ -1348,7 +1348,7 @@ int main(void)
 			}
 			adc_counter = 0;
 
-			/*if (degrees_celsius >= 115) {
+			if (degrees_celsius >= 115) {
 				allOff();
 				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
 				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
@@ -1370,7 +1370,7 @@ int main(void)
 			}
 			else if (thermal_protection_active)
 				thermal_protection_active = 0;
-				*/
+				
 			#ifdef USE_ADC_INPUT
 			if(ADC_raw_input < 10){
 				zero_input_count++;
