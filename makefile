@@ -16,7 +16,7 @@ MAIN_INC_DIR := Inc
 SRC_DIRS_COMMON := $(MAIN_SRC_DIR)
 
 # Include processor specific makefiles
-#include f051makefile.mk
+include f051makefile.mk
 include g071makefile.mk
 
 # Default MCU type to F051
@@ -77,7 +77,14 @@ $(TARGETS_G071) :
 
 # Compile target
 $(TARGET_BASENAME).elf: SRC := $(SRC_COMMON) $(SRC_$(MCU_TYPE))
+ifdef MCU_G071
 $(TARGET_BASENAME).elf: CFLAGS := $(MCU_G071) $(CFLAGS_$(MCU_TYPE)) $(CFLAGS_COMMON)
+endif
+
+ifdef MCU_F051
+$(TARGET_BASENAME).elf: CFLAGS := $(MCU_F051) $(CFLAGS_$(MCU_TYPE)) $(CFLAGS_COMMON)
+endif
+
 $(TARGET_BASENAME).elf: LDFLAGS := $(LDFLAGS_COMMON) $(LDFLAGS_$(MCU_TYPE)) -T$(LDSCRIPT_$(MCU_TYPE))
 $(TARGET_BASENAME).elf: $(SRC)
 	@$(ECHO) Compiling $(notdir $@)
