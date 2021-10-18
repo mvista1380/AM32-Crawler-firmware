@@ -1356,7 +1356,7 @@ int main(void)
 			
 			last_error = 2;
 			saveEEpromSettings();
-			delay(1500);
+			delayMillis(1500);
 
 			if (degrees_celsius >= 115 && armed) {
 				
