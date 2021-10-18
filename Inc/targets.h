@@ -37,7 +37,7 @@
 #define FIRMWARE_NAME           "IFlight_55A "
 #define DEAD_TIME               45
 #define HARDWARE_GROUP_F0_B
-#define TARGET_VOLTAGE_DIVIDER  95
+#define TARGET_VOLTAGE_DIVIDER  100
 #define USE_SERIAL_TELEMETRY
 #endif
 
