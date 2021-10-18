@@ -1319,7 +1319,13 @@ int main(void)
 		adc_counter++;
 		if(adc_counter>100){   // for testing adc and telemetry
 			ADC_raw_temp = ADC_raw_temp - (temperature_offset);
-			converted_degrees =__LL_ADC_CALC_TEMPERATURE(3300,  ADC_raw_temp, LL_ADC_RESOLUTION_12B);
+#ifdef MCU_F051
+			converted_degrees = __LL_ADC_CALC_TEMPERATURE(3300, ADC_raw_temp, LL_ADC_RESOLUTION_12B);
+#endif // MCU_F051
+#ifdef MCU_G071
+			converted_degrees = __LL_ADC_CALC_TEMPERATURE(2500, ADC_raw_temp, LL_ADC_RESOLUTION_12B);
+#endif // MCU_F051
+			
 			degrees_celsius =((7 * degrees_celsius) + converted_degrees) >> 3;
 
 			battery_voltage = ((7 * battery_voltage) + ((ADC_raw_volts * 3300 / 4095 * VOLTAGE_DIVIDER)/100)) >> 3;
