@@ -26,6 +26,6 @@ extern char dshot;
 extern char servoPwm;
 extern uint32_t gcr[];
 extern int armed_count_threshold;
-extern uint16_t degrees_celsius;
+extern uint8_t degrees_celsius;
 
 extern uint16_t ADC_raw_volts;
