@@ -1280,6 +1280,8 @@ int main(void)
 	else
 		playStartupTune();
 
+	playThermalWarningTune();
+
 	zero_input_count = 0;
 	MX_IWDG_Init();
 	LL_IWDG_ReloadCounter(IWDG);
