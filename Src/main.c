@@ -128,7 +128,7 @@
 //===========================================================================
 
 #define VERSION_MAJOR 1
-#define VERSION_MINOR 74
+#define VERSION_MINOR 76
 char dir_reversed = 0;
 char comp_pwm = 1;
 char VARIABLE_PWM = 1;
