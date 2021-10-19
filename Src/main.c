@@ -1348,8 +1348,8 @@ int main(void)
 			}
 			adc_counter = 0;
 
-			/*if (degrees_celsius >= 115) {
-				allOff();
+			if (degrees_celsius >= 115) {
+				/*allOff();
 				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
 				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
 				TIM1->CCR1 = adjusted_duty_cycle;
@@ -1357,20 +1357,24 @@ int main(void)
 				TIM1->CCR3 = adjusted_duty_cycle;
 				proportionalBrake();
 				prop_brake_active = 1;
-				
+				*/
 				playThermalWarningTune();
 				last_error = 2;
 
-				if(thermal_protection_active ==0)
-					saveEEpromSettings();				
+				if (thermal_protection_active == 0) {
+					saveEEpromSettings();
+
+				}
 				
 				thermal_protection_active = 1;
+				LL_IWDG_ReloadCounter(IWDG);
 				delayMillis(1500);
+				LL_IWDG_ReloadCounter(IWDG);
 				continue;
 			}
-			else if (thermal_protection_active)
-				thermal_protection_active = 0;
-				*/
+			//else if (thermal_protection_active)
+				//thermal_protection_active = 0;
+				
 			#ifdef USE_ADC_INPUT
 			if(ADC_raw_input < 10){
 				zero_input_count++;
