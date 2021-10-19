@@ -1361,6 +1361,7 @@ int main(void)
 				playThermalWarningTune();
 				last_error = 2;
 
+				LL_IWDG_ReloadCounter(IWDG);
 				if (thermal_protection_active == 0) {
 					saveEEpromSettings();
 
