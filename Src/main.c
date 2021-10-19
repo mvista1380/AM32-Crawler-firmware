@@ -183,7 +183,6 @@ uint16_t ADC_raw_input;
 int adc_counter = 0;
 char prop_brake_active = 0;
 char thermal_protection_active = 0;
-char save_eeprom = 0;
 
 uint8_t eepromBuffer[48] ={0};
 uint32_t gcr[30] =  {0,0,0,0,0,0,0,0,0,0,0,64,0,0,0,0,64,0,0,0,0,64,0,0,0,64,64,0,64,0};
@@ -1352,35 +1351,32 @@ int main(void)
 			
 			
 			if (degrees_celsius >= 115 && armed) {
-				/*
+				
 				if (thermal_protection_active == 0) {
 					allOff();
-					duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
-					adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
-					TIM1->CCR1 = adjusted_duty_cycle;
-					TIM1->CCR2 = adjusted_duty_cycle;
-					TIM1->CCR3 = adjusted_duty_cycle;
-					proportionalBrake();
-					prop_brake_active = 1;
 
-					if (thermal_protection_active == 0)
-						save_eeprom = 1;
+					if (thermal_protection_active == 0) {
+							last_error = 2;
+							//saveEEpromSettings();
+					}
 
 					thermal_protection_active = 1;
 					playThermalWarningTune();
-
-					if (save_eeprom == 1) {
-						last_error = 2;
-						//saveEEpromSettings();
-						save_eeprom = 0;
-					}
-
+					allOff();
 					signaltimeout = 0;
-
 					delayMillis(1500);
 					signaltimeout = 0;
-				}*/
-				allOff();
+					LL_IWDG_ReloadCounter(IWDG);
+				}
+				
+				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
+				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
+				TIM1->CCR1 = adjusted_duty_cycle;
+				TIM1->CCR2 = adjusted_duty_cycle;
+				TIM1->CCR3 = adjusted_duty_cycle;
+				proportionalBrake();
+				prop_brake_active = 1;
+
 				continue;
 			}
 			else if (degrees_celsius < 110 && thermal_protection_active)
