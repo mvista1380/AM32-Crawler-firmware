@@ -1349,7 +1349,7 @@ int main(void)
 			}
 			adc_counter = 0;
 			
-			/*
+			
 			if (degrees_celsius >= 115 && armed) {
 				/*
 				if (thermal_protection_active == 0) {
@@ -1378,13 +1378,13 @@ int main(void)
 
 					delayMillis(1500);
 					signaltimeout = 0;
-				}
+				}*/
 				allOff();
 				continue;
 			}
 			else if (degrees_celsius < 110 && thermal_protection_active)
 				thermal_protection_active = 0;
-				*/
+				
 			#ifdef USE_ADC_INPUT
 			if(ADC_raw_input < 10){
 				zero_input_count++;
