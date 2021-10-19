@@ -1350,20 +1350,17 @@ int main(void)
 			adc_counter = 0;
 			
 			
-			if (degrees_celsius >= 115 && armed) {				
+			if (degrees_celsius >= 115 && armed) {			
 				if (thermal_protection_active == 0) {
 					allOff();
+					thermal_protection_active = 1;
+
 					if (last_error != 2) {
 						last_error = 2;
 						saveEEpromSettings();
 					}
 
-					thermal_protection_active = 1;
 					playThermalWarningTune();
-					allOff();
-					signaltimeout = 0;
-					delayMillis(1500);
-					signaltimeout = 0;
 					LL_IWDG_ReloadCounter(IWDG);
 				}
 				
