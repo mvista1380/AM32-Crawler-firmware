@@ -951,7 +951,7 @@ void tenKhzRoutine(){
 
 	
 	signaltimeout++;
-	if (signaltimeout > 10000) { // quarter second timeout when armed half second for servo;
+	if (signaltimeout > 25000) { // quarter second timeout when armed half second for servo;
 		if (armed || signaltimeout > 25000) {
 			allOff();
 			armed = 0;
@@ -1349,7 +1349,7 @@ int main(void)
 			}
 			adc_counter = 0;
 
-			if (degrees_celsius >= 115) {
+			if (degrees_celsius >= 115 && armed) {
 				/*allOff();
 				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
 				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
