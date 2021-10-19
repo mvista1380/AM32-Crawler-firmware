@@ -1363,7 +1363,7 @@ int main(void)
 					save_eeprom = 1;
 
 				thermal_protection_active = 1;
-				playThermalWarningTune();
+				//playThermalWarningTune();
 
 				LL_IWDG_ReloadCounter(IWDG);
 				signaltimeout = 0;
