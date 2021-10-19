@@ -173,9 +173,7 @@ uint32_t last_average_interval;
 int e_com_time;
 
 uint16_t ADC_smoothed_input = 0;
-uint16_t degrees_celsius = 0;
-uint16_t deg_smooth_arr[10] = {0,0,0,0,0,0,0,0,0,0};
-int deg_arr_index = 0;
+uint8_t degrees_celsius;
 uint16_t converted_degrees;
 uint8_t temperature_offset;
 uint16_t ADC_raw_temp;
@@ -540,7 +538,6 @@ void loadEEpromSettings(){
 
 void saveEEpromSettings(){
 	
-	return;
 	if(last_error != 0)
 		eepromBuffer[42] = last_error;
 
@@ -703,7 +700,7 @@ void tenKhzRoutine(){
 		return;
 	}
 
-	if (thermal_protection_active == 1 || throttle_learn_active == 1)
+	if (thermal_protection_active || throttle_learn_active)
 		return;
 
 	if(!armed && inputSet){
@@ -1324,14 +1321,7 @@ int main(void)
 		if(adc_counter>100){   // for testing adc and telemetry
 			ADC_raw_temp = ADC_raw_temp - (temperature_offset);
 			converted_degrees =__LL_ADC_CALC_TEMPERATURE(3300,  ADC_raw_temp, LL_ADC_RESOLUTION_12B);
-
-			degrees_celsius = degrees_celsius - deg_smooth_arr[deg_arr_index];
-			deg_smooth_arr[deg_arr_index] = converted_degrees;
-			degrees_celsius = degrees_celsius + deg_smooth_arr[deg_arr_index];
-
-			deg_arr_index++;
-			if (deg_arr_index >= 10) 
-				readIndex = 0;
+			degrees_celsius =((7 * degrees_celsius) + converted_degrees) >> 3;
 
 			battery_voltage = ((7 * battery_voltage) + ((ADC_raw_volts * 3300 / 4095 * VOLTAGE_DIVIDER)/100)) >> 3;
 			smoothed_raw_current = ((7*smoothed_raw_current + (ADC_raw_current) )>> 3);
