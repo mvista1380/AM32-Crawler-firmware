@@ -539,7 +539,7 @@ void loadEEpromSettings(){
 void saveEEpromSettings(){
 	
 	if(last_error != 0)
-		eepromBuffer[42] = 0x01;
+		eepromBuffer[42] = last_error;
 
 	save_flash_nolib(eepromBuffer, 48, EEPROM_START_ADD);
 }
