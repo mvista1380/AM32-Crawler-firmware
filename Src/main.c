@@ -700,7 +700,7 @@ void tenKhzRoutine(){
 		return;
 	}
 
-	if (thermal_protection_active || throttle_learn_active)
+	if (thermal_protection_active == 1 || throttle_learn_active == 1)
 		return;
 
 	if(!armed && inputSet){
@@ -1348,37 +1348,39 @@ int main(void)
 				}
 			}
 			adc_counter = 0;
-			/*
+			
 			if (degrees_celsius >= 115 && armed) {
-				allOff();
-				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
-				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
-				TIM1->CCR1 = adjusted_duty_cycle;
-				TIM1->CCR2 = adjusted_duty_cycle;
-				TIM1->CCR3 = adjusted_duty_cycle;
-				proportionalBrake();
-				prop_brake_active = 1;
-				
-				if (thermal_protection_active == 0)
-					save_eeprom = 1;
+				if (thermal_protection_active == 0) {
+					allOff();
+					duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
+					adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
+					TIM1->CCR1 = adjusted_duty_cycle;
+					TIM1->CCR2 = adjusted_duty_cycle;
+					TIM1->CCR3 = adjusted_duty_cycle;
+					proportionalBrake();
+					prop_brake_active = 1;
 
-				thermal_protection_active = 1;
-				playThermalWarningTune();
-				
-				if (save_eeprom == 1) {
-					last_error = 2;
-					saveEEpromSettings();
-					save_eeprom = 0;
+					if (thermal_protection_active == 0)
+						save_eeprom = 1;
+
+					thermal_protection_active = 1;
+					playThermalWarningTune();
+
+					if (save_eeprom == 1) {
+						last_error = 2;
+						saveEEpromSettings();
+						save_eeprom = 0;
+					}
+
+					signaltimeout = 0;
+
+					delayMillis(1500);
+					signaltimeout = 0;
 				}
-				
-				signaltimeout = 0;
-
-				delayMillis(1500);
-				signaltimeout = 0;
 				continue;
 			}
-			else if (thermal_protection_active)
-				thermal_protection_active = 0;*/
+			else if (degrees_celsius < 115 && thermal_protection_active)
+				thermal_protection_active = 0;
 				
 			#ifdef USE_ADC_INPUT
 			if(ADC_raw_input < 10){
