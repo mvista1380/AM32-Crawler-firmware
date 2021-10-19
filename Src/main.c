@@ -174,7 +174,7 @@ int e_com_time;
 
 uint16_t ADC_smoothed_input = 0;
 uint8_t degrees_celsius;
-uint8_t deg_smooth_arr[10] = {0};
+uint8_t deg_smooth_arr[10] = {0,0,0,0,0,0,0,0,0,0};
 char deg_arr_index = 0;
 uint16_t converted_degrees;
 uint8_t temperature_offset;
