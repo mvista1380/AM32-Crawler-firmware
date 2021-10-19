@@ -1311,13 +1311,13 @@ int main(void)
 #endif
 	stuckcounter = 0;
 
-	if (!armed && newinput > (1000 + (servo_dead_band << 1))) {
-		CalibrateThrottle();
-	}
-
 	while (program_running){
 
 		LL_IWDG_ReloadCounter(IWDG);
+
+		if (!armed && newinput > (1000 + (servo_dead_band << 1))) {
+			CalibrateThrottle();
+		}
 
 		adc_counter++;
 		if(adc_counter>100){   // for testing adc and telemetry
