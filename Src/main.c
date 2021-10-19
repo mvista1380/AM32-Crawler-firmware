@@ -173,7 +173,7 @@ typedef struct __attribute__((packed)) {
 firmware_info_s __attribute__ ((section(".firmware_info"))) firmware_info = {
   version_major: VERSION_MAJOR,
   version_minor: VERSION_MINOR,
-  device_name: "Testing Save"
+  device_name: FIRMWARE_NAME
 };
 
 uint8_t EEPROM_VERSION;
