@@ -181,6 +181,7 @@ uint16_t ADC_raw_volts;
 uint16_t ADC_raw_current;
 uint16_t ADC_raw_input;
 int adc_counter = 0;
+int adc_settled_counter = 0;
 char prop_brake_active = 0;
 char thermal_protection_active = 0;
 
@@ -1319,6 +1320,9 @@ int main(void)
 
 		adc_counter++;
 		if(adc_counter>100){   // for testing adc and telemetry
+			if(adc_settled_counter < 7)
+				adc_settled_counter++;
+
 			ADC_raw_temp = ADC_raw_temp - (temperature_offset);
 			converted_degrees =__LL_ADC_CALC_TEMPERATURE(3300,  ADC_raw_temp, LL_ADC_RESOLUTION_12B);
 			degrees_celsius =((7 * degrees_celsius) + converted_degrees) >> 3;
@@ -1349,32 +1353,33 @@ int main(void)
 			}
 			adc_counter = 0;
 			
-			
-			if (degrees_celsius >= 115 && armed) {			
-				if (thermal_protection_active == 0) {
-					allOff();
-					thermal_protection_active = 1;
+			if (adc_settled_counter >= 7) {
+				if (degrees_celsius >= 115 && armed) {
+					if (thermal_protection_active == 0) {
+						allOff();
+						thermal_protection_active = 1;
 
-					if (last_error != 2) {
-						last_error = 2;
-						saveEEpromSettings();
+						if (last_error != 2) {
+							last_error = 2;
+							saveEEpromSettings();
+						}
+
+						playThermalWarningTune();
+						LL_IWDG_ReloadCounter(IWDG);
 					}
 
-					playThermalWarningTune();
-					LL_IWDG_ReloadCounter(IWDG);
+					duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
+					adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
+					TIM1->CCR1 = adjusted_duty_cycle;
+					TIM1->CCR2 = adjusted_duty_cycle;
+					TIM1->CCR3 = adjusted_duty_cycle;
+					proportionalBrake();
+					prop_brake_active = 1;
+					continue;
 				}
-				
-				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
-				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
-				TIM1->CCR1 = adjusted_duty_cycle;
-				TIM1->CCR2 = adjusted_duty_cycle;
-				TIM1->CCR3 = adjusted_duty_cycle;
-				proportionalBrake();
-				prop_brake_active = 1;
-				continue;
+				else if (degrees_celsius < 110 && thermal_protection_active)
+					thermal_protection_active = 0;
 			}
-			else if (degrees_celsius < 110 && thermal_protection_active)
-				thermal_protection_active = 0;
 				
 			#ifdef USE_ADC_INPUT
 			if(ADC_raw_input < 10){
