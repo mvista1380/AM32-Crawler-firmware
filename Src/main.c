@@ -1362,6 +1362,8 @@ int main(void)
 				last_error = 2;
 
 				LL_IWDG_ReloadCounter(IWDG);
+				signaltimeout = 0;
+
 				if (thermal_protection_active == 0) {
 					saveEEpromSettings();
 
@@ -1369,8 +1371,12 @@ int main(void)
 				
 				thermal_protection_active = 1;
 				LL_IWDG_ReloadCounter(IWDG);
+				signaltimeout = 0;
+				
 				delayMillis(1500);
+
 				LL_IWDG_ReloadCounter(IWDG);
+				signaltimeout = 0;
 				continue;
 			}
 			//else if (thermal_protection_active)
