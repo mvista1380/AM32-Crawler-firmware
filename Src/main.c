@@ -540,6 +540,7 @@ void loadEEpromSettings(){
 
 void saveEEpromSettings(){
 	
+	return;
 	if(last_error != 0)
 		eepromBuffer[42] = last_error;
 
