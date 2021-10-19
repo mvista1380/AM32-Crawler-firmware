@@ -524,6 +524,12 @@ void loadEEpromSettings(){
 	{
 		amplitude = eepromBuffer[41];
 		default_amplitude = eepromBuffer[41];
+
+#ifdef MCU_G071
+		amplitude = amplitude * 1.25;
+		default_amplitude = amplitude;
+#endif // MCU_G071
+
 		min_amplitude = (default_amplitude / 10) * 7;
 		max_amplitude = (default_amplitude / 10) * 11;
 	}
