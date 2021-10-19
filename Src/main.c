@@ -1348,7 +1348,7 @@ int main(void)
 				}
 			}
 			adc_counter = 0;
-
+			/*
 			if (degrees_celsius >= 115 && armed) {
 				allOff();
 				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
@@ -1378,7 +1378,7 @@ int main(void)
 				continue;
 			}
 			else if (thermal_protection_active)
-				thermal_protection_active = 0;
+				thermal_protection_active = 0;*/
 				
 			#ifdef USE_ADC_INPUT
 			if(ADC_raw_input < 10){
