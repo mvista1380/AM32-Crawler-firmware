@@ -177,6 +177,13 @@
 #define SIXTY_FOUR_KB_MEMORY
 #endif
 
+#ifdef  IFlight80A_G071
+#define FIRMWARE_NAME  			    "IFlight80A G"
+#define DEAD_TIME               50
+#define MILLIVOLT_PER_AMP       15
+#define CURRENT_OFFSET          0
+#define HARDWARE_GROUP_G0_A
+#endif
 
 #ifdef  G071ESC
 #define FIRMWARE_NAME  			    "G071 DevESC "
