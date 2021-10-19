@@ -1349,6 +1349,12 @@ int main(void)
 			}
 			adc_counter = 0;
 
+			if (armed && save_eeprom == 0) {
+				eepromBuffer[44] = degrees_celsius;
+				saveEEpromSettings();
+				save_eeprom = 1;
+			}
+
 			if (degrees_celsius >= 115 && armed) {
 				/*allOff();
 				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
