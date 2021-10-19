@@ -949,7 +949,7 @@ void tenKhzRoutine(){
 		NVIC_SetPriority(ADC1_COMP_IRQn, 0);
 	}
 
-	
+	/*
 	signaltimeout++;
 	if (signaltimeout > 25000) { // quarter second timeout when armed half second for servo;
 		if (armed || signaltimeout > 25000) {
@@ -970,7 +970,7 @@ void tenKhzRoutine(){
 			saveEEpromSettings();
 			NVIC_SystemReset();
 		}
-	}
+	}*/
 }
 
 void advanceincrement(int input){	
