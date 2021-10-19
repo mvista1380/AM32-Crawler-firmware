@@ -1358,7 +1358,7 @@ int main(void)
 				TIM1->CCR3 = adjusted_duty_cycle;
 				proportionalBrake();
 				prop_brake_active = 1;
-				*/
+				
 				if (thermal_protection_active == 0)
 					save_eeprom = 1;
 
@@ -1367,7 +1367,7 @@ int main(void)
 
 				LL_IWDG_ReloadCounter(IWDG);
 				signaltimeout = 0;
-
+				
 				if (save_eeprom == 1) {
 					last_error = 2;
 					saveEEpromSettings();
@@ -1381,7 +1381,14 @@ int main(void)
 
 				LL_IWDG_ReloadCounter(IWDG);
 				signaltimeout = 0;
-				continue;
+				continue;*/
+				last_error = 2;
+				saveEEpromSettings();
+
+				while (1) {
+					LL_IWDG_ReloadCounter(IWDG);
+				}
+
 			}
 			//else if (thermal_protection_active)
 				//thermal_protection_active = 0;
