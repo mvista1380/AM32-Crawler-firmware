@@ -183,6 +183,7 @@ uint16_t ADC_raw_input;
 int adc_counter = 0;
 char prop_brake_active = 0;
 char thermal_protection_active = 0;
+char save_eeprom = 0;
 
 uint8_t eepromBuffer[48] ={0};
 uint32_t gcr[30] =  {0,0,0,0,0,0,0,0,0,0,0,64,0,0,0,0,64,0,0,0,0,64,0,0,0,64,64,0,64,0};
@@ -1358,18 +1359,21 @@ int main(void)
 				proportionalBrake();
 				prop_brake_active = 1;
 				*/
+				if(thermal_protection_active == 0)
+					save_eeprom = 1
+
+				thermal_protection_active = 1;
 				playThermalWarningTune();
-				last_error = 2;
 
 				LL_IWDG_ReloadCounter(IWDG);
 				signaltimeout = 0;
 
-				if (thermal_protection_active == 0) {
+				if (save_eeprom == 1) {
+					last_error = 2;
 					saveEEpromSettings();
-
+					save_eeprom = 0;
 				}
-				
-				thermal_protection_active = 1;
+
 				LL_IWDG_ReloadCounter(IWDG);
 				signaltimeout = 0;
 				
