@@ -1253,14 +1253,14 @@ int main(void)
 
 	loadEEpromSettings();
 	//  EEPROM_VERSION = *(uint8_t*)(0x08000FFC);
-	if(firmware_info.version_major != eepromBuffer[3] || firmware_info.version_minor != eepromBuffer[4]){
+	//if(firmware_info.version_major != eepromBuffer[3] || firmware_info.version_minor != eepromBuffer[4]){
 		eepromBuffer[3] = firmware_info.version_major;
 		eepromBuffer[4] = firmware_info.version_minor;
 		for(int i = 0; i < 12 ; i ++){
 			eepromBuffer[5+i] = firmware_info.device_name[i];
 		}
 		saveEEpromSettings();
-	}
+	//}
 
 	if (dir_reversed == 1){
 		forward = 0;
