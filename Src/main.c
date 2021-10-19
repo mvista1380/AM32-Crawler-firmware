@@ -1377,7 +1377,7 @@ int main(void)
 
 					if (save_eeprom == 1) {
 						last_error = 2;
-						saveEEpromSettings();
+						//saveEEpromSettings();
 						save_eeprom = 0;
 					}
 
