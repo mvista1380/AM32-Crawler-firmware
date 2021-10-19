@@ -1280,7 +1280,6 @@ int main(void)
 	else
 		playStartupTune();
 
-	playThermalWarningTune();
 
 	zero_input_count = 0;
 	MX_IWDG_Init();
@@ -1354,34 +1353,6 @@ int main(void)
 				}
 			}
 			adc_counter = 0;
-			
-			if (adc_settled_counter >= 7) {
-				if (degrees_celsius >= 115 && armed) {
-					if (thermal_protection_active == 0) {
-						allOff();
-						thermal_protection_active = 1;
-
-						if (last_error != 2) {
-							last_error = 2;
-							saveEEpromSettings();
-						}
-
-						playThermalWarningTune();
-						LL_IWDG_ReloadCounter(IWDG);
-					}
-
-					duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
-					adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
-					TIM1->CCR1 = adjusted_duty_cycle;
-					TIM1->CCR2 = adjusted_duty_cycle;
-					TIM1->CCR3 = adjusted_duty_cycle;
-					proportionalBrake();
-					prop_brake_active = 1;
-					continue;
-				}
-				else if (degrees_celsius < 110 && thermal_protection_active)
-					thermal_protection_active = 0;
-			}
 				
 			#ifdef USE_ADC_INPUT
 			if(ADC_raw_input < 10){
@@ -1391,6 +1362,35 @@ int main(void)
 				zero_input_count=0;
 			}
 			#endif
+		}
+
+		if (adc_settled_counter >= 7) {
+			if (degrees_celsius >= 115 && armed) {
+				if (thermal_protection_active == 0) {
+					allOff();
+					thermal_protection_active = 1;
+
+					if (last_error != 2) {
+						last_error = 2;
+						saveEEpromSettings();
+					}
+
+					playThermalWarningTune();
+					LL_IWDG_ReloadCounter(IWDG);
+					delayMillis(1000);
+				}
+
+				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
+				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
+				TIM1->CCR1 = adjusted_duty_cycle;
+				TIM1->CCR2 = adjusted_duty_cycle;
+				TIM1->CCR3 = adjusted_duty_cycle;
+				proportionalBrake();
+				prop_brake_active = 1;
+				continue;
+			}
+			else if (degrees_celsius < 110 && thermal_protection_active)
+				thermal_protection_active = 0;
 		}
 
 
