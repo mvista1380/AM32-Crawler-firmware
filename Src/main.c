@@ -1309,7 +1309,7 @@ int main(void)
 	stuckcounter = 0;
 
 	if (!armed && newinput > (1000 + (servo_dead_band << 1))) {
-		CalibrateThrottle();
+		//CalibrateThrottle();
 	}
 
 	while (program_running){
@@ -1354,16 +1354,8 @@ int main(void)
 			}
 			adc_counter = 0;
 
-			if (degrees_celsius >= 115 && armed) {
-				
-				/*if (thermal_protection_active == 0) {
-					allOff();
-					maskPhaseInterrupts();
-					eepromBuffer[44] = converted_degrees >> 8;
-					eepromBuffer[45] = converted_degrees & 0xFF;
-				}				
-				
-				/*
+			/*if (degrees_celsius >= 115) {
+				allOff();
 				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
 				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
 				TIM1->CCR1 = adjusted_duty_cycle;
@@ -1371,28 +1363,20 @@ int main(void)
 				TIM1->CCR3 = adjusted_duty_cycle;
 				proportionalBrake();
 				prop_brake_active = 1;
-				*/
-				//playThermalWarningTune();
+				
+				playThermalWarningTune();
+				last_error = 2;
 
-				if (thermal_protection_active == 0) {
-					last_error = 2;
-					saveEEpromSettings();
-				}
-
+				if(thermal_protection_active ==0)
+					saveEEpromSettings();				
+				
 				thermal_protection_active = 1;
-				short thermal_counter = 1500;
-				/*while (1) {
-					signaltimeout = 0;
-					LL_IWDG_ReloadCounter(IWDG);
-					delayMillis(1);
-				}
-				continue;*/
+				delayMillis(1500);
+				continue;
 			}
 			else if (thermal_protection_active)
 				thermal_protection_active = 0;
-				
-			
-
+				*/
 			#ifdef USE_ADC_INPUT
 			if(ADC_raw_input < 10){
 				zero_input_count++;
