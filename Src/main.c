@@ -1359,8 +1359,8 @@ int main(void)
 				proportionalBrake();
 				prop_brake_active = 1;
 				*/
-				if(thermal_protection_active == 0)
-					save_eeprom = 1
+				if (thermal_protection_active == 0)
+					save_eeprom = 1;
 
 				thermal_protection_active = 1;
 				playThermalWarningTune();
