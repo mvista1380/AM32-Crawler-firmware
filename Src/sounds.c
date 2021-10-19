@@ -168,14 +168,8 @@ void playThermalWarningTune() {
 	delayMillis(200);         // duration of beep
 	comStep(5);
 
-	LL_IWDG_ReloadCounter(IWDG);
-	signaltimeout = 0;
-
 	TIM1->PSC = 25;            // next beep is higher frequency
 	delayMillis(200);
-
-	LL_IWDG_ReloadCounter(IWDG);
-	signaltimeout = 0;
 
 	comStep(6);
 	TIM1->PSC = 25;         // higher again..
