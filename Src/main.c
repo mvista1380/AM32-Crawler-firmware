@@ -1240,6 +1240,7 @@ int main(void)
 	ADC_Init();
 	enableADC_DMA();
 	activateADC();
+	delayMillis(10);
 	#endif
 
 	__IO uint32_t wait_loop_index = 0;
