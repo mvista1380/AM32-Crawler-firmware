@@ -174,6 +174,8 @@ int e_com_time;
 
 uint16_t ADC_smoothed_input = 0;
 uint8_t degrees_celsius;
+uint8_t[10] deg_smooth_arr = {};
+char deg_arr_index = 0;
 uint16_t converted_degrees;
 uint8_t temperature_offset;
 uint16_t ADC_raw_temp;
@@ -949,9 +951,9 @@ void tenKhzRoutine(){
 		NVIC_SetPriority(ADC1_COMP_IRQn, 0);
 	}
 
-	/*
+	
 	signaltimeout++;
-	if (signaltimeout > 25000) { // quarter second timeout when armed half second for servo;
+	if (signaltimeout > 10000) { // quarter second timeout when armed half second for servo;
 		if (armed || signaltimeout > 25000) {
 			allOff();
 			armed = 0;
@@ -970,7 +972,7 @@ void tenKhzRoutine(){
 			saveEEpromSettings();
 			NVIC_SystemReset();
 		}
-	}*/
+	}
 }
 
 void advanceincrement(int input){	
@@ -1321,7 +1323,14 @@ int main(void)
 		if(adc_counter>100){   // for testing adc and telemetry
 			ADC_raw_temp = ADC_raw_temp - (temperature_offset);
 			converted_degrees =__LL_ADC_CALC_TEMPERATURE(3300,  ADC_raw_temp, LL_ADC_RESOLUTION_12B);
-			degrees_celsius =((7 * degrees_celsius) + converted_degrees) >> 3;
+
+			degrees_celsius = degrees_celsius - deg_smooth_arr[deg_arr_index];
+			deg_smooth_arr[deg_arr_index] = ((7 * degrees_celsius) + converted_degrees) >> 3;
+			degrees_celsius = degrees_celsius + deg_smooth_arr[deg_arr_index];
+
+			deg_arr_index++;
+			if (deg_arr_index >= 10) 
+				readIndex = 0;
 
 			battery_voltage = ((7 * battery_voltage) + ((ADC_raw_volts * 3300 / 4095 * VOLTAGE_DIVIDER)/100)) >> 3;
 			smoothed_raw_current = ((7*smoothed_raw_current + (ADC_raw_current) )>> 3);
@@ -1379,7 +1388,7 @@ int main(void)
 				}
 				continue;
 			}
-			else if (degrees_celsius < 115 && thermal_protection_active)
+			else if (degrees_celsius < 110 && thermal_protection_active)
 				thermal_protection_active = 0;
 				
 			#ifdef USE_ADC_INPUT
