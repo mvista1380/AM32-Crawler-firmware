@@ -538,8 +538,8 @@ void loadEEpromSettings(){
 
 void saveEEpromSettings(){
 	
-	if(last_error != 0)
-		eepromBuffer[42] = last_error;
+	//if(last_error != 0)
+		//eepromBuffer[42] = last_error;
 
 	save_flash_nolib(eepromBuffer, 48, EEPROM_START_ADD);
 }
@@ -967,7 +967,7 @@ void tenKhzRoutine(){
 				dma_buffer[i] = 0;
 			}
 			last_error = 1;
-			saveEEpromSettings();
+			//saveEEpromSettings();
 			NVIC_SystemReset();
 		}
 	}
@@ -1344,7 +1344,7 @@ int main(void)
 						zero_input_count = 0;
 						armed = 0;
 						last_error = 3;
-						saveEEpromSettings();
+						//saveEEpromSettings();
 						program_running = 0;
 					}
 				}
@@ -1372,7 +1372,7 @@ int main(void)
 
 					if (last_error != 2) {
 						last_error = 2;
-						saveEEpromSettings();
+						//saveEEpromSettings();
 					}
 
 					playThermalWarningTune();
