@@ -1354,11 +1354,8 @@ int main(void)
 				
 				if (thermal_protection_active == 0) {
 					allOff();
-
-					if (thermal_protection_active == 0) {
-							last_error = 2;
-							//saveEEpromSettings();
-					}
+					last_error = 2;
+					//saveEEpromSettings();
 
 					thermal_protection_active = 1;
 					playThermalWarningTune();
@@ -1376,7 +1373,6 @@ int main(void)
 				TIM1->CCR3 = adjusted_duty_cycle;
 				proportionalBrake();
 				prop_brake_active = 1;
-
 				continue;
 			}
 			else if (degrees_celsius < 110 && thermal_protection_active)
