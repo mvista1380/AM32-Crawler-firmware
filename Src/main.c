@@ -173,7 +173,7 @@ uint32_t last_average_interval;
 int e_com_time;
 
 uint16_t ADC_smoothed_input = 0;
-uint16_t degrees_celsius;
+uint16_t degrees_celsius = 0;
 uint16_t deg_smooth_arr[10] = {0,0,0,0,0,0,0,0,0,0};
 int deg_arr_index = 0;
 uint16_t converted_degrees;
@@ -1358,6 +1358,7 @@ int main(void)
 			}
 			adc_counter = 0;
 			
+			/*
 			if (degrees_celsius >= 115 && armed) {
 				/*
 				if (thermal_protection_active == 0) {
@@ -1386,13 +1387,13 @@ int main(void)
 
 					delayMillis(1500);
 					signaltimeout = 0;
-				}*/
+				}
 				allOff();
 				continue;
 			}
 			else if (degrees_celsius < 110 && thermal_protection_active)
 				thermal_protection_active = 0;
-				
+				*/
 			#ifdef USE_ADC_INPUT
 			if(ADC_raw_input < 10){
 				zero_input_count++;
