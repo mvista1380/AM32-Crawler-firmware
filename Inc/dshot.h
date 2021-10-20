@@ -40,7 +40,6 @@ extern int running;
 extern uint8_t last_dshot_command;
 extern int k_erpm;
 extern uint16_t commutation_interval;
-extern uint16_t process_time;
 
 //int e_com_time;
 

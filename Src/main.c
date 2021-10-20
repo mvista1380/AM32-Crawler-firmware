@@ -49,12 +49,8 @@ char program_running = 1; //low voltage turns off main loop
 char throttle_learn_active = 0;
 char BRUSHED_MODE = 0;
 char brushed_direction_set = 0;
-
 char advance_level = 0;
 char last_error = 0; //0 = no error, 1 = signal loss/brownout, 2 = thermal shutdown, 3 = voltage too low
-//add Startup Power
-//Add PWM Frequency
-//Add Beep Volume
 char drag_brake_strength = 10;		// Drag Brake Power
 char sine_mode_changeover_thottle_level = 5;	// Sine Startup Range
 char sine_mode_changeover_mutliplier = 20;
@@ -87,129 +83,48 @@ firmware_info_s __attribute__ ((section(".firmware_info"))) firmware_info = {
 };
 
 uint8_t EEPROM_VERSION;
-
-uint32_t MCU_Id = 0;
-uint32_t REV_Id = 0;
+uint8_t max_duty_cycle_change = 2;
+uint8_t degrees_celsius;
+uint8_t eepromBuffer[48] = { 0 };
+uint8_t temperature_offset;
+uint8_t gcr_size;
+uint8_t last_dshot_command = 0;
+uint8_t ubAnalogWatchdogStatus = RESET;
 
 uint16_t armed_timeout_count;
-
-uint8_t desync_happened = 0;
-char maximum_throttle_change_ramp = 1;
-
-float K_p_duty = 0.03;
-float K_i_duty = 0.0001;
-float K_d_duty = 0.0085;
-
-float p_error_integral = 0;
-float p_error_derivative = 0;
-float p_prev_rror = 0;
-int p_error = 0;
-int boost = 0;
 uint16_t minimum_commutation = 3000;
-uint8_t pid_update_count = 0;
-char switched_comm_set = 0;
-char switchover_happened = 0;
-
-/*
-int duty_cycle_ramp_down_delay = 7000;
-int duty_cycle_ramp_down_rate = 50;
-int duty_cycle_ramp_down_step = 0;
-int duty_cycle_ramp_down_count = 0;
-int duty_cycle_ramp_up_rate = 10;
-int duty_cycle_ramp_up_step = 0;
-char stall_detected = 0;
-char ramp_down_active = 0;
-char restep = 0;
-*/
-char low_rpm_throttle_limit = 0;
-
 uint16_t low_voltage_count = 0;
-
-
-uint16_t thirty_two_ms_count;
-
-char VOLTAGE_DIVIDER = TARGET_VOLTAGE_DIVIDER;     // 100k upper and 10k lower resistor in divider
-
 uint16_t battery_voltage;  // scale in volts * 10.  1260 is a battery voltage of 12.60
-
-char cell_count = 0;
-
 uint16_t consumption_timer = 0;
-
-float consumed_current = 0;
 uint16_t smoothed_raw_current = 0;
 uint16_t actual_current = 0;
-
-char reversing_dead_band = 1;
-
-int checkcount = 0;
 uint16_t low_pin_count = 0;
-
-uint8_t max_duty_cycle_change = 2;
-char fast_accel = 1;
 uint16_t last_duty_cycle = 0;
-char play_tone_flag = 0;
-
-typedef enum
-{
-	GPIO_PIN_RESET = 0U,
-	GPIO_PIN_SET
-} GPIO_PinState;
-
-int minimum_duty_cycle = DEAD_TIME;
 uint16_t maximum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
 uint16_t duty_cycle_multiplier = 300; //130 = 30% power increase
-char desync_check = 0;
-char low_kv_filter_level = 20;
-
 uint16_t tim1_arr = TIM1_AUTORELOAD;         // current auto reset value
 uint16_t TIMER1_MAX_ARR = TIM1_AUTORELOAD;
-
-uint16_t commutation_intervals[6] = {0};
-uint32_t average_interval = 0;
-uint32_t last_average_interval;
-int e_com_time;
-
-uint16_t ADC_smoothed_input = 0;
-uint8_t degrees_celsius;
-uint16_t converted_degrees;
-uint8_t temperature_offset;
+uint16_t commutation_intervals[6] = { 0 };
 uint16_t ADC_raw_temp;
 uint16_t ADC_raw_volts;
 uint16_t ADC_raw_current;
 uint16_t ADC_raw_input;
-int adc_counter = 0;
-int adc_settled_counter = 0;
-char prop_brake_active = 0;
-char thermal_protection_active = 0;
+uint16_t ADC_smoothed_input = 0;
+uint16_t converted_degrees;
+uint16_t e_rpm;      // electrical revolution /100 so,  123 is 12300 erpm
+uint16_t adjusted_duty_cycle;
+uint16_t thiszctime;
+uint16_t commutation_interval = 12500;
 
-uint8_t eepromBuffer[48] ={0};
-uint32_t gcr[30] =  {0,0,0,0,0,0,0,0,0,0,0,64,0,0,0,0,64,0,0,0,0,64,0,0,0,64,64,0,64,0};
-uint8_t gcr_size;
-uint16_t process_time = 0;
-
-char dshot_telemetry = 0;
-char output = 0;
-int dshot_frametime = 0;
-
+uint32_t MCU_Id = 0;
+uint32_t REV_Id = 0;
+uint32_t average_interval = 0;
+uint32_t last_average_interval;
+uint32_t gcr[30] = { 0,0,0,0,0,0,0,0,0,0,0,64,0,0,0,0,64,0,0,0,0,64,0,0,0,64,64,0,64,0 };
 uint32_t current_EXTI_LINE;
-
-int dshot_goodcounts = 0;
-int dshot_badcounts = 0;
-uint8_t last_dshot_command = 0;
-char old_routine = 0;
-int adjusted_input;
-
-#define TEMP30_CAL_VALUE ((uint16_t*)((uint32_t)0x1FFFF7B8))
-#define TEMP110_CAL_VALUE ((uint16_t*)((uint32_t)0x1FFFF7C2))
-//
-//uint32_t temp110cal = 1;
-//uint32_t temp30cal = 1;
-
-int smoothedinput = 0;
-int voltageraw;
+uint32_t waitTime = 0;
 
 const int numReadings = 30;     // the readings from the analog input
 int readIndex = 0;              // the index of the current reading
@@ -217,13 +132,66 @@ int total = 0;
 int readings[30];
 int tempraw = 0;
 int temp_degrees = 0;
-
+int smoothedinput = 0;
+int voltageraw;
+int p_error = 0;
+int boost = 0;
+int checkcount = 0;
+int minimum_duty_cycle = DEAD_TIME;
+int adc_counter = 0;
+int adc_settled_counter = 0;
+int e_com_time = 0;
+int dshot_frametime = 0;
 int changeover_step = 1;
 int sin_swicthover_angle = 240;
 int filter_level = 5;
 int running = 0;
 int advance = 0;
 int advancedivisor = 6;
+int dshot_goodcounts = 0;
+int dshot_badcounts = 0;
+int adjusted_input;
+int phase_A_position = 0;
+int phase_B_position = 119;
+int phase_C_position = 239;
+int step_delay = 100;
+int forward = 1;
+int gate_drive_offset = 60;
+int stuckcounter = 0;
+int k_erpm = 0;
+int bad_count = 0;
+int dshotcommand;
+int armed_count_threshold = 1000;
+int zero_input_count = 0;
+int input = 0;
+int prev_input = 0;
+int newinput = 0;
+int zero_crosses;
+int zcfound = 0;
+int bemfcounter;
+int min_bemf_counts_up = 7;
+int min_bemf_counts_down = 7;
+int adc_timer = 600;
+int lastzctime = 0;
+int phase = 1;
+int duty_cycle = 0;
+int pwm = 1;
+int floating = 2;
+int lowside = 3;
+int signaltimeout = 0;
+
+char maximum_throttle_change_ramp = 1;
+char VOLTAGE_DIVIDER = TARGET_VOLTAGE_DIVIDER;     // 100k upper and 10k lower resistor in divider
+char cell_count = 0;
+char reversing_dead_band = 1;
+char fast_accel = 1;
+char play_tone_flag = 0;
+char desync_check = 0;
+char low_kv_filter_level = 20;
+char prop_brake_active = 0;
+char thermal_protection_active = 0;
+char dshot_telemetry = 0;
+char output = 0;
 char rising = 1;
 char amplitude = 165;//200 gets very hot
 char default_amplitude = 165;
@@ -233,8 +201,29 @@ char sin_cycle_complete = 0;
 char last_inc = 1;
 char stepper_sine = 0;
 char max_sin_inc = 3;
-char sin_stall_count = 0;
-char switchover_count = 0;
+char old_routine = 0;
+char armed = 0;
+char inputSet = 0;
+char dshot = 0;
+char servoPwm = 0;
+char step = 1;
+
+float K_p_duty = 0.03;
+float K_i_duty = 0.0001;
+float K_d_duty = 0.0085;
+float p_error_integral = 0;
+float p_error_derivative = 0;
+float p_prev_rror = 0;
+float consumed_current = 0;
+
+typedef enum
+{
+	GPIO_PIN_RESET = 0U,
+	GPIO_PIN_SET
+} GPIO_PinState;
+
+#define TEMP30_CAL_VALUE ((uint16_t*)((uint32_t)0x1FFFF7B8))
+#define TEMP110_CAL_VALUE ((uint16_t*)((uint32_t)0x1FFFF7C2))
 
 const float pwmSin[3][360] = {
 {0.866025403784439,
@@ -378,58 +367,6 @@ const float pwmSin[3][360] = {
 -0.258816552414575,-0.241919384376857,-0.22494852528797,-0.207909144640423,-0.190806432799073,-0.173645599420093,-0.156431871864049,-0.139170493603602,
 -0.121866722626293,-0.104525829832906,-0.0871530974318957,-0.0697538173303821,-0.0523332895221773,-0.0348968204733563,-0.0174497215058549}
 };
-
-
-
-//int sin_divider = 2;
-int phase_A_position = 0;
-int phase_B_position = 119;
-int phase_C_position = 239;
-int step_delay  = 100;
-int forward = 1;
-int gate_drive_offset = 60;
-
-int stuckcounter = 0;
-int k_erpm;
-uint16_t e_rpm;      // electrical revolution /100 so,  123 is 12300 erpm
-
-uint16_t adjusted_duty_cycle;
-
-int bad_count = 0;
-int dshotcommand;
-int armed_count_threshold = 1000;
-
-char armed = 0;
-int zero_input_count = 0;
-
-int input = 0;
-int prev_input = 0;
-int newinput =0;
-char inputSet = 0;
-char dshot = 0;
-char servoPwm = 0;
-int zero_crosses;
-
-int zcfound = 0;
-
-int bemfcounter;
-int min_bemf_counts_up = 7;
-int min_bemf_counts_down = 7;
-int adc_timer = 600;
-int lastzctime;
-uint16_t thiszctime;
-int phase = 1;
-int duty_cycle = 0;
-char step = 1;
-uint16_t commutation_interval = 12500;
-int pwm = 1;
-int floating =2;
-int lowside = 3;
-uint32_t waitTime = 0;
-int signaltimeout = 0;
-
-uint8_t ubAnalogWatchdogStatus = RESET;
-
 
 void checkForHighSignal(){
 	changeToInput();
@@ -627,10 +564,6 @@ void PeriodElapsedCallback(){
 	COM_TIMER->DIER &= ~((0x1UL << (0U)));             // disable interrupt
 	commutation_interval = (( 3*commutation_interval) + thiszctime)>>2;
 	
-	/*if (switched_comm_set == 0 && switchover_happened) {
-		minimum_commutation = commutation_interval - 1000;
-		switched_comm_set = 1;
-	}*/
 	commutate();
 	advance = (commutation_interval>>3) * advance_level;   // 60 divde 8 7.5 degree increments
 	waitTime = (commutation_interval >>1)  - advance;
@@ -930,19 +863,10 @@ void tenKhzRoutine(){
 	average_interval = e_com_time / 3;
 
 	if(desync_check && zero_crosses > 10){
-		//	if(average_interval < last_average_interval){
-		//
-		//	}
 		if((getAbsDif(last_average_interval,average_interval) > average_interval>>1) && (average_interval < 1000)){ //throttle resitricted before zc 20.
 			zero_crosses = 10;
-			desync_happened ++;
-			//running = 0;
-			//old_routine = 1;
-			//last_duty_cycle = minimum_duty_cycle/2;
 		}
-
 		desync_check = 0;
-		//	}
 		last_average_interval = average_interval;
 	}
 
@@ -1067,8 +991,6 @@ void SwitchOver() {
 	running = 1;
 	old_routine = 0;
 	prop_brake_active = 0;
-	switchover_count = 0;
-	switchover_happened = 1;
 	last_average_interval = average_interval;
 	zero_crosses = 0;
 	prop_brake_active = 0;
