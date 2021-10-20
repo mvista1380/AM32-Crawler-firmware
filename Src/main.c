@@ -209,7 +209,6 @@ char inputSet = 0;
 char dshot = 0;
 char servoPwm = 0;
 char step = 1;
-char saved = 0;
 
 float K_p_duty = 0.03;
 float K_i_duty = 0.0001;
@@ -836,7 +835,7 @@ void tenKhzRoutine(){
 				dma_buffer[i] = 0;
 			}
 			last_error = 1;
-			//saveEEpromSettings();
+			saveEEpromSettings();
 			NVIC_SystemReset();
 		}
 	}
@@ -1217,7 +1216,7 @@ int main(void)
 						zero_input_count = 0;
 						armed = 0;
 						last_error = 3;
-						//saveEEpromSettings();
+						saveEEpromSettings();
 						program_running = 0;
 					}
 				}
@@ -1237,11 +1236,6 @@ int main(void)
 			#endif
 		}
 
-		if (armed && !saved) {
-			eepromBuffer[44] = degrees_celsius;
-			saveEEpromSettings();
-			saved = 1;
-		}
 		if (degrees_celsius >= 115) {
 			if (thermal_protection_active == 0) {
 				allOff();
@@ -1250,14 +1244,12 @@ int main(void)
 
 				if (last_error != 2) {
 					last_error = 2;
-					eepromBuffer[44] = degrees_celsius;
-					//eepromBuffer[45] = __LL_ADC_CALC_VREFANALOG_VOLTAGE(ADC_raw_volts, LL_ADC_RESOLUTION_12B);
 					saveEEpromSettings();
 				}
 
 				playThermalWarningTune();
 				LL_IWDG_ReloadCounter(IWDG);
-				delayMillis(1000);
+				delayMillis(100);
 			}
 
 			duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
