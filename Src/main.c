@@ -84,10 +84,10 @@ firmware_info_s __attribute__ ((section(".firmware_info"))) firmware_info = {
 
 uint8_t EEPROM_VERSION;
 uint8_t max_duty_cycle_change = 2;
-uint8_t degrees_celsius;
+uint8_t degrees_celsius = 0;
 uint8_t eepromBuffer[48] = { 0 };
-uint8_t temperature_offset;
-uint8_t gcr_size;
+uint8_t temperature_offset = 0;
+uint8_t gcr_size = 0;
 uint8_t last_dshot_command = 0;
 uint8_t ubAnalogWatchdogStatus = RESET;
 
@@ -139,7 +139,6 @@ int boost = 0;
 int checkcount = 0;
 int minimum_duty_cycle = DEAD_TIME;
 int adc_counter = 0;
-int adc_settled_counter = 0;
 int e_com_time = 0;
 int dshot_frametime = 0;
 int changeover_step = 1;
@@ -179,6 +178,9 @@ int pwm = 1;
 int floating = 2;
 int lowside = 3;
 int signaltimeout = 0;
+int deg_smooth_reading[10] = { 0,0,0,0,0,0,0,0,0,0 };
+int deg_smooth_total = 0;
+int deg_smooth_index = 0;
 
 char maximum_throttle_change_ramp = 1;
 char VOLTAGE_DIVIDER = TARGET_VOLTAGE_DIVIDER;     // 100k upper and 10k lower resistor in divider
@@ -414,7 +416,6 @@ void loadEEpromSettings(){
 
 	starting_duty_orig = minimum_duty_cycle;
 	maximum_duty_orig = (starting_duty_orig / 100) * duty_cycle_multiplier;
-	//p_duty_cycle_max = maximum_duty_cycle + (maximum_duty_cycle - (maximum_duty_cycle * K_p_duty));
 	maximum_duty_cycle = (TIMER1_MAX_ARR / 100) * 85;
 
 
@@ -481,8 +482,8 @@ void loadEEpromSettings(){
 
 void saveEEpromSettings(){
 	
-	//if(last_error != 0)
-		//eepromBuffer[42] = last_error;
+	if(last_error != 0)
+		eepromBuffer[42] = last_error;
 
 	save_flash_nolib(eepromBuffer, 48, EEPROM_START_ADD);
 }
@@ -733,8 +734,7 @@ void tenKhzRoutine(){
 
 		if(!prop_brake_active){
 
-			if (running){				
-
+			if (running){
 				p_error = commutation_interval - minimum_commutation;
 				p_error_integral += (p_error);
 				p_error_derivative = (p_error - p_prev_rror);
@@ -748,68 +748,6 @@ void tenKhzRoutine(){
 				else if (minimum_duty_cycle < starting_duty_orig) {
 					minimum_duty_cycle = starting_duty_orig;
 				}
-
-				/*
-				if (stall_detected) {
-					if (duty_cycle_ramp_down_count < duty_cycle_ramp_down_delay)
-						duty_cycle_ramp_down_count++;
-					else {
-						stall_detected = 0;
-						duty_cycle_ramp_down_count = 0;
-						duty_cycle_ramp_up_step = 0;
-						restep = 0;
-
-						if (input < prev_input) {
-							ramp_down_active = 1;
-						}
-					}
-				}
-				else if (ramp_down_active) {
-					duty_cycle_ramp_down_step++;
-				}
-				else if (input < prev_input && minimum_duty_cycle > starting_duty_orig) {
-					ramp_down_active = 1;
-				}
-				else if (input >= prev_input && ramp_down_active) {
-					ramp_down_active = 0;
-				}
-
-				prev_input = input - 10;//buffer
-					
-				if(commutation_interval > 9000){						
-					stall_detected = 1;
-					duty_cycle_ramp_down_count = 0;
-					ramp_down_active = 0;
-					duty_cycle_ramp_down_step = 0;
-
-					if(duty_cycle_ramp_up_step % duty_cycle_ramp_up_rate == 0)
-						minimum_duty_cycle++;
-						
-					duty_cycle_ramp_up_step++;
-				}
-				else if(ramp_down_active && duty_cycle_ramp_down_step % duty_cycle_ramp_down_rate == 0){
-						minimum_duty_cycle--;
-				}
-
-				if (duty_cycle_ramp_down_count == 0 && restep == 0) {//retry the same step that stalled
-					if (forward)
-						step--;
-					else
-						step++;
-
-					restep = 1;
-				}
-
-				if(minimum_duty_cycle > maximum_duty_orig){
-					minimum_duty_cycle = maximum_duty_orig;
-					duty_cycle_ramp_up_step = 0;
-				}
-				else if (minimum_duty_cycle < starting_duty_orig) {
-					minimum_duty_cycle = starting_duty_orig;
-					ramp_down_active = 0;
-					duty_cycle_ramp_down_step = 0;
-				}
-				*/
 			}
 
 			if(maximum_throttle_change_ramp){
@@ -1183,14 +1121,14 @@ int main(void)
 
 	loadEEpromSettings();
 	//  EEPROM_VERSION = *(uint8_t*)(0x08000FFC);
-	//if(firmware_info.version_major != eepromBuffer[3] || firmware_info.version_minor != eepromBuffer[4]){
+	if(firmware_info.version_major != eepromBuffer[3] || firmware_info.version_minor != eepromBuffer[4]){
 		eepromBuffer[3] = firmware_info.version_major;
 		eepromBuffer[4] = firmware_info.version_minor;
 		for(int i = 0; i < 12 ; i ++){
 			eepromBuffer[5+i] = firmware_info.device_name[i];
 		}
 		saveEEpromSettings();
-	//}
+	}
 
 	if (dir_reversed == 1){
 		forward = 0;
@@ -1249,12 +1187,19 @@ int main(void)
 
 		adc_counter++;
 		if(adc_counter>100){   // for testing adc and telemetry
-			if(adc_settled_counter < 7)
-				adc_settled_counter++;
-
 			ADC_raw_temp = ADC_raw_temp - (temperature_offset);
 			converted_degrees =__LL_ADC_CALC_TEMPERATURE(3300,  ADC_raw_temp, LL_ADC_RESOLUTION_12B);
-			degrees_celsius =((7 * degrees_celsius) + converted_degrees) >> 3;
+			//degrees_celsius =((7 * degrees_celsius) + converted_degrees) >> 3;
+
+			deg_smooth_total -= deg_smooth_reading[deg_smooth_index];
+			deg_smooth_reading[deg_smooth_index] = converted_degrees;
+			deg_smooth_total += deg_smooth_reading[deg_smooth_index];
+
+			deg_smooth_index++;
+			if (deg_smooth_index >= 10)
+				deg_smooth_index = 0;
+
+			degrees_celsius = deg_smooth_total / 10;
 
 			battery_voltage = ((7 * battery_voltage) + ((ADC_raw_volts * 3300 / 4095 * VOLTAGE_DIVIDER)/100)) >> 3;
 			smoothed_raw_current = ((7*smoothed_raw_current + (ADC_raw_current) )>> 3);
@@ -1292,34 +1237,35 @@ int main(void)
 			#endif
 		}
 
-		if (adc_settled_counter >= 7) {
-			if (degrees_celsius >= 115 && armed) {
-				if (thermal_protection_active == 0) {
-					allOff();
-					thermal_protection_active = 1;
+		
+		if (degrees_celsius >= 115 && armed) {
+			if (thermal_protection_active == 0) {
+				allOff();
+				maskPhaseInterrupts();
+				thermal_protection_active = 1;
 
-					if (last_error != 2) {
-						last_error = 2;
-						//saveEEpromSettings();
-					}
-
-					playThermalWarningTune();
-					LL_IWDG_ReloadCounter(IWDG);
-					delayMillis(1000);
+				if (last_error != 2) {
+					last_error = 2;
+					saveEEpromSettings();
 				}
 
-				duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
-				adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
-				TIM1->CCR1 = adjusted_duty_cycle;
-				TIM1->CCR2 = adjusted_duty_cycle;
-				TIM1->CCR3 = adjusted_duty_cycle;
-				proportionalBrake();
-				prop_brake_active = 1;
-				continue;
+				playThermalWarningTune();
+				LL_IWDG_ReloadCounter(IWDG);
+				delayMillis(1000);
 			}
-			else if (degrees_celsius < 110 && thermal_protection_active)
-				thermal_protection_active = 0;
+
+			duty_cycle = (TIMER1_MAX_ARR - 19) + drag_brake_strength * 2;
+			adjusted_duty_cycle = TIMER1_MAX_ARR - ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
+			TIM1->CCR1 = adjusted_duty_cycle;
+			TIM1->CCR2 = adjusted_duty_cycle;
+			TIM1->CCR3 = adjusted_duty_cycle;
+			proportionalBrake();
+			prop_brake_active = 1;
+			continue;
 		}
+		else if (degrees_celsius < 110 && thermal_protection_active)
+			thermal_protection_active = 0;
+		
 
 
 		#ifdef USE_ADC_INPUT
