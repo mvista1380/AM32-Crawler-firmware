@@ -1176,7 +1176,6 @@ int main(void)
 	UpdateADCInput();
 #endif
 	stuckcounter = 0;
-
 	while (program_running){
 
 		LL_IWDG_ReloadCounter(IWDG);
@@ -1192,7 +1191,7 @@ int main(void)
 			//degrees_celsius =((7 * degrees_celsius) + converted_degrees) >> 3;
 
 			deg_smooth_total -= deg_smooth_reading[deg_smooth_index];
-			deg_smooth_reading[deg_smooth_index] = converted_degrees;
+			deg_smooth_reading[deg_smooth_index] = ((7 * degrees_celsius) + converted_degrees) >> 3;
 			deg_smooth_total += deg_smooth_reading[deg_smooth_index];
 
 			deg_smooth_index++;
@@ -1247,6 +1246,7 @@ int main(void)
 				if (last_error != 2) {
 					last_error = 2;
 					eepromBuffer[44] = degrees_celsius;
+					//eepromBuffer[45] = __LL_ADC_CALC_VREFANALOG_VOLTAGE(ADC_raw_volts, LL_ADC_RESOLUTION_12B);
 					saveEEpromSettings();
 				}
 
