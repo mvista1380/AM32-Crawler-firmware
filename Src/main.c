@@ -822,6 +822,12 @@ void tenKhzRoutine(){
 	if (signaltimeout > 10000) { // quarter second timeout when armed half second for servo;
 		if (armed || signaltimeout > 25000) {
 			allOff();
+
+			if (armed) {
+				last_error = 1;
+				saveEEpromSettings();
+			}
+
 			armed = 0;
 			input = 0;
 			inputSet = 0;
@@ -834,8 +840,6 @@ void tenKhzRoutine(){
 			for (int i = 0; i < 64; i++) {
 				dma_buffer[i] = 0;
 			}
-			last_error = 1;
-			saveEEpromSettings();
 			NVIC_SystemReset();
 		}
 	}
