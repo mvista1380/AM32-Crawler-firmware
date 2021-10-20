@@ -1247,7 +1247,7 @@ int main(void)
 					last_error = 2;
 					eepromBuffer[44] = degrees_celsius;
 					//eepromBuffer[45] = __LL_ADC_CALC_VREFANALOG_VOLTAGE(ADC_raw_volts, LL_ADC_RESOLUTION_12B);
-					//saveEEpromSettings();
+					saveEEpromSettings();
 				}
 
 				playThermalWarningTune();
