@@ -209,6 +209,7 @@ char inputSet = 0;
 char dshot = 0;
 char servoPwm = 0;
 char step = 1;
+char saved = 0;
 
 float K_p_duty = 0.03;
 float K_i_duty = 0.0001;
@@ -1236,7 +1237,11 @@ int main(void)
 			#endif
 		}
 
-		
+		if (armed && !saved) {
+			eepromBuffer[44] = degrees_celsius;
+			saveEEpromSettings();
+			saved = 1;
+		}
 		if (degrees_celsius >= 115) {
 			if (thermal_protection_active == 0) {
 				allOff();
