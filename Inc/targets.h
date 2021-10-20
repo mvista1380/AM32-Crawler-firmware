@@ -183,6 +183,7 @@
 #define MILLIVOLT_PER_AMP       15
 #define CURRENT_OFFSET          0
 #define HARDWARE_GROUP_G0_A
+#define TARGET_VOLTAGE_DIVIDER  225
 #endif
 
 #ifdef  G071ESC
