@@ -1238,7 +1238,7 @@ int main(void)
 		}
 
 		
-		if (degrees_celsius >= 115 && armed) {
+		if (degrees_celsius >= 115) {
 			if (thermal_protection_active == 0) {
 				allOff();
 				maskPhaseInterrupts();
