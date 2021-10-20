@@ -1246,6 +1246,7 @@ int main(void)
 
 				if (last_error != 2) {
 					last_error = 2;
+					eepromBuffer[44] = degrees_celsius;
 					saveEEpromSettings();
 				}
 
