@@ -90,6 +90,8 @@ uint8_t temperature_offset = 0;
 uint8_t gcr_size = 0;
 uint8_t last_dshot_command = 0;
 uint8_t ubAnalogWatchdogStatus = RESET;
+uint8_t deg_smooth_reading[10] = { 0,0,0,0,0,0,0,0,0,0 };
+uint8_t deg_smooth_total = 0;
 
 uint16_t armed_timeout_count;
 uint16_t minimum_commutation = 3000;
@@ -178,8 +180,6 @@ int pwm = 1;
 int floating = 2;
 int lowside = 3;
 int signaltimeout = 0;
-int deg_smooth_reading[10] = { 0,0,0,0,0,0,0,0,0,0 };
-int deg_smooth_total = 0;
 int deg_smooth_index = 0;
 
 char maximum_throttle_change_ramp = 1;
