@@ -22,6 +22,7 @@
 *	-Added PID stall compensation Loop
 *	-Fixed Debug Logging
 *	-Fixed Low Voltage shutdown
+*	-Fixed thermal shutdown loop
 */
 #include <stdint.h>
 #include "main.h"
@@ -42,7 +43,7 @@
 //===========================================================================
 
 #define VERSION_MAJOR 1
-#define VERSION_MINOR 02
+#define VERSION_MINOR 10
 char dir_reversed = 0;
 char brake_on_stop = 1;
 char program_running = 1; //low voltage turns off main loop
