@@ -139,6 +139,7 @@ int smoothedinput = 0;
 int voltageraw;
 int p_error = 0;
 int boost = 0;
+int stall_boost = 0;
 int checkcount = 0;
 int minimum_duty_cycle = DEAD_TIME;
 int adc_counter = 0;
@@ -575,6 +576,7 @@ void PeriodElapsedCallback(){
 	}
 
 	stuckcounter = 0;
+	stall_boost = 0;
 
 	if(zero_crosses<10000){
 		zero_crosses++;
@@ -747,10 +749,10 @@ void tenKhzRoutine(){
 
 				stuckcounter++; //full stall, adds a biiger boost
 				if (stuckcounter > 10) {
-					boost += 10;
+					stall_boost += 10;
 				}
 
-				minimum_duty_cycle = starting_duty_orig + boost;
+				minimum_duty_cycle = starting_duty_orig + boost + stall_boost;
 
 				if (minimum_duty_cycle > maximum_duty_orig)
 					minimum_duty_cycle = maximum_duty_orig;
