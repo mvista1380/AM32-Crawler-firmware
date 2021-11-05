@@ -575,9 +575,6 @@ void PeriodElapsedCallback(){
 		enableCompInterrupts();     // enable comp interrupt
 	}
 
-	stuckcounter = 0;
-	stall_boost = 0;
-
 	if(zero_crosses<10000){
 		zero_crosses++;
 	}
@@ -612,6 +609,8 @@ void interruptRoutine(){
 		}
 	}
 	maskPhaseInterrupts();
+	stuckcounter = 0;
+	stall_boost = 0;
 	INTERVAL_TIMER->CNT = 0 ;
 
 	waitTime = waitTime >> fast_accel;
