@@ -211,8 +211,8 @@ char dshot = 0;
 char servoPwm = 0;
 char step = 1;
 
-float K_p_duty = 0.03;
-float K_i_duty = 0.0001;
+float K_p_duty = 0.035;
+float K_i_duty = 0.00015;
 float K_d_duty = 0.0085;
 float p_error_integral = 0;
 float p_error_derivative = 0;
