@@ -574,6 +574,8 @@ void PeriodElapsedCallback(){
 		enableCompInterrupts();     // enable comp interrupt
 	}
 
+	stuckcounter = 0;
+
 	if(zero_crosses<10000){
 		zero_crosses++;
 	}
@@ -582,14 +584,14 @@ void PeriodElapsedCallback(){
 
 
 void interruptRoutine(){
-	if (average_interval > 125){
+	/*if (average_interval > 125){
 		stuckcounter++;             // stuck at 100 interrupts before the main loop happens again.
 		if (stuckcounter > 100){
 			maskPhaseInterrupts();
 			zero_crosses = 0;
 			return;
 		}
-	}
+	}*/
 
 	thiszctime = INTERVAL_TIMER->CNT;
 
@@ -742,6 +744,12 @@ void tenKhzRoutine(){
 				p_prev_rror = p_error;
 
 				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
+
+				stuckcounter++; //full stall, adds a biiger boost
+				if (stuckcounter > 100) {
+					boost += 10;
+				}
+
 				minimum_duty_cycle = starting_duty_orig + boost;
 
 				if (minimum_duty_cycle > maximum_duty_orig)
@@ -1274,7 +1282,7 @@ int main(void)
 		#ifdef USE_ADC_INPUT
 		UpdateADCInput();		
 		#endif
-		stuckcounter = 0;
+		//stuckcounter = 0;
 
 		if (newinput > (1000 + (servo_dead_band<<1))) {
 			if (forward == dir_reversed) {
