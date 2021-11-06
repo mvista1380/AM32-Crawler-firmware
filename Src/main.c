@@ -747,8 +747,8 @@ void tenKhzRoutine(){
 				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
 
 				stuckcounter++; //full stall, adds a biiger boost
-				if (stuckcounter > 1000) {
-					stall_boost += 10;
+				if (stuckcounter > 1500) {
+					stall_boost += 5;
 				}
 
 				minimum_duty_cycle = starting_duty_orig + boost + stall_boost;
