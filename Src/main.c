@@ -747,7 +747,7 @@ void tenKhzRoutine(){
 				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
 
 				stuckcounter++; //full stall, adds a biiger boost
-				if (stuckcounter > 350) {
+				if (stuckcounter > 450) {
 					stall_boost += 10;
 				}
 
