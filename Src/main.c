@@ -95,7 +95,7 @@ uint8_t deg_smooth_reading[10] = { 0,0,0,0,0,0,0,0,0,0 };
 uint8_t deg_smooth_total = 0;
 
 uint16_t armed_timeout_count;
-uint16_t minimum_commutation = 7000;
+uint16_t minimum_commutation = 5000;
 uint16_t low_voltage_count = 0;
 uint16_t battery_voltage;  // scale in volts * 10.  1260 is a battery voltage of 12.60
 uint16_t consumption_timer = 0;
@@ -205,7 +205,6 @@ char sin_cycle_complete = 0;
 char last_inc = 1;
 char stepper_sine = 0;
 char max_sin_inc = 3;
-char old_routine = 0;
 char armed = 0;
 char inputSet = 0;
 char dshot = 0;
@@ -555,10 +554,6 @@ void commutate(){
 
 	changeCompInput();
 
-	//if(average_interval > 2000){
-	//	old_routine = 1;
-	//}
-
 	bemfcounter = 0;
 	zcfound = 0;
 }
@@ -570,10 +565,8 @@ void PeriodElapsedCallback(){
 	commutate();
 	advance = (commutation_interval>>3) * advance_level;   // 60 divde 8 7.5 degree increments
 	waitTime = (commutation_interval >>1)  - advance;
-
-	if(!old_routine){
-		enableCompInterrupts();     // enable comp interrupt
-	}
+	
+	enableCompInterrupts();
 
 	if(zero_crosses<10000){
 		zero_crosses++;
@@ -686,9 +679,7 @@ void tenKhzRoutine(){
 		if (input >= 127 && armed){
 			if (running == 0){
 				allOff();
-				if(!old_routine){
-					startMotor();
-				}
+				startMotor();
 				running = 1;
 				last_duty_cycle = minimum_duty_cycle;
 				#ifdef tmotor55
@@ -716,7 +707,6 @@ void tenKhzRoutine(){
 
 			if (!running){
 				duty_cycle = 0;
-			//	old_routine = 1;
 				zero_crosses = 0;
 				bad_count = 0;
 				if(!brake_on_stop){		  
@@ -922,34 +912,10 @@ void advanceincrement(int input){
 	TIM1->CCR3 = (amplitude * pwmSin[2][phase_C_position]) + (amplitude + 2);    
 }
 
-void zcfoundroutine(){   // only used in polling mode, blocking routine.
-	thiszctime = INTERVAL_TIMER->CNT;
-	INTERVAL_TIMER->CNT = 0;
-	commutation_interval = (thiszctime + (3*commutation_interval)) / 4;
-	advance = commutation_interval / advancedivisor;
-	waitTime = commutation_interval /2  - advance;
-	//	blanktime = commutation_interval / 4;
-	while (INTERVAL_TIMER->CNT - thiszctime < waitTime - advance){
-
-	}
-
-	commutate();
-	bemfcounter = 0;
-	bad_count = 0;
-
-	zero_crosses++;
-	
-	if (zero_crosses >= 100 && commutation_interval <= 2000) {
-		old_routine = 0;
-		enableCompInterrupts();          // enable interrupt
-	}
-}
-
 void SwitchOver() {
 	sin_cycle_complete = 0;
 	stepper_sine = 0;
 	running = 1;
-	old_routine = 0;
 	prop_brake_active = 0;
 	last_average_interval = average_interval;
 	zero_crosses = 0;
@@ -966,23 +932,6 @@ void SwitchOver() {
 	comStep(step);
 	changeCompInput();
 	enableCompInterrupts();
-}
-
-void PunchStart() { //old switchover code, good for a fast accel punch
-	stepper_sine = 0;
-	running = 1;
-	//old_routine = 1;
-	commutation_interval = 9000;
-	average_interval = 9000;
-	last_average_interval = average_interval;
-	//  minimum_duty_cycle = ;
-	INTERVAL_TIMER->CNT = 9000;
-	zero_crosses = 0;
-	prop_brake_active = 0;
-	step = changeover_step;                    // rising bemf on a same as position 0.
-	comStep(step);// rising bemf on a same as position 0.
-	LL_TIM_GenerateEvent_UPDATE(TIM1);
-	zcfoundroutine();
 }
 
 void UpdateADCInput() {
@@ -1298,7 +1247,6 @@ int main(void)
 				if(commutation_interval > 1500 || stepper_sine){
 					forward = 1 - dir_reversed;
 					zero_crosses = 0;
-					//old_routine = 1;
 					maskPhaseInterrupts();
 				}
 				else{
@@ -1311,7 +1259,6 @@ int main(void)
 			if (forward == (1 - dir_reversed)) {
 				if(commutation_interval > 1500 || stepper_sine){
 					zero_crosses = 0;
-					//old_routine = 1;
 					forward = dir_reversed;
 					maskPhaseInterrupts();
 				}
@@ -1384,28 +1331,8 @@ int main(void)
 			}
 
 			/**************** old routine*********************/
-			if (old_routine && running){
-				maskPhaseInterrupts();
-				getBemfState();
-				if (!zcfound){
-					if (rising){
-						if (bemfcounter > min_bemf_counts_up){
-							zcfound = 1;
-							zcfoundroutine();
-						}
-					}
-					else{
-						if (bemfcounter > min_bemf_counts_down){
-							zcfound = 1;
-							zcfoundroutine();
-						}
-					}
-				}
-			}
-			if (INTERVAL_TIMER->CNT > 45000 && running == 1){
-				//zcfoundroutine();
-				//maskPhaseInterrupts();
-				//old_routine = 1;
+			
+			if (INTERVAL_TIMER->CNT > 45000 && running == 1){				
 				running = 0;
 				zero_crosses = 0;
 			}
@@ -1417,10 +1344,7 @@ int main(void)
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
 				
-				if (input > sine_mode_changeover * 2) {
-					PunchStart();
-				}
-				else if (input > sine_mode_changeover && sin_cycle_complete == 1){
+				if (input > sine_mode_changeover && sin_cycle_complete == 1){
 					duty_cycle = starting_duty_orig;
 					SwitchOver();
 				}
