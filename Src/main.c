@@ -597,7 +597,7 @@ void interruptRoutine(){
 	if (rising){
 		for (int i = 0; i < filter_level; i++){
 			if(LL_COMP_ReadOutputLevel(MAIN_COMP) == LL_COMP_OUTPUT_LEVEL_HIGH){
-			return;
+				return;
 			}
 		}
 	}
@@ -741,6 +741,13 @@ void tenKhzRoutine(){
 		if(!prop_brake_active){
 
 			if (running){
+
+				stuckcounter++;
+				if (stuckcounter > 9500) {
+					//stall_boost += 2;
+					commutation_interval = 9000;
+				}
+
 				p_error = commutation_interval - minimum_commutation;
 				p_error_integral += (p_error);
 				p_error_derivative = (p_error - p_prev_rror);
@@ -748,18 +755,17 @@ void tenKhzRoutine(){
 
 				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
 
-				stuckcounter++; //full stall, adds a biiger boost
-				if (stuckcounter > 9500) {
-					stall_boost += 1;
-				}
+				 //full stall, adds a bigger boost
+				//if (stuckcounter > 9500) {
+				//	stall_boost += 2;
+				//}
 
 				minimum_duty_cycle = starting_duty_orig + boost + stall_boost;
 
 				if (minimum_duty_cycle > maximum_duty_orig)
 					minimum_duty_cycle = maximum_duty_orig;
-				else if (minimum_duty_cycle < starting_duty_orig) {
+				else if (minimum_duty_cycle < starting_duty_orig)
 					minimum_duty_cycle = starting_duty_orig;
-				}
 			}
 
 			if(maximum_throttle_change_ramp){
