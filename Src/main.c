@@ -95,7 +95,7 @@ uint8_t deg_smooth_reading[10] = { 0,0,0,0,0,0,0,0,0,0 };
 uint8_t deg_smooth_total = 0;
 
 uint16_t armed_timeout_count;
-uint16_t minimum_commutation = 8000;
+uint16_t minimum_commutation = 7000;
 uint16_t low_voltage_count = 0;
 uint16_t battery_voltage;  // scale in volts * 10.  1260 is a battery voltage of 12.60
 uint16_t consumption_timer = 0;
@@ -212,7 +212,7 @@ char dshot = 0;
 char servoPwm = 0;
 char step = 1;
 
-float K_p_duty = 0.035;
+float K_p_duty = 0.045;
 float K_i_duty = 0.00015;
 float K_d_duty = 0.0085;
 float p_error_integral = 0;
@@ -555,9 +555,9 @@ void commutate(){
 
 	changeCompInput();
 
-	if(average_interval > 2000){
-		old_routine = 1;
-	}
+	//if(average_interval > 2000){
+	//	old_routine = 1;
+	//}
 
 	bemfcounter = 0;
 	zcfound = 0;
@@ -716,7 +716,7 @@ void tenKhzRoutine(){
 
 			if (!running){
 				duty_cycle = 0;
-				old_routine = 1;
+			//	old_routine = 1;
 				zero_crosses = 0;
 				bad_count = 0;
 				if(!brake_on_stop){		  
@@ -971,7 +971,7 @@ void SwitchOver() {
 void PunchStart() { //old switchover code, good for a fast accel punch
 	stepper_sine = 0;
 	running = 1;
-	old_routine = 1;
+	//old_routine = 1;
 	commutation_interval = 9000;
 	average_interval = 9000;
 	last_average_interval = average_interval;
@@ -1298,7 +1298,7 @@ int main(void)
 				if(commutation_interval > 1500 || stepper_sine){
 					forward = 1 - dir_reversed;
 					zero_crosses = 0;
-					old_routine = 1;
+					//old_routine = 1;
 					maskPhaseInterrupts();
 				}
 				else{
@@ -1311,7 +1311,7 @@ int main(void)
 			if (forward == (1 - dir_reversed)) {
 				if(commutation_interval > 1500 || stepper_sine){
 					zero_crosses = 0;
-					old_routine = 1;
+					//old_routine = 1;
 					forward = dir_reversed;
 					maskPhaseInterrupts();
 				}
@@ -1403,9 +1403,9 @@ int main(void)
 				}
 			}
 			if (INTERVAL_TIMER->CNT > 45000 && running == 1){
-				zcfoundroutine();
-				maskPhaseInterrupts();
-				old_routine = 1;
+				//zcfoundroutine();
+				//maskPhaseInterrupts();
+				//old_routine = 1;
 				running = 0;
 				zero_crosses = 0;
 			}
