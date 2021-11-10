@@ -95,7 +95,7 @@ uint8_t deg_smooth_reading[10] = { 0,0,0,0,0,0,0,0,0,0 };
 uint8_t deg_smooth_total = 0;
 
 uint16_t armed_timeout_count;
-uint16_t minimum_commutation = 3000;
+uint16_t minimum_commutation = 9000;
 uint16_t low_voltage_count = 0;
 uint16_t battery_voltage;  // scale in volts * 10.  1260 is a battery voltage of 12.60
 uint16_t consumption_timer = 0;
@@ -745,7 +745,7 @@ void tenKhzRoutine(){
 				stuckcounter++;
 				if (stuckcounter > 9500) {
 					//stall_boost += 2;
-					commutation_interval = 9000;
+					commutation_interval = 10000;
 				}
 
 				p_error = commutation_interval - minimum_commutation;
