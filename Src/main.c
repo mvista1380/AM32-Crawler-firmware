@@ -211,7 +211,7 @@ char dshot = 0;
 char servoPwm = 0;
 char step = 1;
 
-float K_p_duty = 0.06;
+float K_p_duty = 0.035;
 float K_i_duty = 0.00015;
 float K_d_duty = 0.0085;
 float p_error_integral = 0;
@@ -727,7 +727,7 @@ void tenKhzRoutine(){
 				stuckcounter++;
 				if (stuckcounter > 9200) {
 					//stall_boost += 2;
-					commutation_interval = 15000;
+					commutation_interval = 20000;
 				}
 
 				p_error = commutation_interval - minimum_commutation;
