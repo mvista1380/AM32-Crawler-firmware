@@ -106,7 +106,7 @@ uint16_t last_duty_cycle = 0;
 uint16_t maximum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
-uint16_t duty_cycle_multiplier = 210; //130 = 30% power increase
+uint16_t duty_cycle_multiplier = 240; //130 = 30% power increase
 uint16_t tim1_arr = TIM1_AUTORELOAD;         // current auto reset value
 uint16_t TIMER1_MAX_ARR = TIM1_AUTORELOAD;
 uint16_t commutation_intervals[6] = { 0 };
@@ -576,14 +576,6 @@ void PeriodElapsedCallback(){
 
 
 void interruptRoutine(){
-	/*if (average_interval > 125){
-		stuckcounter++;             // stuck at 100 interrupts before the main loop happens again.
-		if (stuckcounter > 100){
-			maskPhaseInterrupts();
-			zero_crosses = 0;
-			return;
-		}
-	}*/
 
 	thiszctime = INTERVAL_TIMER->CNT;
 
@@ -735,7 +727,7 @@ void tenKhzRoutine(){
 				stuckcounter++;
 				if (stuckcounter > 9200) {
 					//stall_boost += 2;
-					commutation_interval = 10000;
+					commutation_interval = 15000;
 				}
 
 				p_error = commutation_interval - minimum_commutation;
