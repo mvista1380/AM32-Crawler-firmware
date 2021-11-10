@@ -95,7 +95,7 @@ uint8_t deg_smooth_reading[10] = { 0,0,0,0,0,0,0,0,0,0 };
 uint8_t deg_smooth_total = 0;
 
 uint16_t armed_timeout_count;
-uint16_t minimum_commutation = 9000;
+uint16_t minimum_commutation = 8000;
 uint16_t low_voltage_count = 0;
 uint16_t battery_voltage;  // scale in volts * 10.  1260 is a battery voltage of 12.60
 uint16_t consumption_timer = 0;
