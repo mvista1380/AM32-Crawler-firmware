@@ -610,7 +610,9 @@ void interruptRoutine(){
 	}
 	maskPhaseInterrupts();
 	stuckcounter = 0;
-	stall_boost = 0;
+	if (stall_boost > 0)
+		stall_boost -= 1;
+	
 	INTERVAL_TIMER->CNT = 0 ;
 
 	waitTime = waitTime >> fast_accel;
@@ -747,7 +749,7 @@ void tenKhzRoutine(){
 				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
 
 				stuckcounter++; //full stall, adds a biiger boost
-				if (stuckcounter > 10000) {
+				if (stuckcounter > 9500) {
 					stall_boost += 1;
 				}
 
