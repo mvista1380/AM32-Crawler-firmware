@@ -1369,7 +1369,7 @@ int main(void)
 		}
 		else{
 			
-			if (input >= 47 && armed) {
+			if (input >= 47 && armed && sine_timer_active != 1) {
 				SineStepMode();
 			}
 			else if(armed){
