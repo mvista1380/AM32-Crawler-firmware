@@ -161,7 +161,6 @@ int step_delay = 100;
 int forward = 1;
 int gate_drive_offset = 60;
 int stuckcounter = 0;
-int resetcounter = 0;
 int k_erpm = 0;
 int bad_count = 0;
 int dshotcommand;
@@ -571,13 +570,8 @@ void PeriodElapsedCallback(){
 
 	if (stall_boost > 0) {
 		stall_boost -= 1;
-		if (stuckcounter > 0) {
-			resetcounter++;
-			if (resetcounter > 5) {
-				resetcounter = 0;
-				stuckcounter = 0;
-			}
-		}
+		if (stuckcounter > 0) 
+			stuckcounter = 0;
 	}
 
 	if(zero_crosses<10000){
@@ -733,23 +727,18 @@ void tenKhzRoutine(){
 
 			if (running){
 
-				stuckcounter++;
-				if (stuckcounter > 7000) {
-					stall_boost += 2;
-					commutation_interval = 10000;
-				}
-
 				p_error = commutation_interval - minimum_commutation;
 				p_error_integral += (p_error);
 				p_error_derivative = (p_error - p_prev_rror);
 				p_prev_rror = p_error;
 
 				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
-
-				 //full stall, adds a bigger boost
-				//if (stuckcounter > 9500) {
-				//	stall_boost += 2;
-				//}
+				
+				stuckcounter++;
+				if (stuckcounter > 10000) {
+					stall_boost += 1;
+					commutation_interval = 10000;
+				}		
 
 				minimum_duty_cycle = starting_duty_orig + boost + stall_boost;
 
