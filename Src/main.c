@@ -218,6 +218,8 @@ float p_error_integral = 0;
 float p_error_derivative = 0;
 float p_prev_rror = 0;
 float consumed_current = 0;
+int ramp_down_counter = 0;
+int ramp_down_interval = 30;
 
 typedef enum
 {
@@ -568,11 +570,7 @@ void PeriodElapsedCallback(){
 	
 	enableCompInterrupts();
 
-	if (stall_boost > 0) {
-		stall_boost -= 1;
-		if (stuckcounter > 0) 
-			stuckcounter = 0;
-	}
+	stuckcounter = 0;
 
 	if(zero_crosses<10000){
 		zero_crosses++;
@@ -727,18 +725,26 @@ void tenKhzRoutine(){
 
 			if (running){
 
+				stuckcounter++;
+				if (stuckcounter > 10000) {
+					stall_boost++;
+					commutation_interval = 10000;
+				}
+				else if (stall_boost > 0) {
+					ramp_down_counter++;
+					if (ramp_down_counter % ramp_down_interval) {
+						stall_boost--;
+						ramp_down_counter = 0;
+					}
+				}
+					
+
 				p_error = commutation_interval - minimum_commutation;
 				p_error_integral += (p_error);
 				p_error_derivative = (p_error - p_prev_rror);
 				p_prev_rror = p_error;
 
 				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
-				
-				stuckcounter++;
-				if (stuckcounter > 10000) {
-					stall_boost += 1;
-					commutation_interval = 10000;
-				}		
 
 				minimum_duty_cycle = starting_duty_orig + boost + stall_boost;
 
