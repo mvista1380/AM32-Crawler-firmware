@@ -204,6 +204,7 @@ char max_amplitude = 180;
 char sin_cycle_complete = 0;
 char last_inc = 1;
 char stepper_sine = 0;
+char sine_timer_active = 0;
 char max_sin_inc = 3;
 char armed = 0;
 char inputSet = 0;
@@ -711,13 +712,17 @@ void tenKhzRoutine(){
 			phase_B_position = 119;
 			phase_C_position = 239;
 			stepper_sine = 1;
+			sine_timer_active = 0;
+			SINE_TIMER->DIER &= ~((0x1UL << (0U)));
 			minimum_duty_cycle = starting_duty_orig;
 		}
-		else if (input < ((sine_mode_changeover / 100) * 95) && step == changeover_step) {
+		else if (input < sine_mode_changeover && step == changeover_step) {
 			phase_A_position = 60;
 			phase_B_position = 180;
 			phase_C_position = 300;
 			stepper_sine = 1;
+			sine_timer_active = 0;
+			SINE_TIMER->DIER &= ~((0x1UL << (0U)));
 			minimum_duty_cycle = starting_duty_orig;
 		}
 
@@ -911,6 +916,7 @@ void advanceincrement(int input){
 void SwitchOver() {
 	sin_cycle_complete = 0;
 	stepper_sine = 0;
+	sine_timer_active = 0;
 	running = 1;
 	prop_brake_active = 0;
 	last_average_interval = average_interval;
@@ -1021,6 +1027,28 @@ int MapThrottle(int requested_throttle) {
 		return requested_throttle;
 }
 
+void SineStepMode() {
+	if (input >= 47 && armed) {
+		maskPhaseInterrupts();
+		allpwm();
+		advanceincrement(input);
+		step_delay = map(input, 48, sine_mode_changeover, 300, 20);
+
+		if (input > sine_mode_changeover&& sin_cycle_complete == 1) {
+			duty_cycle = starting_duty_orig;
+			SINE_TIMER->DIER &= ~((0x1UL << (0U)));
+			SwitchOver();
+		}
+		else {
+			sine_timer_active = 1;
+			SINE_TIMER->CNT = 0;
+			SINE_TIMER->ARR = step_delay;
+			SINE_TIMER->SR = 0x00;
+			SINE_TIMER->DIER |= (0x1UL << (0U));
+		}
+	}
+}
+
 int main(void)
 {
 	initAfterJump();
@@ -1067,6 +1095,12 @@ int main(void)
 	LL_TIM_EnableCounter(TEN_KHZ_TIMER);                 // 10khz timer
 	LL_TIM_GenerateEvent_UPDATE(TEN_KHZ_TIMER);
 	TEN_KHZ_TIMER->DIER |= (0x1UL << (0U));  // enable interrupt
+
+	LL_TIM_EnableCounter(SINE_TIMER);
+	LL_TIM_GenerateEvent_UPDATE(SINE_TIMER);
+	LL_TIM_EnableIT_UPDATE(SINE_TIMER);
+	SINE_TIMER->DIER &= ~((0x1UL << (0U)));
+
 
 	//RCC->APB2ENR  &= ~(1 << 22);  // turn debug off
 	#ifdef USE_ADC
@@ -1333,22 +1367,12 @@ int main(void)
 				zero_crosses = 0;
 			}
 		}
-		else{            // stepper sine
-			if(input >= 47 && armed){
-				maskPhaseInterrupts();
-				allpwm();
-				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
-				
-				if (input > sine_mode_changeover && sin_cycle_complete == 1){
-					duty_cycle = starting_duty_orig;
-					SwitchOver();
-				}
-				else {
-					delayMicros(step_delay);
-				}
+		else{
+			
+			if (input >= 47 && armed) {
+				SineStepMode();
 			}
-			else{
+			else if(armed){
 				if(brake_on_stop){
 					#ifndef PWM_ENABLE_BRIDGE
 					duty_cycle = (TIMER1_MAX_ARR-19) + drag_brake_strength*2;
