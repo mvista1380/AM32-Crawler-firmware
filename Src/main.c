@@ -95,7 +95,7 @@ uint8_t deg_smooth_reading[10] = { 0,0,0,0,0,0,0,0,0,0 };
 uint8_t deg_smooth_total = 0;
 
 uint16_t armed_timeout_count;
-uint16_t minimum_commutation = 5000;
+uint16_t minimum_commutation = 9000;
 uint16_t low_voltage_count = 0;
 uint16_t battery_voltage;  // scale in volts * 10.  1260 is a battery voltage of 12.60
 uint16_t consumption_timer = 0;
@@ -106,7 +106,7 @@ uint16_t last_duty_cycle = 0;
 uint16_t maximum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
-uint16_t duty_cycle_multiplier = 240; //130 = 30% power increase
+uint16_t duty_cycle_multiplier = 300; //130 = 30% power increase
 uint16_t tim1_arr = TIM1_AUTORELOAD;         // current auto reset value
 uint16_t TIMER1_MAX_ARR = TIM1_AUTORELOAD;
 uint16_t commutation_intervals[6] = { 0 };
@@ -211,7 +211,7 @@ char dshot = 0;
 char servoPwm = 0;
 char step = 1;
 
-float K_p_duty = 0.035;
+float K_p_duty = 0.06;
 float K_i_duty = 0.00015;
 float K_d_duty = 0.0085;
 float p_error_integral = 0;
@@ -727,7 +727,7 @@ void tenKhzRoutine(){
 				stuckcounter++;
 				if (stuckcounter > 9200) {
 					//stall_boost += 2;
-					commutation_interval = 20000;
+					commutation_interval = 10000;
 				}
 
 				p_error = commutation_interval - minimum_commutation;
