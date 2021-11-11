@@ -724,25 +724,25 @@ void tenKhzRoutine(){
 
 			if (running){
 
-				//stuckcounter++;
-				//if (stuckcounter > 1000) {
+				stuckcounter++;
+				if (stuckcounter > 5000) {
 					//stall_boost += 2;
 					commutation_interval = 10000;
-				//}
+				}
 
 				p_error = commutation_interval - minimum_commutation;
 				p_error_integral += (p_error);
 				p_error_derivative = (p_error - p_prev_rror);
 				p_prev_rror = p_error;
 
-				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
+				minimum_duty_cycle = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
 
 				 //full stall, adds a bigger boost
 				//if (stuckcounter > 9500) {
 				//	stall_boost += 2;
 				//}
 
-				minimum_duty_cycle = starting_duty_orig + boost + stall_boost;
+				//minimum_duty_cycle = starting_duty_orig + boost + stall_boost;
 
 				if (minimum_duty_cycle > maximum_duty_orig)
 					minimum_duty_cycle = maximum_duty_orig;
