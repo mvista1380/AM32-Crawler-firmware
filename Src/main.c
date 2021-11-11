@@ -716,7 +716,7 @@ void tenKhzRoutine(){
 			SINE_TIMER->DIER &= ~((0x1UL << (0U)));
 			minimum_duty_cycle = starting_duty_orig;
 		}
-		else if (input < sine_mode_changeover && step == changeover_step) {
+		else if (input < ((sine_mode_changeover / 100) * 98) && step == changeover_step) {
 			phase_A_position = 60;
 			phase_B_position = 180;
 			phase_C_position = 300;
