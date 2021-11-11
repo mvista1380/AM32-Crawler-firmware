@@ -95,7 +95,7 @@ uint8_t deg_smooth_reading[10] = { 0,0,0,0,0,0,0,0,0,0 };
 uint8_t deg_smooth_total = 0;
 
 uint16_t armed_timeout_count;
-uint16_t minimum_commutation = 7000;
+uint16_t minimum_commutation = 2000;
 uint16_t low_voltage_count = 0;
 uint16_t battery_voltage;  // scale in volts * 10.  1260 is a battery voltage of 12.60
 uint16_t consumption_timer = 0;
@@ -212,9 +212,9 @@ char dshot = 0;
 char servoPwm = 0;
 char step = 1;
 
-float K_p_duty = 0.2;
-float K_i_duty = 0.01;
-float K_d_duty = 0;
+float K_p_duty = 0.035;
+float K_i_duty = 0.00015;
+float K_d_duty = 0.0085;
 float p_error_integral = 0;
 float p_error_derivative = 0;
 float p_prev_rror = 0;
@@ -569,6 +569,17 @@ void PeriodElapsedCallback(){
 	
 	enableCompInterrupts();
 
+	if (stall_boost > 0) {
+		stall_boost -= 1;
+		if (stuckcounter > 0) {
+			resetcounter++;
+			if (resetcounter > 5) {
+				resetcounter = 0;
+				stuckcounter = 0;
+			}
+		}
+	}
+
 	if(zero_crosses<10000){
 		zero_crosses++;
 	}
@@ -595,17 +606,6 @@ void interruptRoutine(){
 		}
 	}
 	maskPhaseInterrupts();
-
-	if (stall_boost > 0) {
-		stall_boost -= 1;
-		if (stuckcounter > 0) {
-			resetcounter++;
-			if (resetcounter > 5) {
-				resetcounter = 0;
-				stuckcounter = 0;
-			}
-		}
-	}
 	
 	INTERVAL_TIMER->CNT = 0 ;
 
@@ -744,14 +744,14 @@ void tenKhzRoutine(){
 				p_error_derivative = (p_error - p_prev_rror);
 				p_prev_rror = p_error;
 
-				minimum_duty_cycle = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative)) + stall_boost;
+				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
 
 				 //full stall, adds a bigger boost
 				//if (stuckcounter > 9500) {
 				//	stall_boost += 2;
 				//}
 
-				//minimum_duty_cycle = starting_duty_orig + boost + stall_boost;
+				minimum_duty_cycle = starting_duty_orig + boost + stall_boost;
 
 				if (minimum_duty_cycle > maximum_duty_orig)
 					minimum_duty_cycle = maximum_duty_orig;
