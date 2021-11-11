@@ -725,7 +725,7 @@ void tenKhzRoutine(){
 			if (running){
 
 				stuckcounter++;
-				if (stuckcounter > 9200) {
+				if (stuckcounter > 8000) {
 					//stall_boost += 2;
 					commutation_interval = 10000;
 				}
