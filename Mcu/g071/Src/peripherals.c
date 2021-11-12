@@ -584,7 +584,7 @@ void MX_TIM16_Init(void)
     LL_TIM_InitTypeDef TIM_InitStruct = { 0 };
 
 
-    LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_TIM16);
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM16);
 
     /* TIM6 interrupt Init */
     NVIC_SetPriority(TIM6_DAC_LPTIM1_IRQn, 2);
