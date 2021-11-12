@@ -914,6 +914,7 @@ void advanceincrement(int input){
 }
 
 void SwitchOver() {
+	SINE_TIMER->DIER &= ~((0x1UL << (0U)));
 	sin_cycle_complete = 0;
 	stepper_sine = 0;
 	sine_timer_active = 0;
@@ -1036,7 +1037,6 @@ void SineStepMode() {
 
 		if (input > sine_mode_changeover&& sin_cycle_complete == 1) {
 			duty_cycle = starting_duty_orig;
-			SINE_TIMER->DIER &= ~((0x1UL << (0U)));
 			SwitchOver();
 		}
 		else {
@@ -1044,15 +1044,14 @@ void SineStepMode() {
 			SINE_TIMER->CNT = 0;
 			SINE_TIMER->ARR = step_delay;
 			SINE_TIMER->SR = 0x00;
-			if (sine_timer_active == 0) {
+			if (sine_timer_active == 0) {				
 				SINE_TIMER->DIER |= (0x1UL << (0U));
 				sine_timer_active = 1;
 			}
 		}
 	}
-	else {
-		SINE_TIMER->DIER &= ~((0x1UL << (0U)));
-	}
+	else if(sine_timer_active)
+			SINE_TIMER->DIER &= ~((0x1UL << (0U)));
 }
 
 int main(void)
