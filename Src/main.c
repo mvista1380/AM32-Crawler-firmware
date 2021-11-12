@@ -1036,7 +1036,7 @@ void SineStepMode() {
 		maskPhaseInterrupts();
 		allpwm();
 		advanceincrement(input);
-		step_delay = map(input, 48, sine_mode_changeover, 30, 2);
+		step_delay = map(input, 48, sine_mode_changeover, 300, 20);
 
 		if (input > sine_mode_changeover&& sin_cycle_complete == 1) {
 			duty_cycle = starting_duty_orig;
@@ -1045,17 +1045,14 @@ void SineStepMode() {
 		else {
 			
 			SINE_TIMER->CNT = 0;
-			SINE_TIMER->ARR = step_delay;
-			SINE_TIMER->SR = 0x00;
-			if (sine_timer_active == 0) {				
+			SINE_TIMER->ARR = (((step_delay * 0.000001) * 48000000) / 48) - 1;
+
+			if (sine_timer_active == 0) {
+				SINE_TIMER->SR = 0x00;
 				SINE_TIMER->DIER |= (0x1UL << (0U));
 				sine_timer_active = 1;
 			}
 		}
-	}
-	else if (sine_timer_active) {
-		SINE_TIMER->DIER &= ~((0x1UL << (0U)));
-		LL_TIM_ClearFlag_UPDATE(SINE_TIMER);
 	}
 }
 
@@ -1377,8 +1374,7 @@ int main(void)
 				zero_crosses = 0;
 			}
 		}
-		else{
-			
+		else{			
 			if (input >= 47 && armed && sine_timer_active == 0) {
 				SineStepMode();
 			}
@@ -1410,25 +1406,6 @@ int main(void)
 	maskPhaseInterrupts();
 	delayMillis(1000);		
 	playPowerDownTune();
-	
-	/*
-	if (LL_PWR_IsActiveFlag_WU()) {
-		LL_PWR_ClearFlag_WU();
-	}
-
-	LL_TIM_DisableCounter(TIM6);
-	LL_TIM_DisableUpdateEvent(TIM6);
-	LL_TIM_DisableAllOutputs(TIM6);
-	LL_TIM_DisableIT_UPDATE(TIM6);
-	LL_IWDG_EnableWriteAccess(IWDG);
-	LL_IWDG_SetPrescaler(IWDG, LL_IWDG_PRESCALER_256);
-	LL_IWDG_SetReloadCounter(IWDG, UINT32_MAX);
-	LL_IWDG_ReloadCounter(IWDG);
-
-	LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
-	LL_SYSTICK_DisableIT();
-	LL_LPM_EnableDeepSleep();
-	*/
 	
 	while (1) {
 		LL_IWDG_ReloadCounter(IWDG);
