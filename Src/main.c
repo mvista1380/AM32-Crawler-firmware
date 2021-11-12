@@ -1339,7 +1339,7 @@ int main(void)
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 300, 10);
 				
-				if (input > sine_mode_changeover && sin_cycle_complete == 1){
+				if ((input > sine_mode_changeover && sin_cycle_complete == 1) || input > sine_mode_changeover * 2){
 					duty_cycle = starting_duty_orig;
 					SwitchOver();
 				}
