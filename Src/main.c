@@ -1045,7 +1045,7 @@ void SineStepMode() {
 		else {
 			
 			SINE_TIMER->CNT = 0;
-			SINE_TIMER->ARR = (((step_delay * 0.000001) * 48000000) / 48) - 1;
+			SINE_TIMER->ARR = step_delay - 1;
 
 			if (sine_timer_active == 0) {
 				SINE_TIMER->SR = 0x00;
