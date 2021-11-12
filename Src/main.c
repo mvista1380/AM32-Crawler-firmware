@@ -755,7 +755,7 @@ void tenKhzRoutine(){
 
 			if(maximum_throttle_change_ramp){
 				if(average_interval > 500){
-					max_duty_cycle_change = 5;
+					max_duty_cycle_change = 3;
 				}
 				else{
 					max_duty_cycle_change = 10;
