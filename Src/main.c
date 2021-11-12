@@ -1036,7 +1036,7 @@ void SineStepMode() {
 		maskPhaseInterrupts();
 		allpwm();
 		advanceincrement(input);
-		step_delay = map(input, 48, sine_mode_changeover, 300, 20);
+		step_delay = map(input, 48, sine_mode_changeover, 30, 2);
 
 		if (input > sine_mode_changeover&& sin_cycle_complete == 1) {
 			duty_cycle = starting_duty_orig;
