@@ -1382,7 +1382,7 @@ int main(void)
 			if (input >= 47 && armed && sine_timer_active == 0) {
 				SineStepMode();
 			}
-			else if(armed){
+			else if(armed && input < 47){
 				if(brake_on_stop){
 					#ifndef PWM_ENABLE_BRIDGE
 					duty_cycle = (TIMER1_MAX_ARR-19) + drag_brake_strength*2;
