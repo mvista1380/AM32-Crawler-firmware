@@ -472,7 +472,7 @@ void loadEEpromSettings(){
 #endif // MCU_G071
 
 		min_amplitude = (default_amplitude / 10) * 7;
-		max_amplitude = (default_amplitude / 10) * 11;
+		max_amplitude = (default_amplitude / 10) * 12;
 	}
 
 	BRUSHED_MODE = eepromBuffer[43];
@@ -1338,7 +1338,7 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
+				step_delay = map (input, 48, sine_mode_changeover, 300, 10);
 				
 				if (input > sine_mode_changeover && sin_cycle_complete == 1){
 					duty_cycle = starting_duty_orig;
