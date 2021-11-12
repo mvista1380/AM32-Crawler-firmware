@@ -1043,7 +1043,8 @@ void SineStepMode() {
 			SwitchOver();
 		}
 		else {
-			
+			signaltimeout = 0;
+			LL_IWDG_ReloadCounter(IWDG);
 			SINE_TIMER->CNT = 0;
 			SINE_TIMER->ARR = step_delay - 1;
 
