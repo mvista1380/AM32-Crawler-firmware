@@ -1040,11 +1040,14 @@ void SineStepMode() {
 			SwitchOver();
 		}
 		else {
-			sine_timer_active = 1;
+			
 			SINE_TIMER->CNT = 0;
 			SINE_TIMER->ARR = step_delay;
 			SINE_TIMER->SR = 0x00;
-			SINE_TIMER->DIER |= (0x1UL << (0U));
+			if (sine_timer_active == 0) {
+				SINE_TIMER->DIER |= (0x1UL << (0U));
+				sine_timer_active = 1;
+			}
 		}
 	}
 	else {
