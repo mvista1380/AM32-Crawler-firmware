@@ -1028,7 +1028,7 @@ int MapThrottle(int requested_throttle) {
 }
 
 void SineStepMode() {
-	if (input >= 47 && armed) {
+	if (input >= 47 && armed && stepper_sine) {
 		maskPhaseInterrupts();
 		allpwm();
 		advanceincrement(input);
@@ -1046,6 +1046,9 @@ void SineStepMode() {
 			SINE_TIMER->SR = 0x00;
 			SINE_TIMER->DIER |= (0x1UL << (0U));
 		}
+	}
+	else {
+		SINE_TIMER->DIER &= ~((0x1UL << (0U)));
 	}
 }
 
@@ -1099,7 +1102,6 @@ int main(void)
 	LL_TIM_EnableCounter(SINE_TIMER);
 	LL_TIM_GenerateEvent_UPDATE(SINE_TIMER);
 	LL_TIM_EnableIT_UPDATE(SINE_TIMER);
-	SINE_TIMER->PSC = 0x01;
 	SINE_TIMER->DIER &= ~((0x1UL << (0U)));
 
 
