@@ -1099,6 +1099,7 @@ int main(void)
 	LL_TIM_EnableCounter(SINE_TIMER);
 	LL_TIM_GenerateEvent_UPDATE(SINE_TIMER);
 	LL_TIM_EnableIT_UPDATE(SINE_TIMER);
+	SINE_TIMER->PSC = 0x01;
 	SINE_TIMER->DIER &= ~((0x1UL << (0U)));
 
 
@@ -1369,7 +1370,7 @@ int main(void)
 		}
 		else{
 			
-			if (input >= 47 && armed && sine_timer_active != 1) {
+			if (input >= 47 && armed && sine_timer_active == 0) {
 				SineStepMode();
 			}
 			else if(armed){

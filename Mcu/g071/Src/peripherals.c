@@ -32,6 +32,7 @@ void initCorePeripherals(void){
   MX_TIM14_Init();
   MX_TIM17_Init();
   MX_TIM6_Init();
+  MX_TIM16_Init();
   telem_UART_Init();
 }
 
@@ -573,6 +574,29 @@ void MX_TIM6_Init(void)
   LL_TIM_DisableARRPreload(TIM6);
   LL_TIM_SetTriggerOutput(TIM6, LL_TIM_TRGO_RESET);
   LL_TIM_DisableMasterSlaveMode(TIM6);
+
+
+}
+
+void MX_TIM16_Init(void)
+{
+
+    LL_TIM_InitTypeDef TIM_InitStruct = { 0 };
+
+
+    LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_TIM16);
+
+    /* TIM6 interrupt Init */
+    NVIC_SetPriority(TIM6_DAC_LPTIM1_IRQn, 2);
+    NVIC_EnableIRQ(TIM6_DAC_LPTIM1_IRQn);
+
+    TIM_InitStruct.Prescaler = 63;
+    TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
+    TIM_InitStruct.Autoreload = 500;
+    LL_TIM_Init(TIM16, &TIM_InitStruct);
+    LL_TIM_DisableARRPreload(TIM16);
+    LL_TIM_SetTriggerOutput(TIM16, LL_TIM_TRGO_RESET);
+    LL_TIM_DisableMasterSlaveMode(TIM16);
 
 
 }

@@ -328,11 +328,9 @@ void TIM14_IRQHandler(void)
 void TIM16_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM16_IRQn 0 */
-	if (LL_TIM_IsActiveFlag_UPDATE(TIM16) == 1)
-	{
-		LL_TIM_ClearFlag_UPDATE(TIM16);
-		SineStepMode();
-	}
+	
+	LL_TIM_ClearFlag_UPDATE(TIM16);
+	SineStepMode();
 
   /* USER CODE END TIM16_IRQn 0 */
   /* USER CODE BEGIN TIM16_IRQn 1 */

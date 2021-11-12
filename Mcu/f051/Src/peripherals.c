@@ -26,7 +26,8 @@ void initCorePeripherals(void){
   MX_COMP1_Init();
   MX_TIM14_Init();
   MX_TIM6_Init();
-  MX_TIM17_Init();	 
+  MX_TIM17_Init();
+  MX_TIM16_Init();
   UN_TIM_Init();
   #ifdef USE_SERIAL_TELEMETRY
     telem_UART_Init();
@@ -386,13 +387,14 @@ void MX_TIM16_Init(void)
   NVIC_SetPriority(TIM16_IRQn, 2);
   NVIC_EnableIRQ(TIM16_IRQn);
 
-  TIM_InitStruct.Prescaler = 0;
+  TIM_InitStruct.Prescaler = 47;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 9000;
+  TIM_InitStruct.Autoreload = 500;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   TIM_InitStruct.RepetitionCounter = 0;
   LL_TIM_Init(TIM16, &TIM_InitStruct);
   LL_TIM_DisableARRPreload(TIM16);
+  LL_TIM_DisableMasterSlaveMode(TIM16);
 
 }
 
