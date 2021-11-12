@@ -714,6 +714,7 @@ void tenKhzRoutine(){
 			stepper_sine = 1;
 			sine_timer_active = 0;
 			SINE_TIMER->DIER &= ~((0x1UL << (0U)));
+			LL_TIM_ClearFlag_UPDATE(SINE_TIMER);
 			minimum_duty_cycle = starting_duty_orig;
 		}
 		else if (input < ((sine_mode_changeover / 100) * 98) && step == changeover_step) {
@@ -723,6 +724,7 @@ void tenKhzRoutine(){
 			stepper_sine = 1;
 			sine_timer_active = 0;
 			SINE_TIMER->DIER &= ~((0x1UL << (0U)));
+			LL_TIM_ClearFlag_UPDATE(SINE_TIMER);
 			minimum_duty_cycle = starting_duty_orig;
 		}
 
@@ -915,6 +917,7 @@ void advanceincrement(int input){
 
 void SwitchOver() {
 	SINE_TIMER->DIER &= ~((0x1UL << (0U)));
+	LL_TIM_ClearFlag_UPDATE(SINE_TIMER);
 	sin_cycle_complete = 0;
 	stepper_sine = 0;
 	sine_timer_active = 0;
@@ -1050,8 +1053,10 @@ void SineStepMode() {
 			}
 		}
 	}
-	else if(sine_timer_active)
-			SINE_TIMER->DIER &= ~((0x1UL << (0U)));
+	else if (sine_timer_active) {
+		SINE_TIMER->DIER &= ~((0x1UL << (0U)));
+		LL_TIM_ClearFlag_UPDATE(SINE_TIMER);
+	}
 }
 
 int main(void)
