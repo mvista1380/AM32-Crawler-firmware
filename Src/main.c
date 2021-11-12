@@ -726,7 +726,7 @@ void tenKhzRoutine(){
 			if (running){
 
 				stuckcounter++;
-				if (stuckcounter > 12000) {
+				if (stuckcounter > 14000) {
 					stall_boost++;
 					commutation_interval = 10000;
 				}
@@ -736,8 +736,7 @@ void tenKhzRoutine(){
 						stall_boost--;
 						ramp_down_counter = 0;
 					}
-				}
-					
+				}					
 
 				p_error = commutation_interval - minimum_commutation;
 				p_error_integral += (p_error);
