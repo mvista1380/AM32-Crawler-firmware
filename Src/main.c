@@ -210,6 +210,7 @@ char inputSet = 0;
 char dshot = 0;
 char servoPwm = 0;
 char step = 1;
+char battery_voltage_saved = 0;
 
 float K_p_duty = 0.035;
 float K_i_duty = 0.00015;
@@ -373,6 +374,8 @@ const float pwmSin[3][360] = {
 -0.121866722626293,-0.104525829832906,-0.0871530974318957,-0.0697538173303821,-0.0523332895221773,-0.0348968204733563,-0.0174497215058549}
 };
 
+const int battery_levels[3][2]{ {600,840},{900,1260},{1260,1680} };
+
 void checkForHighSignal(){
 	changeToInput();
 	LL_GPIO_SetPinPull(INPUT_PIN_PORT, INPUT_PIN, LL_GPIO_PULL_DOWN);
@@ -450,7 +453,7 @@ void loadEEpromSettings(){
 		LOW_VOLTAGE_CUTOFF = 0;
 	}
 
-	low_cell_volt_cutoff = eepromBuffer[28] + 300; // 2.5 to 3.5 volts per cell range
+	low_cell_volt_cutoff = eepromBuffer[28] + 250; // 2.5 to 3.5 volts per cell range
 
 	if(eepromBuffer[29] > 4 && eepromBuffer[29] < 26){            // sine mode changeover 5-25 percent throttle
 		sine_mode_changeover_thottle_level = eepromBuffer[29];
@@ -646,12 +649,19 @@ void tenKhzRoutine(){
 					GPIOA->BSRR = LL_GPIO_PIN_15;   // turn on green
 					#endif
 					if(cell_count == 0 && LOW_VOLTAGE_CUTOFF){
-						cell_count = battery_voltage / 370;
+						for (int i = 2; i <= 4; i++) {
+							if (battery_voltage >= battery_levels[i - 2][0] && battery_voltage <= battery_levels[i - 2][1]) {
+								cell_count = i;
+								break;
+							}
+						}
 						for (int i = 0 ; i < cell_count; i++){
 							playInputTune();
 							delayMillis(100);
 							LL_IWDG_ReloadCounter(IWDG);
 						}
+						eepromBuffer[47] = battery_voltage / 10;
+						saveEEpromSettings();
 					}
 					else{
 						playInputTune();
