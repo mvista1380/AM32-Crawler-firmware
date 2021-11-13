@@ -649,13 +649,13 @@ void tenKhzRoutine(){
 					GPIOA->BSRR = LL_GPIO_PIN_15;   // turn on green
 					#endif
 					if(cell_count == 0 && LOW_VOLTAGE_CUTOFF){
-						cell_count == 3;
-						for (int i = 2; i <= 4; i++) {
+						cell_count = 3;
+						/*for (int i = 2; i <= 4; i++) {
 							/*if (battery_voltage >= battery_levels[i - 2][0] && battery_voltage <= battery_levels[i - 2][1]) {
 								cell_count = i;
 								break;
-							}*/
-						}
+							}
+						}*/
 						for (int i = 0 ; i < cell_count; i++){
 							playInputTune();
 							delayMillis(100);
