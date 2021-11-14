@@ -649,7 +649,6 @@ void tenKhzRoutine(){
 					GPIOA->BSRR = LL_GPIO_PIN_15;   // turn on green
 					#endif
 					if(cell_count == 0 && LOW_VOLTAGE_CUTOFF){
-						cell_count = 3;
 						for (int i = 0; i < 3; i++) {
 							if (battery_voltage >= battery_levels[i][0] && battery_voltage <= battery_levels[i][1]) {
 								cell_count = i + 2;
