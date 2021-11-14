@@ -660,8 +660,6 @@ void tenKhzRoutine(){
 							delayMillis(100);
 							LL_IWDG_ReloadCounter(IWDG);
 						}
-						eepromBuffer[47] = battery_voltage / 10;
-						saveEEpromSettings();
 					}
 					else{
 						playInputTune();
@@ -1383,11 +1381,12 @@ int main(void)
 
 	allOff();
 	maskPhaseInterrupts();
-	delayMillis(1000);		
+	delayMillis(200);		
 	playPowerDownTune();
 	
 	while (1) {
 		LL_IWDG_ReloadCounter(IWDG);
+		signaltimeout = 0;
 	};
 }
 
