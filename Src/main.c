@@ -23,6 +23,11 @@
 *	-Fixed Debug Logging
 *	-Fixed Low Voltage shutdown
 *	-Fixed thermal shutdown loop
+*
+* V1.2 - Change Log
+*	-Changes to stall code, timout added for hard stall
+*	-Cell count code for battery fixed
+*	-Faster sine mode and slight increase in upper current to compensate
 */
 #include <stdint.h>
 #include "main.h"
@@ -43,7 +48,7 @@
 //===========================================================================
 
 #define VERSION_MAJOR 1
-#define VERSION_MINOR 10
+#define VERSION_MINOR 20
 char dir_reversed = 0;
 char brake_on_stop = 1;
 char program_running = 1; //low voltage turns off main loop
