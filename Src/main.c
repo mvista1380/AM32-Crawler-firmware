@@ -59,7 +59,6 @@ char advance_level = 0;
 char last_error = 0; //0 = no error, 1 = signal loss/brownout, 2 = thermal shutdown, 3 = voltage too low
 char drag_brake_strength = 10;		// Drag Brake Power
 char sine_mode_changeover_thottle_level = 5;	// Sine Startup Range
-char sine_mode_changeover_mutliplier = 20;
 short sine_mode_changeover = 5 * 20;
 
 //============================= Servo Settings ==============================
@@ -665,6 +664,9 @@ void tenKhzRoutine(){
 							delayMillis(100);
 							LL_IWDG_ReloadCounter(IWDG);
 						}
+
+						eepromBuffer[47] = battery_voltage / 10;
+						saveEEpromSettings();
 					}
 					else{
 						playInputTune();
