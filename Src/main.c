@@ -606,18 +606,19 @@ void OpenLoopSixStep() {
 	SPIN_UP_TIMER->DIER &= ~((0x1UL << (0U)));
 	
 	if (!stepper_sine) {
-
-		thiszctime = INTERVAL_TIMER->CNT;
-		INTERVAL_TIMER->CNT = 0;
-		commutation_interval = ((3 * commutation_interval) + thiszctime) >> 2;
-		commutate();
+		
+		if (((rising && bemfcounter > min_bemf_counts_up) || (!rising && bemfcounter > min_bemf_counts_down)) || INTERVAL_TIMER->CNT > 45000) {
+			thiszctime = INTERVAL_TIMER->CNT;
+			INTERVAL_TIMER->CNT = 0;
+			commutation_interval = ((3 * commutation_interval) + thiszctime) >> 2;
+			commutate();
+			zero_crosses++;
+		}
 
 		advance = (commutation_interval >> 3)* advance_level;
 		waitTime = (commutation_interval >> 1) - advance;
 		if (waitTime < min_wait_time)
 			waitTime = min_wait_time;
-	
-		zero_crosses++;
 
 		if (zero_crosses > 100) {
 			enableCompInterrupts();
@@ -1392,11 +1393,18 @@ int main(void)
 				filter_level = 2;
 			}
 
+			if (open_loop_active) {
+				getBemfState();
+			}
+
+
 			/**************** old routine*********************/
 			
 			if (INTERVAL_TIMER->CNT > 45000 && running == 1){				
-				running = 0;
+				//running = 0;
 				zero_crosses = 0;
+				if(!open_loop_active)
+					OpenLoopSixStep();
 			}
 		}
 		else{            // stepper sine
