@@ -877,7 +877,7 @@ void advanceincrement(int input){
 	if (forward){
 		
 		if(phase_A_position < sin_swicthover_angle && phase_A_position + inc >= sin_swicthover_angle)
-			sin_cycle_complete += 1;
+			sin_cycle_complete++;
 		
 		phase_A_position += inc;
 
@@ -899,7 +899,7 @@ void advanceincrement(int input){
 	else{
 
 		if (phase_A_position > sin_swicthover_angle&& phase_A_position - inc <= sin_swicthover_angle)
-			sin_cycle_complete += 1;
+			sin_cycle_complete++;
 
 		phase_A_position -= inc;
 		if (phase_A_position < 0){
@@ -1372,7 +1372,7 @@ int main(void)
 
 				last_step_delay = step_delay;
 				
-				if (input > sine_mode_changeover && sin_cycle_complete == 2)
+				if (input > sine_mode_changeover && sin_cycle_complete >= 2)
 					SwitchOver();
 				else
 					delayMicros(step_delay);
