@@ -563,7 +563,6 @@ void commutate(){
 	changeCompInput();
 
 	bemfcounter = 0;
-	zcfound = 0;
 }
 
 void PeriodElapsedCallback(){
