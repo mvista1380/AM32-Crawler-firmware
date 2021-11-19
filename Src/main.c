@@ -30,10 +30,10 @@
 *	-Faster sine mode and slight increase in upper current to compensate
 *
 * V1.3 - Change Log
-	-Reverted previous current increase
-	-new transition spin up code on its own timer
-	-added minimum wait time for commutaion internval to prevent stalls or rapid change
-	-changed switchover to reduce possible chance of shoot through
+*	-Reverted previous current increase
+*	-new transition spin up code on its own timer
+*	-added minimum wait time for commutaion internval to prevent stalls or rapid change
+*	-changed switchover to reduce possible chance of shoot through
 */
 #include <stdint.h>
 #include "main.h"
@@ -603,6 +603,7 @@ void PeriodElapsedCallback(){
 
 void switchoverSpinUp() {
 	SPIN_UP_TIMER->DIER &= ~((0x1UL << (0U)));
+	maskPhaseInterrupts();
 	
 	if (!stepper_sine) {		
 		thiszctime = INTERVAL_TIMER->CNT;
@@ -619,7 +620,7 @@ void switchoverSpinUp() {
 
 		stuckcounter = 0;
 
-		if (zero_crosses >= 10)
+		if (zero_crosses >= 50)
 			enableCompInterrupts();
 
 		else {
@@ -790,6 +791,7 @@ void tenKhzRoutine(){
 				if (stuckcounter > 20000) {
 					stall_boost++;
 					commutation_interval = 10000;
+					switchoverSpinUp();
 				}
 				else if (stall_boost > 0) {
 					ramp_down_counter++;
