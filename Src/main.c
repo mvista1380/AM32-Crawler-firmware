@@ -598,6 +598,8 @@ void switchoverSpinUp() {
 		waitTime = (commutation_interval >> 1) - advance;
 		zero_crosses++;
 
+		stuckcounter = 0;
+
 		if (zero_crosses >= 200)
 			enableCompInterrupts();
 		else {
