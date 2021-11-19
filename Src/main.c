@@ -619,7 +619,7 @@ void OpenLoopSixStep() {
 	
 		zero_crosses++;
 
-		if (zero_crosses > 50) {
+		if (zero_crosses > 100) {
 			enableCompInterrupts();
 		}		
 
@@ -795,11 +795,12 @@ void tenKhzRoutine(){
 			if (running){
 
 				stuckcounter++;
-				if (stuckcounter > 15000) {
+				if (stuckcounter > 10000) {
 					stall_boost++;
 					commutation_interval = 10000;
 					if (!open_loop_active) {
 						zero_crosses = 0;
+						maskPhaseInterrupts();
 						OpenLoopSixStep();
 					}
 				}
@@ -1206,7 +1207,6 @@ int main(void)
 #ifdef USE_ADC_INPUT
 	UpdateADCInput();
 #endif
-	stuckcounter = 0;
 	while (program_running){
 
 		LL_IWDG_ReloadCounter(IWDG);
