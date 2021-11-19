@@ -193,7 +193,6 @@ char maximum_throttle_change_ramp = 1;
 char VOLTAGE_DIVIDER = TARGET_VOLTAGE_DIVIDER;     // 100k upper and 10k lower resistor in divider
 char cell_count = 0;
 char reversing_dead_band = 1;
-char fast_accel = 1;
 char play_tone_flag = 0;
 char desync_check = 0;
 char low_kv_filter_level = 20;
@@ -604,7 +603,7 @@ void switchoverSpinUp() {
 			enableCompInterrupts();
 		else {
 			SPIN_UP_TIMER->CNT = 0;
-			SPIN_UP_TIMER->ARR = waitTime >> fast_accel;
+			SPIN_UP_TIMER->ARR = waitTime;
 			SPIN_UP_TIMER->SR = 0x00;
 			SPIN_UP_TIMER->DIER |= (0x1UL << (0U));             // enable COM_TIMER interrupt
 		}
@@ -633,8 +632,6 @@ void interruptRoutine(){
 	maskPhaseInterrupts();
 	
 	INTERVAL_TIMER->CNT = 0 ;
-
-	waitTime = waitTime >> fast_accel;
 
 	COM_TIMER->CNT = 0;
 	COM_TIMER->ARR = waitTime;
@@ -798,24 +795,11 @@ void tenKhzRoutine(){
 
 			if(maximum_throttle_change_ramp){
 
-				max_duty_cycle_change = 2;
-
 				if ((duty_cycle - last_duty_cycle) > max_duty_cycle_change){
 					duty_cycle = last_duty_cycle + max_duty_cycle_change;
-
-					if(commutation_interval > 500){
-						fast_accel = 1;
-					}
-					else{
-						fast_accel = 0;
-					}
 				}
 				else if ((last_duty_cycle - duty_cycle) > max_duty_cycle_change){
 					duty_cycle = last_duty_cycle - max_duty_cycle_change;
-					fast_accel = 0;
-				}
-				else{
-					fast_accel = 0;
 				}
 			}
 		}
@@ -861,7 +845,7 @@ void tenKhzRoutine(){
 
 	
 	signaltimeout++;
-	if (signaltimeout > 10000) { // quarter second timeout when armed half second for servo;
+	if (signaltimeout > 10000) {
 		if (armed || signaltimeout > 25000) {
 			allOff();
 
@@ -1388,9 +1372,9 @@ int main(void)
 
 				last_step_delay = step_delay;
 				
-				//if ((input > sine_mode_changeover && sin_cycle_complete == 1) || input > (sine_mode_changeover / 10) * 15)
-				//	SwitchOver();
-				//else
+				if ((input > sine_mode_changeover && sin_cycle_complete == 1) || input > (sine_mode_changeover / 10) * 15)
+					SwitchOver();
+				else
 					delayMicros(step_delay);
 			}
 			else{
