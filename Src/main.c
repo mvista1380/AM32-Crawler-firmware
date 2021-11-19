@@ -584,22 +584,25 @@ void PeriodElapsedCallback(){
 }
 
 void switchoverSpinUp() {
-	commutate();
 	SPIN_UP_TIMER->DIER &= ~((0x1UL << (0U)));
-	thiszctime = INTERVAL_TIMER->CNT;
-	INTERVAL_TIMER->CNT = 0;
-	commutation_interval = ((3 * commutation_interval) + thiszctime) >> 2;
-	advance = (commutation_interval >> 3)* advance_level;
-	waitTime = (commutation_interval >> 1) - advance;
-	zero_crosses++;
+	
+	if (!stepper_sine) {
+		commutate();
+		thiszctime = INTERVAL_TIMER->CNT;
+		INTERVAL_TIMER->CNT = 0;
+		commutation_interval = ((3 * commutation_interval) + thiszctime) >> 2;
+		advance = (commutation_interval >> 3)* advance_level;
+		waitTime = (commutation_interval >> 1) - advance;
+		zero_crosses++;
 
-	if (zero_crosses >= 50)
-		enableCompInterrupts();
-	else {
-		SPIN_UP_TIMER->CNT = 0;
-		SPIN_UP_TIMER->ARR = waitTime;
-		SPIN_UP_TIMER->SR = 0x00;
-		SPIN_UP_TIMER->DIER |= (0x1UL << (0U));             // enable COM_TIMER interrupt
+		if (zero_crosses >= 50)
+			enableCompInterrupts();
+		else {
+			SPIN_UP_TIMER->CNT = 0;
+			SPIN_UP_TIMER->ARR = waitTime;
+			SPIN_UP_TIMER->SR = 0x00;
+			SPIN_UP_TIMER->DIER |= (0x1UL << (0U));             // enable COM_TIMER interrupt
+		}
 	}
 }
 
