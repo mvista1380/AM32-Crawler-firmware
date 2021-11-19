@@ -595,11 +595,11 @@ void switchoverSpinUp() {
 		waitTime = (commutation_interval >> 1) - advance;
 		zero_crosses++;
 
-		if (zero_crosses >= 50)
+		if (zero_crosses >= 100)
 			enableCompInterrupts();
 		else {
 			SPIN_UP_TIMER->CNT = 0;
-			SPIN_UP_TIMER->ARR = waitTime;
+			SPIN_UP_TIMER->ARR = waitTime >> fast_accel;
 			SPIN_UP_TIMER->SR = 0x00;
 			SPIN_UP_TIMER->DIER |= (0x1UL << (0U));             // enable COM_TIMER interrupt
 		}
@@ -794,7 +794,7 @@ void tenKhzRoutine(){
 					max_duty_cycle_change = 3;
 				}
 				else{
-					max_duty_cycle_change = 10;
+					max_duty_cycle_change = 8;
 				}
 
 				if ((duty_cycle - last_duty_cycle) > max_duty_cycle_change){
