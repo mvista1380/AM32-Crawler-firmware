@@ -792,14 +792,13 @@ void tenKhzRoutine(){
 					minimum_duty_cycle = starting_duty_orig;
 			}
 
-			if(maximum_throttle_change_ramp){
+			
 
-				if ((duty_cycle - last_duty_cycle) > max_duty_cycle_change){
-					duty_cycle = last_duty_cycle + max_duty_cycle_change;
-				}
-				else if ((last_duty_cycle - duty_cycle) > max_duty_cycle_change){
-					duty_cycle = last_duty_cycle - max_duty_cycle_change;
-				}
+			if ((duty_cycle - last_duty_cycle) > max_duty_cycle_change){
+				duty_cycle = last_duty_cycle + max_duty_cycle_change;
+			}
+			else if ((last_duty_cycle - duty_cycle) > max_duty_cycle_change){
+				duty_cycle = last_duty_cycle - max_duty_cycle_change;
 			}
 		}
 
@@ -825,13 +824,13 @@ void tenKhzRoutine(){
 
 	average_interval = e_com_time / 3;
 
-	if(desync_check && zero_crosses > 10){
+	/*if(desync_check && zero_crosses > 10){
 		if((getAbsDif(last_average_interval,average_interval) > average_interval>>1) && (average_interval < 1000)){ //throttle resitricted before zc 20.
 			zero_crosses = 10;
 		}
 		desync_check = 0;
 		last_average_interval = average_interval;
-	}
+	}*/
 
 	if(commutation_interval > 400){
 		NVIC_SetPriority(IC_DMA_IRQ_NAME, 0);
