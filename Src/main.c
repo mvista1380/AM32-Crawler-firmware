@@ -188,6 +188,7 @@ int floating = 2;
 int lowside = 3;
 int signaltimeout = 0;
 int deg_smooth_index = 0;
+int sin_cycle_complete = 0;
 
 char maximum_throttle_change_ramp = 1;
 char VOLTAGE_DIVIDER = TARGET_VOLTAGE_DIVIDER;     // 100k upper and 10k lower resistor in divider
@@ -205,7 +206,6 @@ char amplitude = 165;//200 gets very hot
 char default_amplitude = 165;
 char min_amplitude = 115;
 char max_amplitude = 180;
-char sin_cycle_complete = 0;
 char last_inc = 1;
 char stepper_sine = 0;
 char max_sin_inc = 3;
@@ -877,7 +877,7 @@ void advanceincrement(int input){
 	if (forward){
 		
 		if(phase_A_position < sin_swicthover_angle && phase_A_position + inc >= sin_swicthover_angle)
-			sin_cycle_complete = 1;
+			sin_cycle_complete += 1;
 		
 		phase_A_position += inc;
 
@@ -899,7 +899,7 @@ void advanceincrement(int input){
 	else{
 
 		if (phase_A_position > sin_swicthover_angle&& phase_A_position - inc <= sin_swicthover_angle)
-			sin_cycle_complete = 1;
+			sin_cycle_complete += 1;
 
 		phase_A_position -= inc;
 		if (phase_A_position < 0){
@@ -936,7 +936,8 @@ void SwitchOver() {
 	prop_brake_active = 0;
 	zero_crosses = 0;
 	prop_brake_active = 0;
-	minimum_duty_cycle = starting_duty_orig;
+	duty_cycle = starting_duty_orig;
+
 	step = changeover_step;
 	commutation_interval = 9000;
 	last_average_interval = average_interval;
@@ -1370,11 +1371,11 @@ int main(void)
 					step_delay = last_step_delay - max_step_increase;
 
 				last_step_delay = step_delay;
-				delayMicros(step_delay);
 				
-				if (input > sine_mode_changeover && sin_cycle_complete == 1)
+				if (input > sine_mode_changeover && sin_cycle_complete == 2)
 					SwitchOver();
-					
+				else
+					delayMicros(step_delay);
 			}
 			else{
 				if(brake_on_stop){
