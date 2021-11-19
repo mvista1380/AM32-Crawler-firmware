@@ -798,8 +798,10 @@ void tenKhzRoutine(){
 				if (stuckcounter > 15000) {
 					stall_boost++;
 					commutation_interval = 10000;
-					if(!open_loop_active)
+					if (!open_loop_active) {
+						zero_crosses = 0;
 						OpenLoopSixStep();
+					}
 				}
 				else if (stall_boost > 0) {
 					ramp_down_counter++;
