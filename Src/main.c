@@ -587,10 +587,12 @@ void switchoverSpinUp() {
 	SPIN_UP_TIMER->DIER &= ~((0x1UL << (0U)));
 	
 	if (!stepper_sine) {
-		commutate();
+		
 		thiszctime = INTERVAL_TIMER->CNT;
 		INTERVAL_TIMER->CNT = 0;
 		commutation_interval = ((3 * commutation_interval) + thiszctime) >> 2;
+		commutate();
+
 		advance = (commutation_interval >> 3)* advance_level;
 		waitTime = (commutation_interval >> 1) - advance;
 		zero_crosses++;
