@@ -796,12 +796,13 @@ void tenKhzRoutine(){
 
 				stuckcounter++;
 				if (stuckcounter > 10000) {
+					stepper_sine = 1;
 					stall_boost++;
 					commutation_interval = 10000;
 					if (!open_loop_active) {
 						zero_crosses = 0;
-						maskPhaseInterrupts();
-						OpenLoopSixStep();
+						//maskPhaseInterrupts();
+						//OpenLoopSixStep();
 					}
 				}
 				else if (stall_boost > 0) {
