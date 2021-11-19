@@ -88,7 +88,7 @@ firmware_info_s __attribute__ ((section(".firmware_info"))) firmware_info = {
 };
 
 uint8_t EEPROM_VERSION;
-uint8_t max_duty_cycle_change = 2;
+uint8_t max_duty_cycle_change = 1;
 uint8_t degrees_celsius = 0;
 uint8_t eepromBuffer[48] = { 0 };
 uint8_t temperature_offset = 0;
@@ -162,7 +162,7 @@ int phase_A_position = 0;
 int phase_B_position = 119;
 int phase_C_position = 239;
 int step_delay = 100;
-int max_step_increase = 3;
+int max_step_increase = 2;
 int last_step_delay = 100;
 int forward = 1;
 int gate_drive_offset = 60;
