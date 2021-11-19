@@ -1388,7 +1388,7 @@ int main(void)
 
 				last_step_delay = step_delay;
 				
-				if ((input > sine_mode_changeover && sin_cycle_complete == 1) || input > sine_mode_changeover * 1.5)
+				if ((input > sine_mode_changeover && sin_cycle_complete == 1) || input > (sine_mode_changeover / 10) * 15)
 					SwitchOver();
 				else
 					delayMicros(step_delay);
