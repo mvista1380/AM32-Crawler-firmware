@@ -302,9 +302,11 @@ void TIM6_DAC_LPTIM1_IRQHandler(void)
 
 void TIM16_IRQHandler(void)
 {
-	LL_TIM_ClearFlag_UPDATE(TIM16);
-
-	switchoverSpinUp();
+	if (LL_TIM_IsActiveFlag_UPDATE(TIM16) == 1)
+	{
+		switchoverSpinUp();
+		LL_TIM_ClearFlag_UPDATE(TIM16);		
+	}
 }
 
 /**

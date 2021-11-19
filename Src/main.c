@@ -587,9 +587,9 @@ void switchoverSpinUp() {
 	commutate();
 	thiszctime = INTERVAL_TIMER->CNT;
 	INTERVAL_TIMER->CNT = 0;
-	commutation_interval = (thiszctime + (3 * commutation_interval)) / 4;
-	advance = commutation_interval / advancedivisor;
-	waitTime = commutation_interval / 2 - advance;
+	commutation_interval = ((3 * commutation_interval) + thiszctime) >> 2;
+	advance = (commutation_interval >> 3)* advance_level;
+	waitTime = (commutation_interval >> 1) - advance;
 	zero_crosses++;
 
 	if (zero_crosses >= 50)
@@ -956,6 +956,7 @@ void SwitchOver() {
 	TIM1->CCR3 = adjusted_duty_cycle;
 
 	step = changeover_step;
+	commutation_interval = 9000;
 	switchoverSpinUp();
 	//comStep(step);
 	//changeCompInput();
