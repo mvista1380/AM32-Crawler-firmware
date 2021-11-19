@@ -217,6 +217,14 @@ char step = 1;
 char battery_voltage_saved = 0;
 char first_step = 1;
 
+#ifdef MCU_G071
+char min_wait_time = 5;
+#endif // MCU_G071
+#ifdef MCU_F051
+char min_wait_time = 40;
+#endif // MCU_F051
+
+
 float K_p_duty = 0.035;
 float K_i_duty = 0.00015;
 float K_d_duty = 0.0085;
@@ -574,8 +582,8 @@ void PeriodElapsedCallback(){
 	commutate();
 	advance = (commutation_interval>>3) * advance_level;   // 60 divde 8 7.5 degree increments
 	waitTime = (commutation_interval >>1)  - advance;
-	if (waitTime < 4)
-		waitTime = 4;
+	if (waitTime < min_wait_time)
+		waitTime = min_wait_time;
 	
 	enableCompInterrupts();
 
@@ -598,8 +606,8 @@ void switchoverSpinUp() {
 
 		advance = (commutation_interval >> 3)* advance_level;
 		waitTime = (commutation_interval >> 1) - advance;
-		if (waitTime < 4)
-			waitTime = 4;
+		if (waitTime < min_wait_time)
+			waitTime = min_wait_time;
 
 		zero_crosses++;
 
