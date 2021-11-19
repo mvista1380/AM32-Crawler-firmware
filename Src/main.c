@@ -792,12 +792,8 @@ void tenKhzRoutine(){
 			}
 
 			if(maximum_throttle_change_ramp){
-				if(average_interval > 500){
-					max_duty_cycle_change = 3;
-				}
-				else{
-					max_duty_cycle_change = 8;
-				}
+
+				max_duty_cycle_change = 2;
 
 				if ((duty_cycle - last_duty_cycle) > max_duty_cycle_change){
 					duty_cycle = last_duty_cycle + max_duty_cycle_change;
