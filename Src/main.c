@@ -588,8 +588,7 @@ void PeriodElapsedCallback(){
 void switchoverSpinUp() {
 	SPIN_UP_TIMER->DIER &= ~((0x1UL << (0U)));
 	
-	if (!stepper_sine) {
-		
+	if (!stepper_sine) {		
 		thiszctime = INTERVAL_TIMER->CNT;
 		INTERVAL_TIMER->CNT = 0;
 		commutation_interval = ((3 * commutation_interval) + thiszctime) >> 2;
@@ -935,13 +934,13 @@ void SwitchOver() {
 	stepper_sine = 0;
 	running = 1;
 	prop_brake_active = 0;
-	last_average_interval = average_interval;
 	zero_crosses = 0;
 	prop_brake_active = 0;
-	duty_cycle = starting_duty_orig;
-
+	minimum_duty_cycle = starting_duty_orig;
 	step = changeover_step;
 	commutation_interval = 9000;
+	last_average_interval = average_interval;
+	INTERVAL_TIMER->CNT = 9000;
 	switchoverSpinUp();
 	//comStep(step);
 	//changeCompInput();
@@ -1371,11 +1370,11 @@ int main(void)
 					step_delay = last_step_delay - max_step_increase;
 
 				last_step_delay = step_delay;
+				delayMicros(step_delay);
 				
 				if (input > sine_mode_changeover && sin_cycle_complete == 1)
 					SwitchOver();
-				else
-					delayMicros(step_delay);
+					
 			}
 			else{
 				if(brake_on_stop){
