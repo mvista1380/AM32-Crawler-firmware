@@ -67,6 +67,7 @@ extern void doPWMChanges();
 extern void tenKhzRoutine();
 extern void sendDshotDma();
 extern void receiveDshotDma();
+extern void switchoverSpinUp();
 
 extern char telemetry_done;
 extern char servoPwm;
@@ -320,6 +321,24 @@ void TIM14_IRQHandler(void)
 
   /* USER CODE END TIM14_IRQn 1 */
 }
+
+void TIM17_IRQHandler(void)
+{
+	/* USER CODE BEGIN TIM14_IRQn 0 */
+  //	  if(LL_TIM_IsActiveFlag_UPDATE(TIM14) == 1)
+  //	  {
+	LL_TIM_ClearFlag_UPDATE(TIM17);
+
+	switchoverSpinUp();
+
+	//	  }
+
+	  /* USER CODE END TIM14_IRQn 0 */
+	  /* USER CODE BEGIN TIM14_IRQn 1 */
+
+	  /* USER CODE END TIM14_IRQn 1 */
+}
+
 
 /**
   * @brief This function handles TIM16 global interrupt.

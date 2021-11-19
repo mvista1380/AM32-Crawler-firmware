@@ -65,6 +65,7 @@ extern void transfercomplete();
 extern void PeriodElapsedCallback();
 extern void interruptRoutine();
 extern void tenKhzRoutine();
+extern void switchoverSpinUp();
 
 
 int update_interupt = 0;
@@ -297,6 +298,23 @@ void TIM6_DAC_LPTIM1_IRQHandler(void)
   /* USER CODE BEGIN TIM6_DAC_LPTIM1_IRQn 1 */
 
   /* USER CODE END TIM6_DAC_LPTIM1_IRQn 1 */
+}
+
+void TIM17_IRQHandler(void)
+{
+	/* USER CODE BEGIN TIM14_IRQn 0 */
+  //	  if(LL_TIM_IsActiveFlag_UPDATE(TIM14) == 1)
+  //	  {
+	LL_TIM_ClearFlag_UPDATE(TIM17);
+
+	switchoverSpinUp();
+
+	//	  }
+
+	  /* USER CODE END TIM14_IRQn 0 */
+	  /* USER CODE BEGIN TIM14_IRQn 1 */
+
+	  /* USER CODE END TIM14_IRQn 1 */
 }
 
 

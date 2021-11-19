@@ -174,7 +174,6 @@ int input = 0;
 int prev_input = 0;
 int newinput = 0;
 int zero_crosses;
-int zcfound = 0;
 int bemfcounter;
 int min_bemf_counts_up = 7;
 int min_bemf_counts_down = 7;
@@ -479,7 +478,7 @@ void loadEEpromSettings(){
 #endif // MCU_G071
 
 		min_amplitude = (default_amplitude / 10) * 7;
-		max_amplitude = (default_amplitude / 10) * 12;
+		max_amplitude = (default_amplitude / 10) * 11;
 	}
 
 	BRUSHED_MODE = eepromBuffer[43];
@@ -583,6 +582,25 @@ void PeriodElapsedCallback(){
 		zero_crosses++;
 	}
 	//	UTILITY_TIMER->CNT = 0;
+}
+
+void switchoverSpinUp() {
+	commutate();
+	thiszctime = INTERVAL_TIMER->CNT;
+	INTERVAL_TIMER->CNT = 0;
+	commutation_interval = (thiszctime + (3 * commutation_interval)) / 4;
+	advance = commutation_interval / advancedivisor;
+	waitTime = commutation_interval / 2 - advance;
+	zero_crosses++;
+
+	if (zero_crosses == 50)
+		enableCompInterrupts();
+	else {
+		SPIN_UP_TIMER->CNT = 0;
+		SPIN_UP_TIMER->ARR = waitTime;
+		SPIN_UP_TIMER->SR = 0x00;
+		SPIN_UP_TIMER->DIER |= (0x1UL << (0U));             // enable COM_TIMER interrupt
+	}
 }
 
 
@@ -939,9 +957,10 @@ void SwitchOver() {
 	TIM1->CCR3 = adjusted_duty_cycle;
 
 	step = changeover_step;
-	comStep(step);
-	changeCompInput();
-	enableCompInterrupts();
+	switchoverSpinUp();
+	//comStep(step);
+	//changeCompInput();
+	//enableCompInterrupts();
 }
 
 void UpdateADCInput() {
@@ -1081,6 +1100,11 @@ int main(void)
 	LL_TIM_EnableCounter(TEN_KHZ_TIMER);                 // 10khz timer
 	LL_TIM_GenerateEvent_UPDATE(TEN_KHZ_TIMER);
 	TEN_KHZ_TIMER->DIER |= (0x1UL << (0U));  // enable interrupt
+
+	LL_TIM_EnableCounter(SPIN_UP_TIMER);               // commutation_timer priority 0
+	LL_TIM_GenerateEvent_UPDATE(SPIN_UP_TIMER);
+	LL_TIM_EnableIT_UPDATE(SPIN_UP_TIMER);
+	SPIN_UP_TIMER->DIER &= ~((0x1UL << (0U)));         // disable for now.
 
 	//RCC->APB2ENR  &= ~(1 << 22);  // turn debug off
 	#ifdef USE_ADC
@@ -1352,7 +1376,7 @@ int main(void)
 				maskPhaseInterrupts();
 				allpwm();
 				advanceincrement(input);
-				step_delay = map (input, 48, sine_mode_changeover, 300, 10);
+				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
 				
 				if ((input > sine_mode_changeover && sin_cycle_complete == 1) || input > sine_mode_changeover * 2){
 					duty_cycle = starting_duty_orig;
