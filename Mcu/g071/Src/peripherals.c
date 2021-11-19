@@ -526,6 +526,7 @@ void MX_TIM16_Init(void)
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
     LL_TIM_Init(TIM16, &TIM_InitStruct);
     LL_TIM_DisableARRPreload(TIM16);
+    LL_TIM_DisableMasterSlaveMode(TIM16);
     /* USER CODE BEGIN TIM16_Init 2 */
 
     /* USER CODE END TIM16_Init 2 */

@@ -585,6 +585,7 @@ void PeriodElapsedCallback(){
 
 void switchoverSpinUp() {
 	commutate();
+	SPIN_UP_TIMER->DIER &= ~((0x1UL << (0U)));
 	thiszctime = INTERVAL_TIMER->CNT;
 	INTERVAL_TIMER->CNT = 0;
 	commutation_interval = ((3 * commutation_interval) + thiszctime) >> 2;
