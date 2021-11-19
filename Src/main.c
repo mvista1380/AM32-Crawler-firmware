@@ -574,8 +574,8 @@ void PeriodElapsedCallback(){
 	commutate();
 	advance = (commutation_interval>>3) * advance_level;   // 60 divde 8 7.5 degree increments
 	waitTime = (commutation_interval >>1)  - advance;
-	if (waitTime < advance)
-		waitTime = advance;
+	if (waitTime < 4)
+		waitTime = 4;
 	
 	enableCompInterrupts();
 
@@ -598,8 +598,8 @@ void switchoverSpinUp() {
 
 		advance = (commutation_interval >> 3)* advance_level;
 		waitTime = (commutation_interval >> 1) - advance;
-		if (waitTime < advance)
-			waitTime = advance;
+		if (waitTime < 4)
+			waitTime = 4;
 
 		zero_crosses++;
 
