@@ -84,7 +84,7 @@ typedef struct __attribute__((packed)) {
 firmware_info_s __attribute__ ((section(".firmware_info"))) firmware_info = {
 	version_major: VERSION_MAJOR,
 	version_minor: VERSION_MINOR,
-	device_name: "AM-Crawler32"
+	device_name: "Crawler32   "
 };
 
 uint8_t EEPROM_VERSION;
@@ -1372,7 +1372,7 @@ int main(void)
 
 				last_step_delay = step_delay;
 				
-				if ((input > sine_mode_changeover && sin_cycle_complete == 1) || input > (sine_mode_changeover / 10) * 15)
+				if (input > sine_mode_changeover && sin_cycle_complete == 1)
 					SwitchOver();
 				else
 					delayMicros(step_delay);
