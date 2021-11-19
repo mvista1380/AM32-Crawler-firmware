@@ -222,6 +222,7 @@ char servoPwm = 0;
 char step = 1;
 char battery_voltage_saved = 0;
 char first_step = 1;
+char open_loop_active = 0;
 
 #ifdef MCU_G071
 char min_wait_time = 5;
@@ -601,11 +602,11 @@ void PeriodElapsedCallback(){
 	//	UTILITY_TIMER->CNT = 0;
 }
 
-void switchoverSpinUp() {
+void OpenLoopSixStep() {
 	SPIN_UP_TIMER->DIER &= ~((0x1UL << (0U)));
-	maskPhaseInterrupts();
 	
-	if (!stepper_sine) {		
+	if (!stepper_sine) {
+
 		thiszctime = INTERVAL_TIMER->CNT;
 		INTERVAL_TIMER->CNT = 0;
 		commutation_interval = ((3 * commutation_interval) + thiszctime) >> 2;
@@ -615,20 +616,15 @@ void switchoverSpinUp() {
 		waitTime = (commutation_interval >> 1) - advance;
 		if (waitTime < min_wait_time)
 			waitTime = min_wait_time;
+	
+		enableCompInterrupts();
+		open_loop_active = 1;
 
-		zero_crosses++;
-
-		stuckcounter = 0;
-
-		if (zero_crosses >= 50)
-			enableCompInterrupts();
-
-		else {
-			SPIN_UP_TIMER->CNT = 0;
-			SPIN_UP_TIMER->ARR = waitTime;
-			SPIN_UP_TIMER->SR = 0x00;
-			SPIN_UP_TIMER->DIER |= (0x1UL << (0U));             // enable COM_TIMER interrupt
-		}
+		
+		SPIN_UP_TIMER->CNT = 0;
+		SPIN_UP_TIMER->ARR = waitTime;
+		SPIN_UP_TIMER->SR = 0x00;
+		SPIN_UP_TIMER->DIER |= (0x1UL << (0U));
 	}
 }
 
@@ -652,6 +648,11 @@ void interruptRoutine(){
 		}
 	}
 	maskPhaseInterrupts();
+	if (open_loop_active) {
+		SPIN_UP_TIMER->DIER &= ~((0x1UL << (0U)));
+		open_loop_active = 0;
+	}
+
 	
 	INTERVAL_TIMER->CNT = 0 ;
 
@@ -772,6 +773,7 @@ void tenKhzRoutine(){
 			phase_C_position = 239;
 			stepper_sine = 1;
 			first_step = 1;
+			open_loop_active = 0;
 			minimum_duty_cycle = starting_duty_orig;
 		}
 		else if (input < ((sine_mode_changeover / 100) * 98) && step == changeover_step) {
@@ -780,6 +782,7 @@ void tenKhzRoutine(){
 			phase_C_position = 300;
 			stepper_sine = 1;
 			first_step = 1;
+			open_loop_active = 0;
 			minimum_duty_cycle = starting_duty_orig;
 		}
 
@@ -791,7 +794,8 @@ void tenKhzRoutine(){
 				if (stuckcounter > 20000) {
 					stall_boost++;
 					commutation_interval = 10000;
-					switchoverSpinUp();
+					if(!open_loop_active)
+						OpenLoopSixStep();
 				}
 				else if (stall_boost > 0) {
 					ramp_down_counter++;
@@ -973,7 +977,7 @@ void SwitchOver() {
 	last_average_interval = average_interval;
 	INTERVAL_TIMER->CNT = 9000;
 	comStep(step);
-	switchoverSpinUp();
+	OpenLoopSixStep();
 	//comStep(step);
 	//changeCompInput();
 	//enableCompInterrupts();
