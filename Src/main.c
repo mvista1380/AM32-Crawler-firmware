@@ -598,7 +598,7 @@ void switchoverSpinUp() {
 		waitTime = (commutation_interval >> 1) - advance;
 		zero_crosses++;
 
-		if (zero_crosses >= 100)
+		if (zero_crosses >= 200)
 			enableCompInterrupts();
 		else {
 			SPIN_UP_TIMER->CNT = 0;
@@ -1379,10 +1379,11 @@ int main(void)
 
 				last_step_delay = step_delay;
 				
+				delayMicros(step_delay);
+
 				if (input > sine_mode_changeover && sin_cycles_completed >= 5)
 					SwitchOver();
-				else
-					delayMicros(step_delay);
+					
 			}
 			else{
 				if(brake_on_stop){
