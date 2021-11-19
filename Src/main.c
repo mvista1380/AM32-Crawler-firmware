@@ -948,6 +948,7 @@ void SwitchOver() {
 	commutation_interval = 9000;
 	last_average_interval = average_interval;
 	INTERVAL_TIMER->CNT = 9000;
+	comStep(step);
 	switchoverSpinUp();
 	//comStep(step);
 	//changeCompInput();
