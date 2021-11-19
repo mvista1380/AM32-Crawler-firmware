@@ -954,13 +954,6 @@ void SwitchOver() {
 	zero_crosses = 0;
 	prop_brake_active = 0;
 
-	last_duty_cycle = duty_cycle;
-	adjusted_duty_cycle = ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
-	TIM1->ARR = tim1_arr;
-	TIM1->CCR1 = adjusted_duty_cycle;
-	TIM1->CCR2 = adjusted_duty_cycle;
-	TIM1->CCR3 = adjusted_duty_cycle;
-
 	step = changeover_step;
 	commutation_interval = 9000;
 	switchoverSpinUp();
