@@ -300,23 +300,12 @@ void TIM6_DAC_LPTIM1_IRQHandler(void)
   /* USER CODE END TIM6_DAC_LPTIM1_IRQn 1 */
 }
 
-void TIM17_IRQHandler(void)
+void TIM16_IRQHandler(void)
 {
-	/* USER CODE BEGIN TIM14_IRQn 0 */
-  //	  if(LL_TIM_IsActiveFlag_UPDATE(TIM14) == 1)
-  //	  {
-	LL_TIM_ClearFlag_UPDATE(TIM17);
+	LL_TIM_ClearFlag_UPDATE(TIM16);
 
 	switchoverSpinUp();
-
-	//	  }
-
-	  /* USER CODE END TIM14_IRQn 0 */
-	  /* USER CODE BEGIN TIM14_IRQn 1 */
-
-	  /* USER CODE END TIM14_IRQn 1 */
 }
-
 
 /**
   * @brief This function handles TIM14 global interrupt.

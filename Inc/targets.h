@@ -615,8 +615,9 @@
 #define EEPROM_START_ADD  (uint32_t)0x08007C00
 #define INTERVAL_TIMER     TIM2
 #define TEN_KHZ_TIMER      TIM6
-#define SPIN_UP_TIMER      TIM17
+#define UTILITY_TIMER      TIM17
 #define COM_TIMER          TIM14
+#define SPIN_UP_TIMER	   TIM16
 #define TIM1_AUTORELOAD    1999
 #define APPLICATION_ADDRESS 0x08001000
 #define MAIN_COMP	COMP1
@@ -634,8 +635,9 @@
 #endif
 #define INTERVAL_TIMER     TIM2
 #define TEN_KHZ_TIMER      TIM6
-#define SPIN_UP_TIMER      TIM17
+#define UTILITY_TIMER      TIM17
 #define COM_TIMER          TIM14
+#define SPIN_UP_TIMER	   TIM16
 #define TIM1_AUTORELOAD    2667
 #define APPLICATION_ADDRESS 0x08001000
 #define MAIN_COMP	COMP2

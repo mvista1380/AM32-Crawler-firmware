@@ -61,7 +61,7 @@ void USART1_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 void DMA1_Ch4_7_DMAMUX1_OVR_IRQHandler(void);
 void TIM6_DAC_LPTIM1_IRQHandler(void);
-void TIM17_IRQHandler(void);
+void TIM16_IRQHandler(void);
 /* USER CODE END EFP */
 
 #ifdef __cplusplus

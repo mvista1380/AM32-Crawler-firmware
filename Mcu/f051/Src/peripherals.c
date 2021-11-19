@@ -387,14 +387,13 @@ void MX_TIM16_Init(void)
   NVIC_SetPriority(TIM16_IRQn, 2);
   NVIC_EnableIRQ(TIM16_IRQn);
 
-  TIM_InitStruct.Prescaler = 47;
+  TIM_InitStruct.Prescaler = 23;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 999;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   TIM_InitStruct.RepetitionCounter = 0;
   LL_TIM_Init(TIM16, &TIM_InitStruct);
   LL_TIM_DisableARRPreload(TIM16);
-  LL_TIM_DisableMasterSlaveMode(TIM16);
 
 }
 
@@ -405,12 +404,13 @@ void MX_TIM17_Init(void)
 
   LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_TIM17);
 
-  TIM_InitStruct.Prescaler = 23;
+  TIM_InitStruct.Prescaler = 47;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 4000;
+  TIM_InitStruct.Autoreload = 65535;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
+  TIM_InitStruct.RepetitionCounter = 0;
   LL_TIM_Init(TIM17, &TIM_InitStruct);
-  LL_TIM_EnableARRPreload(TIM17);
+  LL_TIM_DisableARRPreload(TIM17);
 
 
 }

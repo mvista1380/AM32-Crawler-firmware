@@ -501,6 +501,37 @@ void MX_TIM14_Init(void)
 
 }
 
+void MX_TIM16_Init(void)
+{
+
+    /* USER CODE BEGIN TIM16_Init 0 */
+
+    /* USER CODE END TIM16_Init 0 */
+
+    LL_TIM_InitTypeDef TIM_InitStruct = { 0 };
+
+    /* Peripheral clock enable */
+    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM16);
+
+    /* TIM14 interrupt Init */
+    NVIC_SetPriority(TIM16_IRQn, 2);
+    NVIC_EnableIRQ(TIM16_IRQn);
+
+    /* USER CODE BEGIN TIM16_Init 1 */
+
+    /* USER CODE END TIM16_Init 1 */
+    TIM_InitStruct.Prescaler = 31;
+    TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
+    TIM_InitStruct.Autoreload = 65535;
+    TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
+    LL_TIM_Init(TIM16, &TIM_InitStruct);
+    LL_TIM_DisableARRPreload(TIM16);
+    /* USER CODE BEGIN TIM16_Init 2 */
+
+    /* USER CODE END TIM16_Init 2 */
+
+}
+
 
 /**
   * @brief TIM17 Initialization Function
@@ -522,13 +553,13 @@ void MX_TIM17_Init(void)
   /* USER CODE BEGIN TIM17_Init 1 */
 
   /* USER CODE END TIM17_Init 1 */
-  TIM_InitStruct.Prescaler = 31;
+  TIM_InitStruct.Prescaler = 63;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 65535;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   TIM_InitStruct.RepetitionCounter = 0;
   LL_TIM_Init(TIM17, &TIM_InitStruct);
-  LL_TIM_DisableARRPreload(TIM17);
+  LL_TIM_EnableARRPreload(TIM17);
   /* USER CODE BEGIN TIM17_Init 2 */
 
   /* USER CODE END TIM17_Init 2 */
@@ -578,28 +609,6 @@ void MX_TIM6_Init(void)
 
 }
 
-void MX_TIM16_Init(void)
-{
-
-    LL_TIM_InitTypeDef TIM_InitStruct = { 0 };
-
-
-    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM16);
-
-    /* TIM6 interrupt Init */
-    NVIC_SetPriority(TIM6_DAC_LPTIM1_IRQn, 2);
-    NVIC_EnableIRQ(TIM6_DAC_LPTIM1_IRQn);
-
-    TIM_InitStruct.Prescaler = 63;
-    TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-    TIM_InitStruct.Autoreload = 500;
-    LL_TIM_Init(TIM16, &TIM_InitStruct);
-    LL_TIM_DisableARRPreload(TIM16);
-    LL_TIM_SetTriggerOutput(TIM16, LL_TIM_TRGO_RESET);
-    LL_TIM_DisableMasterSlaveMode(TIM16);
-
-
-}
 void MX_GPIO_Init(void)
 {
 
