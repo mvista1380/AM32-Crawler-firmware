@@ -617,9 +617,13 @@ void OpenLoopSixStep() {
 		if (waitTime < min_wait_time)
 			waitTime = min_wait_time;
 	
-		enableCompInterrupts();
-		open_loop_active = 1;
+		zero_crosses++;
 
+		if (zero_crosses > 50) {
+			enableCompInterrupts();
+		}		
+
+		open_loop_active = 1;
 		
 		SPIN_UP_TIMER->CNT = 0;
 		SPIN_UP_TIMER->ARR = waitTime;
@@ -791,7 +795,7 @@ void tenKhzRoutine(){
 			if (running){
 
 				stuckcounter++;
-				if (stuckcounter > 20000) {
+				if (stuckcounter > 15000) {
 					stall_boost++;
 					commutation_interval = 10000;
 					if(!open_loop_active)
