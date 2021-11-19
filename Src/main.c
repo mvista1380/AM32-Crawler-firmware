@@ -162,6 +162,8 @@ int phase_A_position = 0;
 int phase_B_position = 119;
 int phase_C_position = 239;
 int step_delay = 100;
+int max_step_increase = 10;
+int last_step_delay = 100;
 int forward = 1;
 int gate_drive_offset = 60;
 int stuckcounter = 0;
@@ -214,6 +216,7 @@ char dshot = 0;
 char servoPwm = 0;
 char step = 1;
 char battery_voltage_saved = 0;
+char first_step = 1;
 
 float K_p_duty = 0.035;
 float K_i_duty = 0.00015;
@@ -749,6 +752,7 @@ void tenKhzRoutine(){
 			phase_B_position = 119;
 			phase_C_position = 239;
 			stepper_sine = 1;
+			first_step = 1;
 			minimum_duty_cycle = starting_duty_orig;
 		}
 		else if (input < ((sine_mode_changeover / 100) * 98) && step == changeover_step) {
@@ -756,6 +760,7 @@ void tenKhzRoutine(){
 			phase_B_position = 180;
 			phase_C_position = 300;
 			stepper_sine = 1;
+			first_step = 1;
 			minimum_duty_cycle = starting_duty_orig;
 		}
 
@@ -1373,8 +1378,17 @@ int main(void)
 				allpwm();
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
+				if (first_step) {
+					last_step_delay = step_delay;
+					first_step = 0;
+ 				}
+
+				if ((last_step_delay - step_delay) > max_step_increase)
+					step_delay = last_step_delay - max_step_increase;
+
+				last_step_delay = step_delay;
 				
-				if ((input > sine_mode_changeover && sin_cycle_complete == 1) || input > sine_mode_changeover * 2)
+				if ((input > sine_mode_changeover && sin_cycle_complete == 1) || input > sine_mode_changeover * 1.5)
 					SwitchOver();
 				else
 					delayMicros(step_delay);
