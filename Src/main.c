@@ -953,6 +953,7 @@ void SwitchOver() {
 	last_average_interval = average_interval;
 	zero_crosses = 0;
 	prop_brake_active = 0;
+	duty_cycle = starting_duty_orig;
 
 	step = changeover_step;
 	commutation_interval = 9000;
@@ -1377,13 +1378,10 @@ int main(void)
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
 				
-				if ((input > sine_mode_changeover && sin_cycle_complete == 1) || input > sine_mode_changeover * 2){
-					duty_cycle = starting_duty_orig;
+				if ((input > sine_mode_changeover && sin_cycle_complete == 1) || input > sine_mode_changeover * 2)
 					SwitchOver();
-				}
-				else {
+				else
 					delayMicros(step_delay);
-				}
 			}
 			else{
 				if(brake_on_stop){
