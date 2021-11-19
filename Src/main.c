@@ -600,8 +600,9 @@ void switchoverSpinUp() {
 
 		stuckcounter = 0;
 
-		if (zero_crosses >= 200)
+		if (zero_crosses >= 10)
 			enableCompInterrupts();
+
 		else {
 			SPIN_UP_TIMER->CNT = 0;
 			SPIN_UP_TIMER->ARR = waitTime;
