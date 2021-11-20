@@ -65,7 +65,7 @@ extern void transfercomplete();
 extern void PeriodElapsedCallback();
 extern void interruptRoutine();
 extern void tenKhzRoutine();
-extern void OpenLoopSixStep();
+//extern void OpenLoopSixStep();
 
 
 int update_interupt = 0;
@@ -302,11 +302,11 @@ void TIM6_DAC_LPTIM1_IRQHandler(void)
 
 void TIM16_IRQHandler(void)
 {
-	if (LL_TIM_IsActiveFlag_UPDATE(TIM16) == 1)
+	/*if (LL_TIM_IsActiveFlag_UPDATE(TIM16) == 1)
 	{
 		OpenLoopSixStep();
 		LL_TIM_ClearFlag_UPDATE(TIM16);		
-	}
+	}*/
 }
 
 /**

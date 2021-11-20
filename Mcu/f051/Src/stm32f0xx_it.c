@@ -67,7 +67,7 @@ extern void doPWMChanges();
 extern void tenKhzRoutine();
 extern void sendDshotDma();
 extern void receiveDshotDma();
-extern void OpenLoopSixStep();
+//extern void OpenLoopSixStep();
 
 extern char telemetry_done;
 extern char servoPwm;
@@ -328,9 +328,9 @@ void TIM14_IRQHandler(void)
   */
 void TIM16_IRQHandler(void)
 {
-	LL_TIM_ClearFlag_UPDATE(TIM16);
+	//LL_TIM_ClearFlag_UPDATE(TIM16);
 
-	OpenLoopSixStep();
+	//OpenLoopSixStep();
 }
 
 /**

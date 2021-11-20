@@ -32,7 +32,7 @@ void initCorePeripherals(void){
   MX_TIM14_Init();
   MX_TIM17_Init();
   MX_TIM6_Init();
-  MX_TIM16_Init();
+  //MX_TIM16_Init();
   telem_UART_Init();
 }
 
