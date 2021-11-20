@@ -43,7 +43,7 @@
 //===========================================================================
 
 #define VERSION_MAJOR 1
-#define VERSION_MINOR 10
+#define VERSION_MINOR 15
 char dir_reversed = 0;
 char brake_on_stop = 1;
 char program_running = 1; //low voltage turns off main loop
@@ -80,7 +80,7 @@ typedef struct __attribute__((packed)) {
 firmware_info_s __attribute__ ((section(".firmware_info"))) firmware_info = {
 	version_major: VERSION_MAJOR,
 	version_minor: VERSION_MINOR,
-	device_name: "AM-Crawler32"
+	device_name: "Crawler   "
 };
 
 uint8_t EEPROM_VERSION;
@@ -95,7 +95,7 @@ uint8_t deg_smooth_reading[10] = { 0,0,0,0,0,0,0,0,0,0 };
 uint8_t deg_smooth_total = 0;
 
 uint16_t armed_timeout_count;
-uint16_t minimum_commutation = 3000;
+uint16_t minimum_commutation = 2000;
 uint16_t low_voltage_count = 0;
 uint16_t battery_voltage;  // scale in volts * 10.  1260 is a battery voltage of 12.60
 uint16_t consumption_timer = 0;
@@ -106,7 +106,7 @@ uint16_t last_duty_cycle = 0;
 uint16_t maximum_duty_cycle = DEAD_TIME;
 uint16_t starting_duty_orig = DEAD_TIME;
 uint16_t maximum_duty_orig = DEAD_TIME;
-uint16_t duty_cycle_multiplier = 300; //130 = 30% power increase
+uint16_t duty_cycle_multiplier = 350; //130 = 30% power increase
 uint16_t tim1_arr = TIM1_AUTORELOAD;         // current auto reset value
 uint16_t TIMER1_MAX_ARR = TIM1_AUTORELOAD;
 uint16_t commutation_intervals[6] = { 0 };
