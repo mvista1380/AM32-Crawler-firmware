@@ -625,6 +625,7 @@ void OpenLoopSixStep() {
 		}		
 
 		open_loop_active = 1;
+		bad_count = 0;
 		
 		SPIN_UP_TIMER->CNT = 0;
 		SPIN_UP_TIMER->ARR = waitTime;
