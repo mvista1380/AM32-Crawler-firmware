@@ -780,6 +780,7 @@ void tenKhzRoutine(){
 			stepper_sine = 1;
 			first_step = 1;
 			open_loop_active = 0;
+			bad_count = 0;
 			minimum_duty_cycle = starting_duty_orig;
 		}
 		else if (input < ((sine_mode_changeover / 100) * 98) && step == changeover_step) {
@@ -789,6 +790,7 @@ void tenKhzRoutine(){
 			stepper_sine = 1;
 			first_step = 1;
 			open_loop_active = 0;
+			bad_count = 0;
 			minimum_duty_cycle = starting_duty_orig;
 		}
 
