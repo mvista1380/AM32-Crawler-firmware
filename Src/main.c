@@ -214,6 +214,14 @@ char dshot = 0;
 char servoPwm = 0;
 char step = 1;
 
+#ifdef MCU_G071
+char min_wait_time = 5;
+#endif // MCU_G071
+
+#ifdef MCU_F051
+char min_wait_time = 40;
+#endif // MCU_G071
+
 float K_p_duty = 0.035;
 float K_i_duty = 0.00015;
 float K_d_duty = 0.0085;
@@ -574,6 +582,8 @@ void PeriodElapsedCallback(){
 	commutate();
 	advance = (commutation_interval>>3) * advance_level;   // 60 divde 8 7.5 degree increments
 	waitTime = (commutation_interval >>1)  - advance;
+	if (waitTime < min_wait_time)
+		waitTime = min_wait_time;
 
 	if(!old_routine){
 		enableCompInterrupts();     // enable comp interrupt
@@ -620,6 +630,9 @@ void interruptRoutine(){
 	INTERVAL_TIMER->CNT = 0 ;
 
 	waitTime = waitTime >> fast_accel;
+
+	if (waitTime < min_wait_time)
+		waitTime = min_wait_time;
 
 	COM_TIMER->CNT = 0;
 	COM_TIMER->ARR = waitTime;
@@ -941,6 +954,8 @@ void zcfoundroutine(){   // only used in polling mode, blocking routine.
 	commutation_interval = (thiszctime + (3*commutation_interval)) / 4;
 	advance = commutation_interval / advancedivisor;
 	waitTime = commutation_interval /2  - advance;
+	if (waitTime < min_wait_time)
+		waitTime = min_wait_time;
 	//	blanktime = commutation_interval / 4;
 	while (INTERVAL_TIMER->CNT - thiszctime < waitTime - advance){
 
