@@ -183,6 +183,8 @@ int floating = 2;
 int lowside = 3;
 int signaltimeout = 0;
 int deg_smooth_index = 0;
+int ramp_down_counter = 0;
+int ramp_down_interval = 30;
 
 char maximum_throttle_change_ramp = 1;
 char VOLTAGE_DIVIDER = TARGET_VOLTAGE_DIVIDER;     // 100k upper and 10k lower resistor in divider
@@ -372,6 +374,8 @@ const float pwmSin[3][360] = {
 -0.121866722626293,-0.104525829832906,-0.0871530974318957,-0.0697538173303821,-0.0523332895221773,-0.0348968204733563,-0.0174497215058549}
 };
 
+const int battery_levels[3][2] = { {600,840},{900,1270},{1270,1680} };
+
 void checkForHighSignal(){
 	changeToInput();
 	LL_GPIO_SetPinPull(INPUT_PIN_PORT, INPUT_PIN, LL_GPIO_PULL_DOWN);
@@ -449,7 +453,7 @@ void loadEEpromSettings(){
 		LOW_VOLTAGE_CUTOFF = 0;
 	}
 
-	low_cell_volt_cutoff = eepromBuffer[28] + 300; // 2.5 to 3.5 volts per cell range
+	low_cell_volt_cutoff = eepromBuffer[28] + 250; // 2.5 to 3.5 volts per cell range
 
 	if(eepromBuffer[29] > 4 && eepromBuffer[29] < 26){            // sine mode changeover 5-25 percent throttle
 		sine_mode_changeover_thottle_level = eepromBuffer[29];
@@ -659,13 +663,21 @@ void tenKhzRoutine(){
 					GPIOB->BRR = LL_GPIO_PIN_3;    // turn off red
 					GPIOA->BSRR = LL_GPIO_PIN_15;   // turn on green
 					#endif
-					if(cell_count == 0 && LOW_VOLTAGE_CUTOFF){
-						cell_count = battery_voltage / 370;
-						for (int i = 0 ; i < cell_count; i++){
+					if (cell_count == 0 && LOW_VOLTAGE_CUTOFF) {
+						for (int i = 0; i < 3; i++) {
+							if (battery_voltage >= battery_levels[i][0] && battery_voltage <= battery_levels[i][1]) {
+								cell_count = i + 2;
+								break;
+							}
+						}
+						for (int i = 0; i < cell_count; i++) {
 							playInputTune();
 							delayMillis(100);
 							LL_IWDG_ReloadCounter(IWDG);
 						}
+
+						//eepromBuffer[47] = battery_voltage / 10;
+						//saveEEpromSettings();
 					}
 					else{
 						playInputTune();
@@ -748,9 +760,16 @@ void tenKhzRoutine(){
 
 				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
 
-				stuckcounter++; //full stall, adds a biiger boost
-				if (stuckcounter > 9500) {
-					stall_boost += 1;
+				if (stuckcounter > 20000) {
+					stall_boost++;
+					commutation_interval = 10000;
+				}
+				else if (stall_boost > 0) {
+					ramp_down_counter++;
+					if (ramp_down_counter % ramp_down_interval) {
+						stall_boost--;
+						ramp_down_counter = 0;
+					}
 				}
 
 				minimum_duty_cycle = starting_duty_orig + boost + stall_boost;
