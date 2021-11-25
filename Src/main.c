@@ -185,8 +185,8 @@ int signaltimeout = 0;
 int deg_smooth_index = 0;
 int ramp_down_counter = 0;
 int ramp_down_interval = 30;
+char sin_cycle_complete = 0;
 
-char maximum_throttle_change_ramp = 1;
 char VOLTAGE_DIVIDER = TARGET_VOLTAGE_DIVIDER;     // 100k upper and 10k lower resistor in divider
 char cell_count = 0;
 char reversing_dead_band = 1;
@@ -203,7 +203,6 @@ char amplitude = 165;//200 gets very hot
 char default_amplitude = 165;
 char min_amplitude = 115;
 char max_amplitude = 180;
-char sin_cycle_complete = 0;
 char last_inc = 1;
 char stepper_sine = 0;
 char max_sin_inc = 3;
@@ -213,6 +212,7 @@ char inputSet = 0;
 char dshot = 0;
 char servoPwm = 0;
 char step = 1;
+char stall_active = 0;
 
 #ifdef MCU_G071
 char min_wait_time = 5;
@@ -624,8 +624,7 @@ void interruptRoutine(){
 	}
 	maskPhaseInterrupts();
 	stuckcounter = 0;
-	if (stall_boost > 0)
-		stall_boost -= 1;
+	stall_active = 0;
 	
 	INTERVAL_TIMER->CNT = 0 ;
 
@@ -773,9 +772,16 @@ void tenKhzRoutine(){
 
 				boost = (int)((K_p_duty * p_error) + (K_i_duty * p_error_integral) + (K_d_duty * p_error_derivative));
 
-				if (stuckcounter > 20000) {
+				
+				if (stuckcounter > 18000) {
 					stall_boost++;
 					commutation_interval = 10000;
+
+					if (!stall_active) {
+						zero_crosses = 0;
+						old_routine = 1;
+						stall_active = 1;
+					}
 				}
 				else if (stall_boost > 0) {
 					ramp_down_counter++;
@@ -784,6 +790,7 @@ void tenKhzRoutine(){
 						ramp_down_counter = 0;
 					}
 				}
+				stuckcounter++;
 
 				minimum_duty_cycle = starting_duty_orig + boost + stall_boost;
 
@@ -794,32 +801,16 @@ void tenKhzRoutine(){
 				}
 			}
 
-			if(maximum_throttle_change_ramp){
-				if(average_interval > 500){
-					max_duty_cycle_change = 5;
-				}
-				else{
-					max_duty_cycle_change = 10;
-				}
+			fast_accel = 0;
+			if ((duty_cycle - last_duty_cycle) > max_duty_cycle_change){
+				duty_cycle = last_duty_cycle + max_duty_cycle_change;
 
-				if ((duty_cycle - last_duty_cycle) > max_duty_cycle_change){
-					duty_cycle = last_duty_cycle + max_duty_cycle_change;
-
-					if(commutation_interval > 500){
-						fast_accel = 1;
-					}
-					else{
-						fast_accel = 0;
-					}
-				}
-				else if ((last_duty_cycle - duty_cycle) > max_duty_cycle_change){
-					duty_cycle = last_duty_cycle - max_duty_cycle_change;
-					fast_accel = 0;
-				}
-				else{
-					fast_accel = 0;
+				if(commutation_interval > 500){
+					fast_accel = 1;
 				}
 			}
+			else if ((last_duty_cycle - duty_cycle) > max_duty_cycle_change)
+				duty_cycle = last_duty_cycle - max_duty_cycle_change;
 		}
 
 		if (armed && running && (input > 47)){
@@ -979,6 +970,7 @@ void SwitchOver() {
 	running = 1;
 	old_routine = 1;
 	prop_brake_active = 0;
+	stall_active = 0;
 	commutation_interval = 9000;
 	average_interval = 9000;
 	last_average_interval = average_interval;
@@ -1432,7 +1424,7 @@ int main(void)
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
 				
-				 if (input > sine_mode_changeover && sin_cycle_complete == 1)
+				 if (input > sine_mode_changeover && sin_cycle_complete >= 2)
 					SwitchOver();
 				else
 					delayMicros(step_delay);
@@ -1463,7 +1455,7 @@ int main(void)
 
 	allOff();
 	maskPhaseInterrupts();
-	delayMillis(1000);		
+	delayMillis(200);		
 	playPowerDownTune();
 	
 	/*
