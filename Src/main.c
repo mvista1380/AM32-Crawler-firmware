@@ -185,7 +185,7 @@ int signaltimeout = 0;
 int deg_smooth_index = 0;
 int ramp_down_counter = 0;
 int ramp_down_interval = 30;
-char sin_cycle_complete = 0;
+int sin_cycle_complete = 0;
 
 char VOLTAGE_DIVIDER = TARGET_VOLTAGE_DIVIDER;     // 100k upper and 10k lower resistor in divider
 char cell_count = 0;
@@ -887,7 +887,7 @@ void advanceincrement(int input){
 	if (forward){
 		
 		if(phase_A_position < sin_swicthover_angle && phase_A_position + inc >= sin_swicthover_angle)
-			sin_cycle_complete = 1;
+			sin_cycle_complete++;
 		
 		phase_A_position += inc;
 
@@ -909,7 +909,7 @@ void advanceincrement(int input){
 	else{
 
 		if (phase_A_position > sin_swicthover_angle&& phase_A_position - inc <= sin_swicthover_angle)
-			sin_cycle_complete = 1;
+			sin_cycle_complete++;
 
 		phase_A_position -= inc;
 		if (phase_A_position < 0){
