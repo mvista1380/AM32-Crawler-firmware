@@ -755,7 +755,7 @@ void tenKhzRoutine(){
 			stepper_sine = 1;
 			minimum_duty_cycle = starting_duty_orig;
 		}
-		else if (input < ((sine_mode_changeover / 100) * 95) && step == changeover_step) {
+		else if (input < ((sine_mode_changeover / 100) * 98) && step == changeover_step) {
 			phase_A_position = 60;
 			phase_B_position = 180;
 			phase_C_position = 300;
@@ -977,12 +977,17 @@ void SwitchOver() {
 	sin_cycle_complete = 0;
 	stepper_sine = 0;
 	running = 1;
-	old_routine = 0;
+	old_routine = 1;
 	prop_brake_active = 0;
+	commutation_interval = 9000;
+	average_interval = 9000;
 	last_average_interval = average_interval;
+	INTERVAL_TIMER->CNT = 9000;
 	zero_crosses = 0;
 	prop_brake_active = 0;
 
+	duty_cycle = starting_duty_orig;
+	minimum_duty_cycle = starting_duty_orig;
 	last_duty_cycle = duty_cycle;
 	adjusted_duty_cycle = ((duty_cycle * tim1_arr) / TIMER1_MAX_ARR) + 1;
 	TIM1->ARR = tim1_arr;
@@ -991,27 +996,9 @@ void SwitchOver() {
 	TIM1->CCR3 = adjusted_duty_cycle;
 
 	step = changeover_step;
-	comStep(step);
-	changeCompInput();
-	enableCompInterrupts();
+	commutate();
 }
 
-void PunchStart() { //old switchover code, good for a fast accel punch
-	stepper_sine = 0;
-	running = 1;
-	old_routine = 1;
-	commutation_interval = 9000;
-	average_interval = 9000;
-	last_average_interval = average_interval;
-	//  minimum_duty_cycle = ;
-	INTERVAL_TIMER->CNT = 9000;
-	zero_crosses = 0;
-	prop_brake_active = 0;
-	step = changeover_step;                    // rising bemf on a same as position 0.
-	comStep(step);// rising bemf on a same as position 0.
-	LL_TIM_GenerateEvent_UPDATE(TIM1);
-	zcfoundroutine();
-}
 
 void UpdateADCInput() {
 	signaltimeout = 0;
@@ -1445,16 +1432,10 @@ int main(void)
 				advanceincrement(input);
 				step_delay = map (input, 48, sine_mode_changeover, 300, 20);
 				
-				if (input > sine_mode_changeover * 2) {
-					PunchStart();
-				}
-				else if (input > sine_mode_changeover && sin_cycle_complete == 1){
-					duty_cycle = starting_duty_orig;
+				 if (input > sine_mode_changeover && sin_cycle_complete == 1)
 					SwitchOver();
-				}
-				else {
+				else
 					delayMicros(step_delay);
-				}
 			}
 			else{
 				if(brake_on_stop){
