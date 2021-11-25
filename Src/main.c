@@ -592,6 +592,10 @@ void PeriodElapsedCallback(){
 	if(zero_crosses<10000){
 		zero_crosses++;
 	}
+
+	stuckcounter = 0;
+	stall_active = 0;
+
 	//	UTILITY_TIMER->CNT = 0;
 }
 
@@ -623,8 +627,6 @@ void interruptRoutine(){
 		}
 	}
 	maskPhaseInterrupts();
-	stuckcounter = 0;
-	stall_active = 0;
 	
 	INTERVAL_TIMER->CNT = 0 ;
 
